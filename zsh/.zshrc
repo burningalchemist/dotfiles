@@ -77,7 +77,7 @@ source $ZSH/oh-my-zsh.sh
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-# export LANG=en_US.UTF-8
+export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -108,7 +108,7 @@ source $ZSH/oh-my-zsh.sh
 # Aliases
 alias kubectx="kubectl ctx"
 alias kubens="kubectl ns"
-alias pip="pip3.9"
+#alias pip3x="pip3.9"
 
 # Enable Docker BuildKit
 export DOCKER_BUILDKIT=1
@@ -140,16 +140,13 @@ export PATH="/Users/sergei/Library/Python/3.9/bin:$PATH"
 export PATH="/Users/sergei/.nimble/bin:$PATH"
 
 # Java
-export JAVA_HOME=`/usr/libexec/java_home -v 14`
+export JAVA_HOME=`/usr/libexec/java_home -v 15`
 
 # Haskell
 export PATH="/Users/sergei/.local/bin:$PATH"
 
-# LibreSSL
-export PATH="/usr/local/opt/libressl/bin:$PATH"
+# Rust
+source $HOME/.cargo/env
 
 # Tokens
 source ".secrets/tokens" 2> /dev/null
-
-# Terraform 0.12
-export PATH="/usr/local/opt/terraform@0.12/bin:$PATH"
