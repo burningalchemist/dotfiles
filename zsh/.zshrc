@@ -108,7 +108,11 @@ export LANG=en_US.UTF-8
 # Aliases
 alias kubectx="kubectl ctx"
 alias kubens="kubectl ns"
+alias brewup="brew update --verbose"
 #alias pip3x="pip3.9"
+
+# Tokens
+source ".secrets/tokens" 2> /dev/null
 
 # Enable Docker BuildKit
 export DOCKER_BUILDKIT=1
@@ -122,6 +126,9 @@ export KUBECONFIG=$HOME/.kube/config:$HOME/.kube/config_kind
 # Fzf
 source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
 export FZF_DEFAULT_COMMAND='fd --type f'
+
+# Path /usr/local/sbin
+export PATH="/usr/local/sbin:$PATH"
 
 # Kubernetes Krew
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
@@ -147,6 +154,3 @@ export PATH="/Users/sergei/.local/bin:$PATH"
 
 # Rust
 source $HOME/.cargo/env
-
-# Tokens
-source ".secrets/tokens" 2> /dev/null
