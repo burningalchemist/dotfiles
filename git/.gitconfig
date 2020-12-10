@@ -1,0 +1,8 @@
+[credential]
+	helper = osxkeychain
+[user]
+	name = Sergei Zyubin
+	email = me@youname.it
+
+[includeIf "gitdir:~/Projects/"]
+	path = ~/.gitconfig-project

@@ -1,0 +1,8 @@
+[credential]
+	helper = osxkeychain
+[user]
+	name = Sergei Zyubin
+	email = sergei@youname.it
+	signingkey = CHANGEME
+[commit]
+	gpgsign = true
