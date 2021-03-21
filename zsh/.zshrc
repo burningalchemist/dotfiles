@@ -108,11 +108,11 @@ export LANG=en_US.UTF-8
 # Aliases
 alias kubectx="kubectl ctx"
 alias kubens="kubectl ns"
-alias brewup="brew update --verbose"
+alias brewup="brew update --verbose && brew upgrade --verbose"
 #alias pip3x="pip3.9"
 
 # Tokens
-source ".secrets/tokens" 2> /dev/null
+source "/Users/Sergei/.secrets/tokens" 2> /dev/null
 
 # Enable Docker BuildKit
 export DOCKER_BUILDKIT=1
@@ -154,3 +154,6 @@ export PATH="/Users/sergei/.local/bin:$PATH"
 
 # Rust
 source $HOME/.cargo/env
+
+# AWS-Cli Auto-Prompt
+export AWS_CLI_AUTO_PROMPT=on-partial
