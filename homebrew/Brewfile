@@ -26,6 +26,7 @@ brew "helm"
 brew "hlint"
 brew "python@3.10", link: true
 brew "httpie"
+brew "hugo"
 brew "hyperkit"
 brew "jid"
 brew "jq"
