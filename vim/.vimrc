@@ -12,3 +12,13 @@ au OptionSet number :if v:option_new | set showbreak= |
                    \ endif
 
 "set mouse+=a"
+
+set showcmd
+set hlsearch
+set showmatch
+set ignorecase
+set smartcase
+
+set scrolloff=3
+set ai
+set rtp+=/usr/local/opt/fzf
