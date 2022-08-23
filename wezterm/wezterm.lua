@@ -2,6 +2,8 @@ local wezterm = require 'wezterm';
 return {
   font = wezterm.font_with_fallback({"JetBrains Mono", "Apple Color Emoji"}),
   font_size = 14.0,
+  initial_cols = 100,
+  initial_rows = 30,
   color_scheme = "Mirage",
   tab_bar_at_bottom = true,
   use_cap_height_to_scale_fallback_fonts = true,
@@ -16,5 +18,6 @@ return {
       action=wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}}
     },
     { key = "Z", mods="CTRL|SHIFT", action="TogglePaneZoomState" },
+    { key="Q", mods="SHIFT|CTRL", action="QuickSelect"},
   }
 }
