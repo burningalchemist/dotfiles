@@ -64,11 +64,11 @@ ZSH_THEME="simple"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
-#  kubetail
+  kube-ps1
 )
 
-# Disabled plugins
-# kube-ps1
+# Plugin list
+# kube-ps1 - enabled
 
 source $ZSH/oh-my-zsh.sh
 
@@ -77,7 +77,7 @@ source $ZSH/oh-my-zsh.sh
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
-export LANG=en_US.UTF-8
+# export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
 # if [[ -n $SSH_CONNECTION ]]; then
@@ -102,20 +102,21 @@ export LANG=en_US.UTF-8
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Kubernetes Prompt
-#PROMPT='$(kube_ps1)'$PROMPT
-#KUBE_PS1_SYMBOL_DEFAULT=K8S
+PROMPT='$(kube_ps1)'$PROMPT
+KUBE_PS1_ENABLED=off
+KUBE_PS1_SYMBOL_DEFAULT=k8s
+KUBE_PS1_SYMBOL_ENABLE=false
+
+# Editor
+export EDITOR=nvim
 
 # Aliases
 alias kubectx="kubectl ctx"
 alias kubens="kubectl ns"
-alias brewup="brew update --verbose && brew upgrade --verbose"
-#alias pip3x="pip3.9"
-
-# Tokens
-source "/Users/Sergei/.secrets/tokens" 2> /dev/null
-
-# Enable Docker BuildKit
-export DOCKER_BUILDKIT=1
+alias pip="pip3.10"
+alias vim="nvim"
+alias k="kubectl"
+alias watch='watch '
 
 # ZSH Completions
 #autoload -U compinit && compinit
@@ -125,10 +126,7 @@ export KUBECONFIG=$HOME/.kube/config:$HOME/.kube/config_kind
 
 # Fzf
 source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
-export FZF_DEFAULT_COMMAND='fd --type f'
-
-# Path /usr/local/sbin
-export PATH="/usr/local/sbin:$PATH"
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 
 # Kubernetes Krew
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
@@ -141,19 +139,47 @@ export PATH=$PATH:$GOPATH/bin
 # export PATH="/usr/local/opt/node@12/bin:$PATH"
 
 # Python third-party binaries
-export PATH="/Users/sergei/Library/Python/3.9/bin:$PATH"
+# Native MacOS Python (not good)
+#export PATH="/Users/sergei/Library/Python/3.9/bin:$PATH"
+
+# Update to 3.10, 3.9 disabled
+#export PATH="/usr/local/opt/python@3.9/bin:$PATH"
+export PATH="/usr/local/opt/python@3.10/bin:$PATH"
+export PATH="/Users/sergei/Library/Python/3.10/bin:$PATH"
 
 # Nim
 export PATH="/Users/sergei/.nimble/bin:$PATH"
 
 # Java
-export JAVA_HOME=`/usr/libexec/java_home -v 15`
+# export JAVA_HOME=`/usr/libexec/java_home -v 14`
 
 # Haskell
 export PATH="/Users/sergei/.local/bin:$PATH"
 
-# Rust
-source $HOME/.cargo/env
+# LibreSSL
+export PATH="/usr/local/opt/libressl/bin:$PATH"
 
-# AWS-Cli Auto-Prompt
-export AWS_CLI_AUTO_PROMPT=on-partial
+# Tokens
+source ".secrets/tokens" 2> /dev/null
+
+# Terraform 0.12
+export PATH="/usr/local/opt/terraform@0.12/bin:$PATH"
+
+# PHP
+export PATH="/usr/local/opt/php@7.3/bin:$PATH"
+export PATH="/usr/local/opt/php@7.3/sbin:$PATH"
+
+# The next line updates PATH for the Google Cloud SDK.
+source '/Users/sergei/Downloads/google-cloud-sdk/path.zsh.inc'
+
+# The next line enables shell command completion for gcloud.
+source '/Users/sergei/Downloads/google-cloud-sdk/completion.zsh.inc'
+
+# FZF
+source ~/.fzf.zsh
+
+# ArgoCD
+source <(argocd completion zsh)
+
+# Gcloud Auth
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
