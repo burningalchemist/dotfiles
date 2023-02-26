@@ -1,10 +1,13 @@
 bierner.markdown-mermaid
+charliermarsh.ruff
 DavidAnson.vscode-markdownlint
 eamodio.gitlens
 EditorConfig.EditorConfig
 Equinusocio.vsc-community-material-theme
 Equinusocio.vsc-material-theme
 equinusocio.vsc-material-theme-icons
+foxundermoon.shell-format
+gera2ld.markmap-vscode
 GitHub.vscode-pull-request-github
 golang.go
 hashicorp.terraform
@@ -12,6 +15,7 @@ hoovercj.haskell-linter
 justusadam.language-haskell
 kosz78.nim
 ms-kubernetes-tools.vscode-kubernetes-tools
+ms-python.isort
 ms-python.python
 ms-python.vscode-pylance
 ms-vscode.cpptools
