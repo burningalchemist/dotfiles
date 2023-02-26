@@ -24,10 +24,10 @@ filetype indent on
 filetype plugin indent on
 
 set mouse+=a
-"set rtp+=/usr/local/opt/fzf
+set rtp+=~/.fzf
 
 " new flags
-colorscheme elflord
+"colorscheme elflord
 set title
 set inccommand=split
 set splitbelow splitright
@@ -43,12 +43,14 @@ call plug#begin()
 " Plug 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard', 'GHActivity'] }
 
 " Plugin outside ~/.vim/plugged with post-update hook
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/gv.vim'
 Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
 
 " Initialize plugin system
 call plug#end()
@@ -57,7 +59,7 @@ function! TreeSitterConfig()
 lua << EOF
 require'nvim-treesitter.configs'.setup {
   -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-  ensure_installed = {"yaml", "hcl", "dockerfile"},
+  ensure_installed = {"yaml", "hcl", "terraform", "dockerfile"},
 
   -- Install languages synchronously (only applied to `ensure_installed`)
   sync_install = false,
