@@ -117,16 +117,19 @@ alias pip="pip3.10"
 alias vim="nvim"
 alias k="kubectl"
 alias watch='watch '
+alias imgcat="wezterm imgcat"
 
 # ZSH Completions
-#autoload -U compinit && compinit
+autoload -U compinit && compinit
 
 # Kubernetes configuration
 export KUBECONFIG=$HOME/.kube/config:$HOME/.kube/config_kind
+source <(kubectl completion zsh)
 
 # Fzf
 source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+source ~/.fzf.zsh
 
 # Kubernetes Krew
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
@@ -140,46 +143,40 @@ export PATH=$PATH:$GOPATH/bin
 
 # Python third-party binaries
 # Native MacOS Python (not good)
-#export PATH="/Users/sergei/Library/Python/3.9/bin:$PATH"
+#export PATH="/Users/sergeiz/Library/Python/3.9/bin:$PATH"
 
 # Update to 3.10, 3.9 disabled
-#export PATH="/usr/local/opt/python@3.9/bin:$PATH"
 export PATH="/usr/local/opt/python@3.10/bin:$PATH"
-export PATH="/Users/sergei/Library/Python/3.10/bin:$PATH"
+export PATH="/Users/sergeiz/Library/Python/3.10/bin:$PATH"
 
 # Nim
-export PATH="/Users/sergei/.nimble/bin:$PATH"
+export PATH="/Users/sergeiz/.nimble/bin:$PATH"
 
 # Java
 # export JAVA_HOME=`/usr/libexec/java_home -v 14`
 
 # Haskell
-export PATH="/Users/sergei/.local/bin:$PATH"
+export PATH="/Users/sergeiz/.local/bin:$PATH"
 
 # LibreSSL
 export PATH="/usr/local/opt/libressl/bin:$PATH"
 
 # Tokens
-source ".secrets/tokens" 2> /dev/null
-
-# Terraform 0.12
-export PATH="/usr/local/opt/terraform@0.12/bin:$PATH"
-
-# PHP
-export PATH="/usr/local/opt/php@7.3/bin:$PATH"
-export PATH="/usr/local/opt/php@7.3/sbin:$PATH"
-
-# The next line updates PATH for the Google Cloud SDK.
-source '/Users/sergei/Downloads/google-cloud-sdk/path.zsh.inc'
-
-# The next line enables shell command completion for gcloud.
-source '/Users/sergei/Downloads/google-cloud-sdk/completion.zsh.inc'
-
-# FZF
-source ~/.fzf.zsh
+source "/Users/sergeiz/.secrets"
 
 # ArgoCD
-source <(argocd completion zsh)
+#source <(argocd completion zsh)
 
-# Gcloud Auth
-export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+# Gcloud SDK
+source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+
+# pnpm
+export PNPM_HOME="/Users/sergeiz/Library/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# pnpm end
+
+# Zig
+export PATH="/Users/sergeiz/zls:$PATH"
+
+# Jira CLI
+source <(jira completion zsh)
