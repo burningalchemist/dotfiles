@@ -26,16 +26,6 @@ filetype plugin indent on
 set mouse+=a
 set rtp+=~/.fzf
 
-" new flags
-"colorscheme elflord
-set title
-set inccommand=split
-set splitbelow splitright
-set expandtab
-set wildmenu
-
-" shortcuts
-nnoremap <S-t> :tabnew<CR>
 
 call plug#begin()
 
@@ -51,6 +41,8 @@ Plug 'preservim/nerdtree'
 Plug 'airblade/vim-gitgutter'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' }
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.1' }
 
 " Initialize plugin system
 call plug#end()
@@ -100,3 +92,21 @@ let NERDTreeShowHidden=1
 set foldmethod=expr
 set foldlevelstart=20
 set foldexpr=nvim_treesitter#foldexpr()
+
+" Telescope
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+" Shortcuts
+nnoremap <S-t> :tabnew<CR>
+tnoremap <S-Esc> <C-\><C-n>
+
+" New flags
+colorscheme catppuccin
+set title
+set inccommand=split
+set splitbelow splitright
+set expandtab
+set wildmenu
