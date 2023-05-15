@@ -113,22 +113,22 @@ export EDITOR=nvim
 # Aliases
 alias kubectx="kubectl ctx"
 alias kubens="kubectl ns"
-alias pip="pip3.10"
+alias pip="pip3.11"
 alias vim="nvim"
 alias k="kubectl"
 alias watch='watch '
 alias imgcat="wezterm imgcat"
+alias vimdiff="nvim -d"
 
 # ZSH Completions
-autoload -U compinit && compinit
+autoload -U compinit && compinit -u
 
 # Kubernetes configuration
 export KUBECONFIG=$HOME/.kube/config:$HOME/.kube/config_kind
 source <(kubectl completion zsh)
 
 # Fzf
-source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git -d 3'
 source ~/.fzf.zsh
 
 # Kubernetes Krew
@@ -138,16 +138,13 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
-# NodeJS
-# export PATH="/usr/local/opt/node@12/bin:$PATH"
-
 # Python third-party binaries
 # Native MacOS Python (not good)
 #export PATH="/Users/sergeiz/Library/Python/3.9/bin:$PATH"
 
-# Update to 3.10, 3.9 disabled
-export PATH="/usr/local/opt/python@3.10/bin:$PATH"
-export PATH="/Users/sergeiz/Library/Python/3.10/bin:$PATH"
+# Python 3 (Paths seem obsolete)
+# export PATH="/usr/local/opt/python@3.10/bin:$PATH"
+# export PATH="/Users/sergeiz/Library/Python/3.10/bin:$PATH"
 
 # Nim
 export PATH="/Users/sergeiz/.nimble/bin:$PATH"
@@ -173,10 +170,12 @@ source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.
 # pnpm
 export PNPM_HOME="/Users/sergeiz/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
-# pnpm end
 
 # Zig
 export PATH="/Users/sergeiz/zls:$PATH"
 
 # Jira CLI
 source <(jira completion zsh)
+
+# Zoxide
+eval "$(zoxide init zsh)"
