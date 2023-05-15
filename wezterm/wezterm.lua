@@ -5,6 +5,8 @@ return {
   initial_cols = 100,
   initial_rows = 30,
   color_scheme = "Mirage",
+  --color_scheme = "Catppuccin Mocha",
+  scrollback_lines = 10000,
   tab_bar_at_bottom = true,
   use_cap_height_to_scale_fallback_fonts = true,
   adjust_window_size_when_changing_font_size = false,
