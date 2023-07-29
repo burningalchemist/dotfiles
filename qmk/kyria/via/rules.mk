@@ -1,0 +1,20 @@
+OLED_ENABLE = yes
+OLED_DRIVER = SSD1306   # Enables the use of OLED displays
+VIA_ENABLE = yes
+NKRO_ENABLE = yes
+KEY_LOCK_ENABLE = no
+SPACE_CADET_ENABLE = yes
+MAGIC_ENABLE = no
+GRAVE_ESCAPE_ENABLE = no
+ENCODER_ENABLE = yes    # Enables the use of one or more encoders
+ENCODER_MAP_ENABLE = yes
+
+RGBLIGHT_ENABLE = no
+MOUSEKEY_ENABLE = yes
+
+
+LTO_ENABLE = yes
+MUSIC_ENABLE = no
+
+POINTING_DEVICE_ENABLE = yes
+POINTING_DEVICE_DRIVER = cirque_pinnacle_i2c
