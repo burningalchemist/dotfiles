@@ -12,6 +12,8 @@ return {
   adjust_window_size_when_changing_font_size = false,
   custom_block_glyphs = true,
   keys = {
+    { key = 'PageUp', mods = 'SUPER', action = wezterm.action.ScrollByPage(-0.5) },
+    { key = 'PageDown', mods = 'SUPER', action = wezterm.action.ScrollByPage(0.5) },
     -- This will create a new split and run your default program inside it
     { key="Enter", mods="CTRL|SHIFT",
       action=wezterm.action{SplitVertical={domain="CurrentPaneDomain"}}
