@@ -15,6 +15,7 @@ vim.opt.mouse:append("a")
 vim.opt.rtp:append("~/.fzf")
 vim.opt.rtp:prepend(lazypath)
 vim.opt.expandtab = true
+vim.opt.colorcolumn = "120"
 
 -- ## Global Options
 vim.go.showcmd = true
