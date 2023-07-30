@@ -56,6 +56,11 @@ vim.api.nvim_create_autocmd("Filetype", {
 require("lazy").setup({
   { "catppuccin/nvim", name = "catppuccin" },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate"},
+  { "nvim-lualine/lualine.nvim",
+        dependencies = {
+                "nvim-tree/nvim-web-devicons"
+        }
+  },
   { "nvim-telescope/telescope.nvim",
         branch = "0.1.x",
         dependencies = {
@@ -151,11 +156,36 @@ vim.o.foldmethod = "expr"
 vim.o.foldlevelstart = 20
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
-
-
 -- ## Plugin Auto Settings
 require("which-key").setup()
 require("gitsigns").setup()
+
+-- ## Lualine Config
+require("lualine").setup({
+  options = {
+          theme = "auto",
+          icons_enabled = false,
+          disabled_filetypes = { "neo-tree" },
+          ignore_focus = { "neo-tree" },
+          globalstatus = true,
+        },
+        winbar = {
+             lualine_a = {},
+             lualine_b = {},
+             lualine_c = {{'filename', path = 1, file_status = true }},
+             lualine_x = {},
+             lualine_y = {},
+             lualine_z = {}
+           },
+        inactive_winbar = {
+            lualine_a = {},
+            lualine_b = {},
+            lualine_c = {{'filename', path = 1, file_status = true }},
+            lualine_x = {},
+            lualine_y = {},
+            lualine_z = {}
+        }
+})
 
 -- ## NVim Completion (via nvim-cmp)
 local cmp = require 'cmp'
