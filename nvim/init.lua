@@ -16,6 +16,9 @@ vim.opt.rtp:append("~/.fzf")
 vim.opt.rtp:prepend(lazypath)
 vim.opt.expandtab = true
 vim.opt.colorcolumn = "120"
+vim.opt.laststatus = 3
+vim.opt.cmdheight = 0
+vim.opt.termguicolors = true
 
 -- ## Global Options
 vim.go.showcmd = true
@@ -36,7 +39,7 @@ vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
 vim.wo.list = true
-vim.wo.listchars = "tab:▒░,trail:▓,nbsp:░"
+vim.go.listchars = "tab:▒░,trail:▓,nbsp:░"
 
 -- ## Autocommands
 vim.api.nvim_create_autocmd("OptionSet", {
@@ -56,11 +59,6 @@ vim.api.nvim_create_autocmd("Filetype", {
 require("lazy").setup({
   { "catppuccin/nvim", name = "catppuccin" },
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate"},
-  { "nvim-lualine/lualine.nvim",
-        dependencies = {
-                "nvim-tree/nvim-web-devicons"
-        }
-  },
   { "nvim-telescope/telescope.nvim",
         branch = "0.1.x",
         dependencies = {
@@ -77,6 +75,11 @@ require("lazy").setup({
                 "MunifTanjim/nui.nvim"
         }
   },
+  { "nvim-lualine/lualine.nvim",
+        dependencies = {
+                "nvim-tree/nvim-web-devicons"
+        }
+  },
   { "junegunn/fzf", build = "fzf#install()"},
   { "hrsh7th/nvim-cmp",
         dependencies = {
@@ -86,6 +89,7 @@ require("lazy").setup({
                 "hrsh7th/cmp-path",
                 "hrsh7th/cmp-cmdline",
                 "hrsh7th/cmp-vsnip",
+                "onsails/lspkind.nvim",
                 "hrsh7th/vim-vsnip",
                 "folke/neodev.nvim",
         }
@@ -96,6 +100,7 @@ require("lazy").setup({
   "neovim/nvim-lspconfig",
   "folke/which-key.nvim",
   "lewis6991/gitsigns.nvim",
+  "tpope/vim-surround"
 })
 
 -- ## TreeSitter Config
@@ -166,37 +171,41 @@ vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 require("which-key").setup()
 require("gitsigns").setup()
 
--- ## Lualine Config
+-- ## Lualine Confi(g
+-- TODO: Checkout `heirline`, replicate current statusline setup, don't use timers
 require("lualine").setup({
   options = {
-          theme = "auto",
           icons_enabled = false,
           disabled_filetypes = { "neo-tree" },
           ignore_focus = { "neo-tree" },
-          globalstatus = true,
-        },
-        winbar = {
-             lualine_a = {},
-             lualine_b = {},
-             lualine_c = {{'filename', path = 1, file_status = true }},
-             lualine_x = {},
-             lualine_y = {},
-             lualine_z = {}
-           },
-        inactive_winbar = {
-            lualine_a = {},
-            lualine_b = {},
-            lualine_c = {{'filename', path = 1, file_status = true }},
-            lualine_x = {},
-            lualine_y = {},
-            lualine_z = {}
-        }
+          section_separators = "",
+  },
+-- winbar = {
+--      lualine_a = {},
+--      lualine_b = {},
+--      lualine_c = {{'filename', path = 1, file_status = true }},
+--      lualine_x = {},
+--      lualine_y = {},
+--      lualine_z = {}
+--    },
+-- inactive_winbar = {
+--     lualine_a = {},
+--     lualine_b = {},
+--     lualine_c = {{'filename', path = 1, file_status = true }},
+--     lualine_x = {},
+--     lualine_y = {},
+--     lualine_z = {}
+-- }
 })
 
 -- ## NVim Completion (via nvim-cmp)
 local cmp = require 'cmp'
+local lspkind = require 'lspkind'
 
 cmp.setup({
+    formatting = {
+        format = lspkind.cmp_format()
+    },
     snippet = {
         expand = function(args)
             vim.fn["vsnip#anonymous"](args.body)
@@ -221,7 +230,8 @@ cmp.setup({
         name = 'vsnip'
     }}, {{
         name = 'buffer'
-    }})
+    }}
+    )
 })
 
 
