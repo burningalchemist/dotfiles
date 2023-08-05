@@ -1,8 +1,6 @@
 ---@diagnostic disable: missing-fields, undefined-global
 
 -- TODO:
--- 1. Try to lazy load neotree
--- 2. Add LSP status to lualine
 -- 3. Check moving diagnostic to quickfix list
 
 
@@ -20,13 +18,14 @@ if not vim.loop.fs_stat(lazypath) then
 end
 
 -- # NVim Settings
-
 -- ## Global Options
 vim.opt.syntax = "off"
 vim.opt.mouse:append("a")
 vim.opt.rtp:append("~/.fzf")
 vim.opt.rtp:prepend(lazypath)
 vim.opt.expandtab = true
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.colorcolumn = "120"
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 0
@@ -34,9 +33,11 @@ vim.opt.termguicolors = true
 vim.opt.autochdir = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
+vim.opt.showmatch = false
 vim.go.showcmd = true
 vim.go.hlsearch = true
-vim.go.showmatch = true
+vim.go.incsearch = true
+vim.go.inccommand = "split"
 vim.go.ignorecase = true
 vim.go.smartcase = true
 vim.go.ruler = true
@@ -53,20 +54,7 @@ vim.wo.scrolloff = 3
 vim.wo.cursorline = true
 vim.wo.list = true
 
--- ## Autocommands
-vim.api.nvim_create_autocmd("OptionSet", {
-    pattern = "number",
-    command = "if v:option_new | set showbreak= | else | set showbreak=↪ | endif",
-})
-
--- ### Fix weird yaml indent shifts
-vim.api.nvim_create_autocmd("Filetype", {
-    pattern = "yaml",
-    command = "setlocal indentexpr=",
-})
-
 -- # Plugins
-
 -- ## Lazy Plugin Manager Settings
 local lazy_opts = {
     performance = {
@@ -103,16 +91,45 @@ local lazy_plugins = {
                 section_separators = "",
             },
             extensions = { "neo-tree", "lazy" },
+            sections = {
+                    lualine_c = {
+                            "filename",
+                            "require('lsp-progress').progress()",
+                    }
+            }
         },
-    },
-    {
-        "folke/neodev.nvim",
-        ft = "lua",
-        opts = {}
     },
     { "nvim-lua/plenary.nvim",       lazy = true },
     { "nvim-tree/nvim-web-devicons", lazy = true },
     { "MunifTanjim/nui.nvim",        lazy = true },
+    { "linrongbin16/lsp-progress.nvim",
+        lazy = true,
+        opts = {
+        format = function(messages)
+        local active_clients = vim.lsp.get_active_clients()
+        local client_count = #active_clients
+        if #messages > 0 then
+            return "LSP: "
+                .. client_count
+                .. " "
+                .. table.concat(messages, " ")
+        end
+        if #active_clients <= 0 then
+            return "LSP: " .. client_count
+        else
+            local client_names = {}
+            for _, client in ipairs(active_clients) do
+                if client and client.name ~= "" then
+                    table.insert(client_names, "[" .. client.name .. "]")
+                end
+            end
+            return "LSP: "
+                .. client_count
+                .. " "
+                .. table.concat(client_names, " ")
+        end
+        end,
+        } },
     {
         "nvim-treesitter/nvim-treesitter",
         lazy = true,
@@ -221,7 +238,7 @@ local lazy_plugins = {
                 },
                 window = {
                     -- completion = cmp.config.window.bordered(),
-                    -- documentation = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
                 },
                 mapping = cmp.mapping.preset.insert({
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
@@ -270,12 +287,12 @@ local lazy_plugins = {
         cmd = { "LspInfo", "LspInstall", "LspUninstall" },
         dependencies = {
             "folke/neodev.nvim",
+            "linrongbin16/lsp-progress.nvim"
         },
     },
     {
         "folke/which-key.nvim",
         lazy = false,
-        -- event = "VeryLazy",
         init = function()
             vim.o.timeout = true
             vim.o.timeoutlen = 300
@@ -297,12 +314,12 @@ local lazy_plugins = {
     },
     {
         "windwp/nvim-autopairs",
+        lazy = true,
         opts = {
             check_ts = true,
         },
     },
 }
-
 require("lazy").setup(lazy_plugins, lazy_opts)
 
 -- # Key Mappings
@@ -328,11 +345,47 @@ vim.o.foldmethod = "expr"
 vim.o.foldlevelstart = 20
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
 
+
+-- ## Autocommands
+-- ### Show the break character if `number` option is enabled
+vim.api.nvim_create_autocmd("OptionSet", {
+    pattern = "number",
+    command = "if v:option_new | set showbreak= | else | set showbreak=↪ | endif",
+})
+
+-- ### Fix weird yaml indent shifts
+vim.api.nvim_create_autocmd("Filetype", {
+    pattern = "yaml",
+    command = "setlocal indentexpr=",
+})
+
+-- ### Listen lsp-progress event and refresh lualine
+vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+vim.api.nvim_create_autocmd("User LspProgressStatusUpdated", {
+    group = "lualine_augroup",
+    callback = require("lualine").refresh,
+})
+
+-- ### Open Neotree when Nvim started with a directory argument
+vim.api.nvim_create_augroup("neotree", {})
+   vim.api.nvim_create_autocmd("UiEnter", {
+     desc = "Open Neotree automatically",
+     group = "neotree",
+     callback = function()
+       local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(0))
+       if stats and stats.type == "directory" then require("neo-tree.setup.netrw").hijack() end
+     end,
+})
+
+
 -- # LSP Configuration
+-- ## Common
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- ## Golang
-require("lspconfig").gopls.setup({})
+require("lspconfig").gopls.setup({
+    capabilities = capabilities
+})
 
 -- ## Lua
 require("lspconfig").lua_ls.setup({
