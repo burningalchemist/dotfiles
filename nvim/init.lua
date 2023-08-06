@@ -1,8 +1,5 @@
 ---@diagnostic disable: missing-fields, undefined-global
 
--- TODO:
--- 3. Check moving diagnostic to quickfix list
-
 
 -- # LazyVIM Init
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -28,12 +25,13 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.colorcolumn = "120"
 vim.opt.laststatus = 3
-vim.opt.cmdheight = 0
+vim.opt.cmdheight = 1
 vim.opt.termguicolors = true
 vim.opt.autochdir = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.showmatch = false
+vim.opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
 vim.go.showcmd = true
 vim.go.hlsearch = true
 vim.go.incsearch = true
@@ -180,11 +178,17 @@ local lazy_plugins = {
         lazy = true,
         branch = "0.1.x",
         dependencies = {
-            -- "nvim-telescope/telescope-github.nvim",
             "nvim-lua/plenary.nvim",
+            "olimorris/persisted.nvim",
+            "ahmedkhalf/project.nvim"
         },
         cmd = "Telescope",
-        opts = {}
+        opts = {},
+        config = function(_, opts)
+            require("telescope").setup(opts)
+            require("telescope").load_extension("persisted")
+            require('telescope').load_extension('projects')
+        end
     },
     {
         "nvim-neo-tree/neo-tree.nvim",
@@ -315,10 +319,44 @@ local lazy_plugins = {
     {
         "windwp/nvim-autopairs",
         lazy = true,
+        event = "InsertEnter",
         opts = {
             check_ts = true,
         },
     },
+    {
+        "pwntester/octo.nvim",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim",
+            "nvim-tree/nvim-web-devicons",
+        },
+        lazy = true,
+        cmd = "Octo",
+        opts = {
+            enable_builtin = true,
+        }
+    },
+    {
+        "olimorris/persisted.nvim",
+        version = false,
+        lazy = false,
+        keys = {
+            {"<leader>fs", "<cmd>Telescope persisted<cr>", desc="Telescope persisted" }
+        },
+        opts = {}
+    },
+    {
+        "ahmedkhalf/project.nvim",
+        lazy = false,
+        keys = {
+            {"<leader>fp", "<cmd>Telescope projects<cr>", desc="Telescope projects" }
+        },
+        opts = {},
+        config = function(_, opts)
+            require("project_nvim").setup(opts)
+        end
+    }
 }
 require("lazy").setup(lazy_plugins, lazy_opts)
 
