@@ -140,42 +140,37 @@ export PATH=$PATH:$GOPATH/bin
 
 # Python third-party binaries
 # Native MacOS Python (not good)
-#export PATH="/Users/sergeiz/Library/Python/3.9/bin:$PATH"
+# export PATH="/Users/sergei/Library/Python/3.9/bin:$PATH"
 
 # Python 3 (Paths seem obsolete)
 # export PATH="/usr/local/opt/python@3.10/bin:$PATH"
-# export PATH="/Users/sergeiz/Library/Python/3.10/bin:$PATH"
-
-# Nim
-export PATH="/Users/sergeiz/.nimble/bin:$PATH"
+# export PATH="/Users/sergei/Library/Python/3.11/bin:$PATH"
 
 # Java
 # export JAVA_HOME=`/usr/libexec/java_home -v 14`
 
 # Haskell
-export PATH="/Users/sergeiz/.local/bin:$PATH"
+# export PATH="/Users/sergei/.local/bin:$PATH"
 
 # LibreSSL
-export PATH="/usr/local/opt/libressl/bin:$PATH"
+# export PATH="/usr/local/opt/libressl/bin:$PATH"
 
 # Tokens
-source "/Users/sergeiz/.secrets"
+# source "/Users/sergei/.secrets"
 
 # ArgoCD
-#source <(argocd completion zsh)
-
-# Gcloud SDK
-source "$(brew --prefix)/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/path.zsh.inc"
+# source <(argocd completion zsh)
 
 # pnpm
-export PNPM_HOME="/Users/sergeiz/Library/pnpm"
+export PNPM_HOME="/Users/sergei/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 
 # Zig
-export PATH="/Users/sergeiz/zls:$PATH"
+export PATH="/Users/sergei/zls:$PATH"
+export PATH="$PATH:/Users/sergei/Downloads/zig-0.11.0"
 
 # Jira CLI
-source <(jira completion zsh)
+# source <(jira completion zsh)
 
 # Zoxide
-eval "$(zoxide init zsh)"
+# eval "$(zoxide init zsh)"
