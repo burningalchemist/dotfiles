@@ -2,7 +2,7 @@
 	helper = osxkeychain
 [user]
 	name = Sergei Zyubin
-	email = me@youname.it
+	email = git@szyubin.me
 
 [includeIf "gitdir:~/Projects/"]
 	path = ~/.gitconfig-project
