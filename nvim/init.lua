@@ -1,6 +1,5 @@
 ---@diagnostic disable: missing-fields, undefined-global
 
-
 -- # LazyVIM Init
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -13,7 +12,6 @@ if not vim.loop.fs_stat(lazypath) then
         lazypath,
     })
 end
-
 -- # NVim Settings
 -- ## Global Options
 vim.opt.syntax = "off"
@@ -23,7 +21,8 @@ vim.opt.rtp:prepend(lazypath)
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
-vim.opt.colorcolumn = "120"
+vim.opt.textwidth = 119
+vim.opt.colorcolumn = "+1"
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
 vim.opt.termguicolors = true
@@ -44,13 +43,14 @@ vim.go.title = true
 vim.go.incommand = "split"
 vim.go.listchars = "tab:▒░,trail:▓,nbsp:░"
 vim.g.mapleader = "\\"
-
 -- ## Window Options
 vim.wo.number = true
 vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
 vim.wo.list = true
+
+
 
 -- # Plugins
 -- ## Lazy Plugin Manager Settings
@@ -90,44 +90,46 @@ local lazy_plugins = {
             },
             extensions = { "neo-tree", "lazy" },
             sections = {
-                    lualine_c = {
-                            "filename",
-                            "require('lsp-progress').progress()",
-                    }
+                lualine_c = {
+                    "filename",
+                    "require('lsp-progress').progress()",
+                }
             }
         },
     },
     { "nvim-lua/plenary.nvim",       lazy = true },
     { "nvim-tree/nvim-web-devicons", lazy = true },
     { "MunifTanjim/nui.nvim",        lazy = true },
-    { "linrongbin16/lsp-progress.nvim",
+    {
+        "linrongbin16/lsp-progress.nvim",
         lazy = true,
         opts = {
-        format = function(messages)
-        local active_clients = vim.lsp.get_active_clients()
-        local client_count = #active_clients
-        if #messages > 0 then
-            return "LSP: "
-                .. client_count
-                .. " "
-                .. table.concat(messages, " ")
-        end
-        if #active_clients <= 0 then
-            return "LSP: " .. client_count
-        else
-            local client_names = {}
-            for _, client in ipairs(active_clients) do
-                if client and client.name ~= "" then
-                    table.insert(client_names, "[" .. client.name .. "]")
+            format = function(messages)
+                local active_clients = vim.lsp.get_active_clients()
+                local client_count = #active_clients
+                if #messages > 0 then
+                    return "LSP: "
+                        .. client_count
+                        .. " "
+                        .. table.concat(messages, " ")
                 end
-            end
-            return "LSP: "
-                .. client_count
-                .. " "
-                .. table.concat(client_names, " ")
-        end
-        end,
-        } },
+                if #active_clients <= 0 then
+                    return "LSP: " .. client_count
+                else
+                    local client_names = {}
+                    for _, client in ipairs(active_clients) do
+                        if client and client.name ~= "" then
+                            table.insert(client_names, "[" .. client.name .. "]")
+                        end
+                    end
+                    return "LSP: "
+                        .. client_count
+                        .. " "
+                        .. table.concat(client_names, " ")
+                end
+            end,
+        }
+    },
     {
         "nvim-treesitter/nvim-treesitter",
         lazy = true,
@@ -250,6 +252,7 @@ local lazy_plugins = {
                     ["§"] = cmp.mapping.complete(),
                     ["<C-e>"] = cmp.mapping.abort(),
                     ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                    ["<C-l>"] = cmp.mapping.complete_common_string(),
                 }),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
@@ -290,7 +293,7 @@ local lazy_plugins = {
         event = { "BufReadPre", "BufNewFile" },
         cmd = { "LspInfo", "LspInstall", "LspUninstall" },
         dependencies = {
-            "folke/neodev.nvim",
+            { "folke/neodev.nvim", opts = {} },
             "linrongbin16/lsp-progress.nvim"
         },
     },
@@ -314,7 +317,7 @@ local lazy_plugins = {
     {
         "tpope/vim-surround",
         lazy = true,
-        keys = { "cs", "ds" },
+        keys = { "cs", "ds", "ys" },
     },
     {
         "windwp/nvim-autopairs",
@@ -339,10 +342,9 @@ local lazy_plugins = {
     },
     {
         "olimorris/persisted.nvim",
-        version = false,
         lazy = false,
         keys = {
-            {"<leader>fs", "<cmd>Telescope persisted<cr>", desc="Telescope persisted" }
+            { "<leader>fs", "<cmd>Telescope persisted<cr>", desc = "Telescope persisted" }
         },
         opts = {}
     },
@@ -350,7 +352,7 @@ local lazy_plugins = {
         "ahmedkhalf/project.nvim",
         lazy = false,
         keys = {
-            {"<leader>fp", "<cmd>Telescope projects<cr>", desc="Telescope projects" }
+            { "<leader>fp", "<cmd>Telescope projects<cr>", desc = "Telescope projects" }
         },
         opts = {},
         config = function(_, opts)
@@ -364,6 +366,31 @@ require("lazy").setup(lazy_plugins, lazy_opts)
 -- ## General
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
 vim.keymap.set("t", "<S-Esc>", "<C-\\><C-n>")
+vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Move to the previous diagnostic in the buffer" })
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Move to the next diagnostic in the buffer" })
+vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Add diagnostics to the location list" })
+
+-- ## Neovim detach from a remote server
+vim.keymap.set("n", "<leader>rd", function()
+    for _, ui in pairs(vim.api.nvim_list_uis()) do
+        if ui.chan and not ui.stdout_tty then
+            vim.fn.chanclose(ui.chan)
+        end
+    end
+end, { noremap = true, desc = "Detach TUI from the remote RPC server" })
+
+vim.keymap.set("n", "<leader>tw", function()
+    local format_opts = vim.opt.formatoptions:get()
+    if format_opts.t == nil then
+        vim.opt.formatoptions:append("t")
+        vim.print("Text auto-wrapping is enabled")
+    else
+        vim.opt.formatoptions:remove("t")
+        vim.print("Text auto-wrapping is disabled")
+    end
+end, { noremap = true, desc = "Toggle auto-wrapping by textwidth" })
+
 
 -- ## Telescope
 vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
@@ -391,6 +418,13 @@ vim.api.nvim_create_autocmd("OptionSet", {
     command = "if v:option_new | set showbreak= | else | set showbreak=↪ | endif",
 })
 
+-- ### Set formatoptions to adjust comment formatting and wrapping, enable auto-wrapping on textwidth
+vim.api.nvim_create_autocmd("BufEnter", {
+    callback = function()
+        vim.opt.formatoptions = vim.opt.formatoptions - { "c", "r", "o" } + "t"
+    end
+})
+
 -- ### Fix weird yaml indent shifts
 vim.api.nvim_create_autocmd("Filetype", {
     pattern = "yaml",
@@ -406,15 +440,41 @@ vim.api.nvim_create_autocmd("User LspProgressStatusUpdated", {
 
 -- ### Open Neotree when Nvim started with a directory argument
 vim.api.nvim_create_augroup("neotree", {})
-   vim.api.nvim_create_autocmd("UiEnter", {
-     desc = "Open Neotree automatically",
-     group = "neotree",
-     callback = function()
-       local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(0))
-       if stats and stats.type == "directory" then require("neo-tree.setup.netrw").hijack() end
-     end,
+vim.api.nvim_create_autocmd("UiEnter", {
+    desc = "Open Neotree automatically",
+    group = "neotree",
+    callback = function()
+        local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(0))
+        if stats and stats.type == "directory" then require("neo-tree.setup.netrw").hijack() end
+    end,
 })
 
+-- ### Use LspAttach autocommand to only map the following keys after the language server attaches to the current
+-- buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+    group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+    callback = function(ev)
+        -- Enable completion triggered by <c-x><c-o>
+        vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+        -- Buffer local mappings.
+        -- See `:help vim.lsp.*` for documentation on any of the below functions
+        local opts = function(desc)
+            return { buffer = ev.buf, desc = desc }
+        end
+        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts("Jump to the symbol declaration"))
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts("Display info about the symbol"))
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("List symbol implementations"))
+        vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts("Jump to the type definition of the symbol"))
+        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts("Rename all references of the symbol"))
+        vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts("Select an available code action"))
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts("Show all references to the symbol in quickfix list"))
+        vim.keymap.set('n', '<space>f', function()
+            vim.lsp.buf.format { async = true }
+        end, opts("Format code with an attached language"))
+    end,
+})
 
 -- # LSP Configuration
 -- ## Common
@@ -422,6 +482,11 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- ## Golang
 require("lspconfig").gopls.setup({
+    capabilities = capabilities
+})
+
+-- ## Typescript
+require("lspconfig").tsserver.setup({
     capabilities = capabilities
 })
 
