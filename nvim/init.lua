@@ -12,6 +12,7 @@ if not vim.loop.fs_stat(lazypath) then
         lazypath,
     })
 end
+
 -- # NVim Settings
 -- ## Global Options
 vim.opt.syntax = "off"
@@ -49,7 +50,6 @@ vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
 vim.wo.list = true
-
 
 
 -- # Plugins
@@ -371,7 +371,7 @@ vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Move to the previo
 vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Move to the next diagnostic in the buffer" })
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Add diagnostics to the location list" })
 
--- ## Neovim detach from a remote server
+-- ## Detach Neovim from the remote server
 vim.keymap.set("n", "<leader>rd", function()
     for _, ui in pairs(vim.api.nvim_list_uis()) do
         if ui.chan and not ui.stdout_tty then
@@ -380,6 +380,7 @@ vim.keymap.set("n", "<leader>rd", function()
     end
 end, { noremap = true, desc = "Detach TUI from the remote RPC server" })
 
+-- ## Toggle auto-wrapping by textwidth value
 vim.keymap.set("n", "<leader>tw", function()
     local format_opts = vim.opt.formatoptions:get()
     if format_opts.t == nil then
@@ -390,7 +391,6 @@ vim.keymap.set("n", "<leader>tw", function()
         vim.print("Text auto-wrapping is disabled")
     end
 end, { noremap = true, desc = "Toggle auto-wrapping by textwidth" })
-
 
 -- ## Telescope
 vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
@@ -404,12 +404,12 @@ vim.keymap.set("n", "<leader>nf", "<cmd>Neotree toggle focus filesystem left<cr>
 vim.keymap.set("n", "<leader>nb", "<cmd>Neotree toggle focus buffers right<cr>")
 vim.keymap.set("n", "<leader>ng", "<cmd>Neotree float git_status<cr>")
 
+
 -- # Extra Settings
 -- ## Folding
 vim.o.foldmethod = "expr"
 vim.o.foldlevelstart = 20
 vim.o.foldexpr = "nvim_treesitter#foldexpr()"
-
 
 -- ## Autocommands
 -- ### Show the break character if `number` option is enabled
@@ -472,9 +472,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts("Show all references to the symbol in quickfix list"))
         vim.keymap.set('n', '<space>f', function()
             vim.lsp.buf.format { async = true }
-        end, opts("Format code with an attached language"))
+        end, opts("Format code with the attached language"))
     end,
 })
+
 
 -- # LSP Configuration
 -- ## Common
