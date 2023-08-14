@@ -75,4 +75,4 @@ if [[ ${COMPLETION_WAITING_DOTS:-false} != false ]]; then
 fi
 
 # automatically load bash completion functions
-autoload -U +X bashcompinit && bashcompinit
+# autoload -U +X bashcompinit && bashcompinit

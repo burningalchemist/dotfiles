@@ -1,5 +1,5 @@
-autoload -Uz compinit
-compinit
+# autoload -Uz compinit
+# compinit
 
 # Changing/making/removing directory
 setopt auto_cd
