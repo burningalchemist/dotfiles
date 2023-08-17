@@ -159,7 +159,7 @@ local lazy_plugins = {
 
             highlight = {
                 -- `false` will disable the whole extension
-                enable = false,
+                enable = true,
 
                 -- list of language that will be disabled
                 disable = { "c", "rust" },
@@ -174,6 +174,9 @@ local lazy_plugins = {
             indent = { enable = true, disable = { "yaml" } },
             autopairs = { enable = true },
         },
+        config = function(_, opts)
+            require("nvim-treesitter.configs").setup(opts)
+        end,
     },
     {
         "nvim-telescope/telescope.nvim",
@@ -304,7 +307,7 @@ local lazy_plugins = {
             vim.o.timeout = true
             vim.o.timeoutlen = 300
         end,
-        opts = {},
+        opts = {}
     },
     {
         "lewis6991/gitsigns.nvim",
