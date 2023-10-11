@@ -24,6 +24,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.textwidth = 119
 vim.opt.colorcolumn = "+1"
+vim.opt.linebreak = true
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
 vim.opt.termguicolors = true
@@ -290,7 +291,17 @@ local lazy_plugins = {
             })
         end,
     },
-    { "tpope/vim-fugitive", lazy = true, cmd = "Git" },
+    --{ "tpope/vim-fugitive", lazy = true, cmd = "Git" },
+    {
+      "NeogitOrg/neogit",
+      cmd = "Neogit",
+      dependencies = {
+        "nvim-lua/plenary.nvim",
+        "nvim-telescope/telescope.nvim",
+        "sindrets/diffview.nvim",
+      },
+      config = true
+    },
     {
         "neovim/nvim-lspconfig",
         event = { "BufReadPre", "BufNewFile" },
@@ -424,7 +435,7 @@ vim.api.nvim_create_autocmd("OptionSet", {
 -- ### Set formatoptions to adjust comment formatting and wrapping, enable auto-wrapping on textwidth
 vim.api.nvim_create_autocmd("BufEnter", {
     callback = function()
-        vim.opt.formatoptions = vim.opt.formatoptions - { "c", "r", "o" } + "t"
+        vim.opt.formatoptions = vim.opt.formatoptions - { "c", "r", "o", "t" }
     end
 })
 
@@ -436,8 +447,9 @@ vim.api.nvim_create_autocmd("Filetype", {
 
 -- ### Listen lsp-progress event and refresh lualine
 vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
-vim.api.nvim_create_autocmd("User LspProgressStatusUpdated", {
+vim.api.nvim_create_autocmd("User",{
     group = "lualine_augroup",
+    pattern = "LspProgressStatusUpdated",
     callback = require("lualine").refresh,
 })
 
