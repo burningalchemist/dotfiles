@@ -26,7 +26,7 @@ vim.opt.textwidth = 119
 vim.opt.colorcolumn = "+1"
 vim.opt.linebreak = true
 vim.opt.laststatus = 3
-vim.opt.cmdheight = 1
+vim.opt.cmdheight = 0
 vim.opt.termguicolors = true
 vim.opt.autochdir = true
 vim.opt.splitbelow = true
@@ -207,6 +207,7 @@ local lazy_plugins = {
             "MunifTanjim/nui.nvim",
         },
         opts = {
+            close_if_last_window = true,
             filesystem = {
                 window = {
                     mappings = {
