@@ -517,7 +517,8 @@ require("lspconfig").lua_ls.setup({
             },
             workspace = {
                 library = vim.api.nvim_get_runtime_file("", true),
-                checkThirdParty = false,
+                -- https://github.com/LuaLS/lua-language-server/pull/2406
+                checkThirdParty = "Disable",
             },
             telemetry = {
                 enable = false,
