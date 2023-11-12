@@ -33,6 +33,7 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.showmatch = false
 vim.opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
+vim.opt.list = false
 vim.go.showcmd = true
 vim.go.hlsearch = true
 vim.go.incsearch = true
@@ -43,14 +44,14 @@ vim.go.ruler = true
 vim.go.wildmenu = true
 vim.go.title = true
 vim.go.incommand = "split"
-vim.go.listchars = "tab:▒░,trail:▓,nbsp:░"
+vim.go.listchars = "tab:▏ ,trail:▓"
+--vim.go.listchars = "tab:▒░,trail:▓,nbsp:░"
 vim.g.mapleader = "\\"
 -- ## Window Options
 vim.wo.number = true
 vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
-vim.wo.list = true
 
 
 -- # Plugins
@@ -292,16 +293,26 @@ local lazy_plugins = {
             })
         end,
     },
-    --{ "tpope/vim-fugitive", lazy = true, cmd = "Git" },
     {
-      "NeogitOrg/neogit",
-      cmd = "Neogit",
-      dependencies = {
-        "nvim-lua/plenary.nvim",
-        "nvim-telescope/telescope.nvim",
-        "sindrets/diffview.nvim",
-      },
-      config = true
+        "lukas-reineke/indent-blankline.nvim",
+        lazy = true,
+        event = { "BufReadPre" },
+        main = "ibl",
+        opts = {
+            indent = {
+                char = "▏"
+            }
+        }
+    },
+    {
+        "NeogitOrg/neogit",
+        cmd = "Neogit",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "nvim-telescope/telescope.nvim",
+            "sindrets/diffview.nvim",
+        },
+        config = true
     },
     {
         "neovim/nvim-lspconfig",
@@ -448,7 +459,7 @@ vim.api.nvim_create_autocmd("Filetype", {
 
 -- ### Listen lsp-progress event and refresh lualine
 vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
-vim.api.nvim_create_autocmd("User",{
+vim.api.nvim_create_autocmd("User", {
     group = "lualine_augroup",
     pattern = "LspProgressStatusUpdated",
     callback = require("lualine").refresh,
