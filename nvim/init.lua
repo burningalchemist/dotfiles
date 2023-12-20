@@ -13,9 +13,11 @@ if not vim.loop.fs_stat(lazypath) then
     })
 end
 
+-- Local scoped functions
+local lsp = vim.lsp
+
 -- # NVim Settings
 -- ## Global Options
-vim.opt.syntax = "off"
 vim.opt.mouse:append("a")
 vim.opt.rtp:append("~/.fzf")
 vim.opt.rtp:prepend(lazypath)
@@ -52,6 +54,8 @@ vim.wo.number = true
 vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
+-- ## Cmd Options
+vim.cmd.syntax("off")
 
 
 -- # Plugins
@@ -99,9 +103,10 @@ local lazy_plugins = {
             }
         },
     },
-    { "nvim-lua/plenary.nvim",       lazy = true },
-    { "nvim-tree/nvim-web-devicons", lazy = true },
-    { "MunifTanjim/nui.nvim",        lazy = true },
+    { "nvim-lua/plenary.nvim",                  lazy = true },
+    { "nvim-tree/nvim-web-devicons",            lazy = true },
+    { "MunifTanjim/nui.nvim",                   lazy = true },
+    { "nvim-treesitter/nvim-treesitter-context" },
     {
         "linrongbin16/lsp-progress.nvim",
         lazy = true,
@@ -249,7 +254,7 @@ local lazy_plugins = {
                     end,
                 },
                 window = {
-                    -- completion = cmp.config.window.bordered(),
+                    completion = cmp.config.window.bordered(),
                     documentation = cmp.config.window.bordered(),
                 },
                 mapping = cmp.mapping.preset.insert({
@@ -296,11 +301,26 @@ local lazy_plugins = {
     {
         "lukas-reineke/indent-blankline.nvim",
         lazy = true,
-        event = { "BufReadPre" },
+        event = { "BufReadPost", "BufNewFile", "BufWritePre" },
         main = "ibl",
         opts = {
             indent = {
                 char = "▏"
+            },
+            exclude = {
+                filetypes = {
+                    "help",
+                    "alpha",
+                    "dashboard",
+                    "neo-tree",
+                    "Trouble",
+                    "trouble",
+                    "lazy",
+                    "mason",
+                    "notify",
+                    "toggleterm",
+                    "lazyterm",
+                }
             }
         }
     },
@@ -384,10 +404,26 @@ local lazy_plugins = {
         config = function(_, opts)
             require("project_nvim").setup(opts)
         end
+    },
+    {
+        'stevearc/aerial.nvim',
+        opts = {},
+        keys = {
+            { "<leader>a", "<cmd>AerialToggle!<cr>", desc = "Toggle symbols" }
+        },
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            "nvim-tree/nvim-web-devicons"
+        },
+    },
+    {
+        "ggandor/leap.nvim",
+        config = function()
+            require("leap").add_default_mappings()
+        end
     }
 }
 require("lazy").setup(lazy_plugins, lazy_opts)
-
 -- # Key Mappings
 -- ## General
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
@@ -483,7 +519,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     callback = function(ev)
         -- Enable completion triggered by <c-x><c-o>
         vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = function(desc)
@@ -507,6 +542,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- # LSP Configuration
 -- ## Common
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+-- Disable hover in favor of Pyright
+--local pyright_on_attach = function(client, bufnr)
+--    client.server_capabilities.hoverProvider = false
+--end
+-- Configure borders for LspInfo
+require('lspconfig.ui.windows').default_options.border = 'single'
+-- Configure borders for LSP floating window
+lsp.handlers["textDocument/hover"] = lsp.with(vim.lsp.handlers.hover, { border = "single" })
+
 
 -- ## Golang
 require("lspconfig").gopls.setup({
@@ -515,6 +559,17 @@ require("lspconfig").gopls.setup({
 
 -- ## Typescript
 require("lspconfig").tsserver.setup({
+    capabilities = capabilities
+})
+
+-- ## Python
+require("lspconfig").ruff_lsp.setup({
+    capabilities = capabilities,
+    on_attach = function(client)
+        client.server_capabilities.hoverProvider = false
+    end
+})
+require("lspconfig").pyright.setup({
     capabilities = capabilities
 })
 
