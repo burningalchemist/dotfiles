@@ -51,23 +51,11 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git -d 3'
 source ~/.fzf.zsh
 
-## Jira CLI
-# source <(jira completion zsh)
-
-## ArgoCD
-#source <(argocd completion zsh)
 
 # --- Programming Languages
 ## Golang
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
-
-## Python 3 (Paths seem obsolete)
-# export PATH="/usr/local/opt/python@3.10/bin:$PATH"
-# export PATH="/Users/sergei/Library/Python/3.10/bin:$PATH"
-
-## Haskell
-# export PATH="/Users/sergei/.local/bin:$PATH"
 
 ## NodeJS/pnpm
 export PNPM_HOME="/Users/sergei/Library/pnpm"
