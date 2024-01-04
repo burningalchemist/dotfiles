@@ -73,6 +73,9 @@ local lazy_opts = {
             },
         },
     },
+    ui = {
+        border = "single"
+    }
 }
 
 -- ## Lazy Plugins Configuration
@@ -82,6 +85,23 @@ local lazy_plugins = {
         name = "catppuccin",
         priority = 1000,
         config = function()
+            require("catppuccin").setup({
+                compile_path = vim.fn.stdpath "cache" .. "/catppuccin",
+                flavour = "mocha",
+                transparent_background = false,
+                integrations = {
+                    aerial = true,
+                    cmp = true,
+                    gitsigns = true,
+                    neotree = true,
+                    neogit = true,
+                    telescope = true,
+                    treesitter = true,
+                    treesitter_context = true,
+                    octo = true,
+                    which_key = false,
+                },
+            })
             vim.cmd.colorscheme("catppuccin")
         end,
     },
@@ -89,6 +109,7 @@ local lazy_plugins = {
         "nvim-lualine/lualine.nvim",
         opts = {
             options = {
+                theme = "catppuccin",
                 icons_enabled = false,
                 disabled_filetypes = { "neo-tree" },
                 ignore_focus = { "neo-tree" },
@@ -183,6 +204,7 @@ local lazy_plugins = {
         },
         config = function(_, opts)
             require("nvim-treesitter.configs").setup(opts)
+            vim.treesitter.language.register("bash", "zsh")
         end,
     },
     {
@@ -421,6 +443,11 @@ local lazy_plugins = {
         config = function()
             require("leap").add_default_mappings()
         end
+    },
+    {
+        'mrcjkb/rustaceanvim',
+        version = '^3', -- Recommended
+        ft = { 'rust' },
     }
 }
 require("lazy").setup(lazy_plugins, lazy_opts)
