@@ -140,10 +140,24 @@ local lazy_plugins = {
             }
         },
     },
-    { "nvim-lua/plenary.nvim",                  lazy = true },
-    { "nvim-tree/nvim-web-devicons",            lazy = true },
-    { "MunifTanjim/nui.nvim",                   lazy = true },
-    { "nvim-treesitter/nvim-treesitter-context" },
+    { "nvim-lua/plenary.nvim",       lazy = true },
+    { "nvim-tree/nvim-web-devicons", lazy = true },
+    { "MunifTanjim/nui.nvim",        lazy = true },
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        enabled = true,
+        opts = {
+            on_attach = function(bufnr)
+                -- FIXME: For whatever reason having `nvim-treesitter-context` enabled for `rust` is constantly
+                -- triggering LSP/Rust_Analyzer metadata re-indexing and so on. Let's disable it specifically for this
+                -- language.
+                return vim.bo[bufnr].filetype ~= 'rust'
+            end
+        },
+        config = function(_, opts)
+            require('treesitter-context').setup(opts)
+        end
+    },
     {
         "linrongbin16/lsp-progress.nvim",
         lazy = true,
@@ -454,6 +468,39 @@ local lazy_plugins = {
         'mrcjkb/rustaceanvim',
         version = '^3', -- Recommended
         ft = { 'rust' },
+        opts = {
+            server = {
+                settings = {
+                    -- rust-analyzer language server configuration
+                    ["rust-analyzer"] = {
+                        cargo = {
+                            allFeatures = true,
+                            loadOutDirsFromCheck = true,
+                            runBuildScripts = true,
+                        },
+                        -- Add clippy lints for Rust.
+                        checkOnSave = {
+                            allFeatures = true,
+                            command = "clippy",
+                            extraArgs = { "--no-deps" },
+                        },
+                        procMacro = {
+                            enable = true,
+                            ignored = {
+                                ["async-trait"] = { "async_trait" },
+                                ["napi-derive"] = { "napi" },
+                                ["async-recursion"] = { "async_recursion" },
+                            },
+                        }
+                    }
+                }
+            }
+        },
+        config = function(_, opts)
+            vim.g.rustaceanvim = vim.tbl_deep_extend("force",
+                {},
+                opts or {})
+        end
     },
     {
         'rcarriga/nvim-notify',
