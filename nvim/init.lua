@@ -62,6 +62,7 @@ vim.cmd.syntax("off")
 -- ## Lazy Plugin Manager Settings
 local lazy_opts = {
     performance = {
+        cache = { enabled = true },
         rtp = {
             reset = true, -- reset the runtime path to $VIMRUNTIME and your config directory
             disabled_plugins = {
@@ -70,6 +71,7 @@ local lazy_opts = {
                 "tohtml",
                 "tutor",
                 "zipPlugin",
+                "gzip"
             },
         },
     },
@@ -100,6 +102,8 @@ local lazy_plugins = {
                     treesitter_context = true,
                     octo = true,
                     which_key = false,
+                    indent_blankline = { enabled = true },
+                    leap = true
                 },
             })
             vim.cmd.colorscheme("catppuccin")
@@ -119,7 +123,19 @@ local lazy_plugins = {
             sections = {
                 lualine_c = {
                     "filename",
-                    "require('lsp-progress').progress()",
+                    -- Replace LSP progress in cmdline with notifications, only keep active clients
+                    -- "require('lsp-progress').progress()",
+                    { function()
+                        local active_clients = vim.lsp.get_active_clients()
+                        local client_names = {}
+                        for _, client in ipairs(active_clients) do
+                            if client and client.name ~= "" then
+                                table.insert(client_names, "[" .. client.name .. "]")
+                            end
+                        end
+                        return #active_clients > 0 and "LSP: " .. table.concat(client_names) or ""
+                    end
+                    },
                 }
             }
         },
@@ -131,32 +147,9 @@ local lazy_plugins = {
     {
         "linrongbin16/lsp-progress.nvim",
         lazy = true,
-        opts = {
-            format = function(messages)
-                local active_clients = vim.lsp.get_active_clients()
-                local client_count = #active_clients
-                if #messages > 0 then
-                    return "LSP: "
-                        .. client_count
-                        .. " "
-                        .. table.concat(messages, " ")
-                end
-                if #active_clients <= 0 then
-                    return "LSP: " .. client_count
-                else
-                    local client_names = {}
-                    for _, client in ipairs(active_clients) do
-                        if client and client.name ~= "" then
-                            table.insert(client_names, "[" .. client.name .. "]")
-                        end
-                    end
-                    return "LSP: "
-                        .. client_count
-                        .. " "
-                        .. table.concat(client_names, " ")
-                end
-            end,
-        }
+        config = function()
+            require('lsp-progress').setup({})
+        end,
     },
     {
         "nvim-treesitter/nvim-treesitter",
@@ -220,8 +213,8 @@ local lazy_plugins = {
         opts = {},
         config = function(_, opts)
             require("telescope").setup(opts)
-            require("telescope").load_extension("persisted")
-            require('telescope').load_extension('projects')
+            --    require("telescope").load_extension("persisted")
+            --    require('telescope').load_extension('projects')
         end
     },
     {
@@ -253,16 +246,20 @@ local lazy_plugins = {
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-nvim-lua",
+            "petertriho/cmp-git",
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
             "hrsh7th/cmp-cmdline",
-            "hrsh7th/cmp-vsnip",
+            { "hrsh7th/cmp-vsnip", commit = "1ae05c6c867d9ad44bce811056e861e0d5c531cb" },
             "onsails/lspkind.nvim",
             "hrsh7th/vim-vsnip",
+            "rafamadriz/friendly-snippets"
         },
         config = function()
             local cmp = require("cmp")
             local lspkind = require("lspkind")
+            local cmp_git = require("cmp_git")
+            cmp_git.setup()
             cmp.setup({
                 completion = {
                     completeopt = "menu,menuone,noinsert",
@@ -282,9 +279,16 @@ local lazy_plugins = {
                 mapping = cmp.mapping.preset.insert({
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                    ["§"] = cmp.mapping.complete(),
+                    ["<M-Esc>"] = cmp.mapping.complete({
+                        config = {
+                            sources = {
+                                { name = "nvim_lsp" },
+                                { name = "vsnip" },
+                            }
+                        }
+                    }),
                     ["<C-e>"] = cmp.mapping.abort(),
-                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+                    ["<CR>"] = cmp.mapping.confirm(),
                     ["<C-l>"] = cmp.mapping.complete_common_string(),
                 }),
                 sources = cmp.config.sources({
@@ -297,7 +301,7 @@ local lazy_plugins = {
             -- Set configuration for specific filetype.
             cmp.setup.filetype("gitcommit", {
                 sources = cmp.config.sources({
-                    { name = "git" }, -- Need to install https://github.com/petertriho/cmp-git
+                    { name = "git" },
                 }, {
                     { name = "buffer" }
                 }),
@@ -410,6 +414,7 @@ local lazy_plugins = {
     },
     {
         "olimorris/persisted.nvim",
+        enabled = false,
         lazy = false,
         keys = {
             { "<leader>fs", "<cmd>Telescope persisted<cr>", desc = "Telescope persisted" }
@@ -418,6 +423,7 @@ local lazy_plugins = {
     },
     {
         "ahmedkhalf/project.nvim",
+        enabled = false,
         lazy = false,
         keys = {
             { "<leader>fp", "<cmd>Telescope projects<cr>", desc = "Telescope projects" }
@@ -448,8 +454,37 @@ local lazy_plugins = {
         'mrcjkb/rustaceanvim',
         version = '^3', -- Recommended
         ft = { 'rust' },
-    }
+    },
+    {
+        'rcarriga/nvim-notify',
+        lazy = true,
+        opts = {
+            stages = 'static',
+            background_colour = 'FloatShadow',
+            timeout = 3000,
+        },
+        config = function(_, opts)
+            require("notify").setup(opts)
+            vim.notify = require('notify')
+        end
+    },
+    {
+        'mrded/nvim-lsp-notify',
+        dependencies = {
+            'rcarriga/nvim-notify'
+        },
+        config = function()
+            require('lsp-notify').setup({})
+        end
+    },
+    {
+        "nvim-pack/nvim-spectre",
+        keys = {
+            { "<leader>sr", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
+        },
+    },
 }
+
 require("lazy").setup(lazy_plugins, lazy_opts)
 -- # Key Mappings
 -- ## General
@@ -520,13 +555,21 @@ vim.api.nvim_create_autocmd("Filetype", {
     command = "setlocal indentexpr=",
 })
 
--- ### Listen lsp-progress event and refresh lualine
-vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
-vim.api.nvim_create_autocmd("User", {
-    group = "lualine_augroup",
-    pattern = "LspProgressStatusUpdated",
-    callback = require("lualine").refresh,
+-- ### Set gitcommit filetype for Neogit to enable cmp-git
+vim.api.nvim_create_augroup("neogit", {})
+vim.api.nvim_create_autocmd("FileType", {
+    group = "neogit",
+    pattern = "NeogitCommitMessage",
+    command = "silent! set filetype=gitcommit",
 })
+
+-- -- ### Listen lsp-progress event and refresh lualine
+-- vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
+-- vim.api.nvim_create_autocmd("User", {
+--     group = "lualine_augroup",
+--     pattern = "LspProgressStatusUpdated",
+--     callback = require("lualine").refresh,
+-- })
 
 -- ### Open Neotree when Nvim started with a directory argument
 vim.api.nvim_create_augroup("neotree", {})
