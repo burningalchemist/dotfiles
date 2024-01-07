@@ -2,7 +2,7 @@
 alias kubectx="kubectl ctx"
 alias kubens="kubectl ns"
 alias pip="pip3.11"
-alias vim="nvim"
+alias vim="env TERM=wezterm nvim"
 alias k="kubectl"
 alias watch='watch '
 alias imgcat="wezterm imgcat"
