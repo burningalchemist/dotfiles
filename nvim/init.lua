@@ -577,6 +577,19 @@ vim.keymap.set("n", "<leader>ng", "<cmd>Neotree float git_status<cr>")
 
 
 -- # Extra Settings
+
+-- ## Diagnostics
+vim.diagnostic.config {
+    --    virtual_text = false,
+    --    virtual_lines = false,
+    --    update_in_insert = true,
+    float = {
+        -- UI
+        header = false,
+        border = 'single',
+        focusable = true
+    }
+}
 -- ## Folding
 vim.o.foldmethod = "expr"
 vim.o.foldlevelstart = 20
