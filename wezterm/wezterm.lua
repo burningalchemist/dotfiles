@@ -3,7 +3,7 @@ local config = wezterm.config_builder()
 
 config.font = wezterm.font_with_fallback({ "JetBrains Mono", "Apple Color Emoji" })
 config.font_size = 14.0
-config.initial_cols = 10
+config.initial_cols = 120
 config.initial_rows = 30
 --config.window_background_opacity = 0.8
 --config.color_scheme = "Mirage"
