@@ -82,6 +82,7 @@ local lazy_opts = {
 
 -- ## Lazy Plugins Configuration
 local lazy_plugins = {
+    { "rose-pine/neovim", name = "rose-pine" },
     {
         "catppuccin/nvim",
         name = "catppuccin",
@@ -122,7 +123,7 @@ local lazy_plugins = {
             extensions = { "neo-tree", "lazy" },
             sections = {
                 lualine_c = {
-                    "filename",
+                    {"filename", path = 4},
                     -- Replace LSP progress in cmdline with notifications, only keep active clients
                     -- "require('lsp-progress').progress()",
                     { function()
@@ -244,6 +245,9 @@ local lazy_plugins = {
         opts = {
             close_if_last_window = true,
             filesystem = {
+                follow_current_file = {
+                    enabled = true,
+                },
                 window = {
                     mappings = {
                         -- disable fuzzy finder
@@ -571,9 +575,9 @@ vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
 vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>")
 
 -- ## NeoTree
-vim.keymap.set("n", "<leader>nf", "<cmd>Neotree toggle focus filesystem left<cr>")
-vim.keymap.set("n", "<leader>nb", "<cmd>Neotree toggle focus buffers right<cr>")
-vim.keymap.set("n", "<leader>ng", "<cmd>Neotree float git_status<cr>")
+vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
+vim.keymap.set("n", "<leader>nb", "<cmd>Neotree reveal_force_cwd toggle focus buffers right<cr>")
+vim.keymap.set("n", "<leader>ng", "<cmd>Neotree reveal float git_status<cr>")
 
 
 -- # Extra Settings
