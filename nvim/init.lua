@@ -45,7 +45,6 @@ vim.go.smartcase = true
 vim.go.ruler = true
 vim.go.wildmenu = true
 vim.go.title = true
-vim.go.incommand = "split"
 vim.go.listchars = "tab:▏ ,trail:▓"
 --vim.go.listchars = "tab:▒░,trail:▓,nbsp:░"
 vim.g.mapleader = "\\"
@@ -82,7 +81,7 @@ local lazy_opts = {
 
 -- ## Lazy Plugins Configuration
 local lazy_plugins = {
-    { "rose-pine/neovim", name = "rose-pine" },
+    { "rose-pine/neovim",            name = "rose-pine" },
     {
         "catppuccin/nvim",
         name = "catppuccin",
@@ -123,7 +122,7 @@ local lazy_plugins = {
             extensions = { "neo-tree", "lazy" },
             sections = {
                 lualine_c = {
-                    {"filename", path = 4},
+                    { "filename", path = 4 },
                     -- Replace LSP progress in cmdline with notifications, only keep active clients
                     -- "require('lsp-progress').progress()",
                     { function()
@@ -225,7 +224,11 @@ local lazy_plugins = {
             "ahmedkhalf/project.nvim"
         },
         cmd = "Telescope",
-        opts = {},
+        opts = {
+            defaults = {
+                file_ignore_patterns = { ".git/", ".cache", "%.o", "%.a", "%.out", "%.class", "%.pdf", "%.mkv", "%.mp4", "%.zip" }
+            }
+        },
         config = function(_, opts)
             require("telescope").setup(opts)
             --    require("telescope").load_extension("persisted")
@@ -245,6 +248,7 @@ local lazy_plugins = {
         opts = {
             close_if_last_window = true,
             filesystem = {
+                bind_to_cwd = false,
                 follow_current_file = {
                     enabled = true,
                 },
@@ -268,7 +272,8 @@ local lazy_plugins = {
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
             "hrsh7th/cmp-cmdline",
-            { "hrsh7th/cmp-vsnip", commit = "1ae05c6c867d9ad44bce811056e861e0d5c531cb" },
+            { "hrsh7th/cmp-vsnip",      commit = "1ae05c6c867d9ad44bce811056e861e0d5c531cb" },
+            { "zbirenbaum/copilot-cmp", opts = {} },
             "onsails/lspkind.nvim",
             "hrsh7th/vim-vsnip",
             "rafamadriz/friendly-snippets"
@@ -314,6 +319,7 @@ local lazy_plugins = {
                     { name = "vsnip" },
                 }, {
                     { name = "buffer" },
+                    { name = "copilot" }
                 })
             })
             -- Set configuration for specific filetype.
@@ -533,6 +539,29 @@ local lazy_plugins = {
         keys = {
             { "<leader>sr", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
         },
+    },
+    {
+        "zbirenbaum/copilot.lua",
+        enabled = true,
+        cmd = "Copilot",
+        event = "InsertEnter",
+        opts = {
+            suggestion = { enabled = false },
+            panel = { enabled = false },
+        },
+    },
+    {
+        "michaelrommel/nvim-silicon",
+        lazy = true,
+        cmd = "Silicon",
+        config = function()
+            require("silicon").setup({
+                -- Configuration here, or leave empty to use defaults
+                font = "CozetteVector",
+                background = "#00000000",
+                theme = "Monokai Extended"
+            })
+        end
     },
 }
 
