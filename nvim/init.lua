@@ -602,6 +602,7 @@ vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
 vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
 vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
 vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>")
+vim.keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>")
 
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
