@@ -81,7 +81,10 @@ local lazy_opts = {
 
 -- ## Lazy Plugins Configuration
 local lazy_plugins = {
-    { "rose-pine/neovim",            name = "rose-pine" },
+    {
+        "rose-pine/neovim",
+        name = "rose-pine"
+    },
     {
         "catppuccin/nvim",
         name = "catppuccin",
@@ -231,6 +234,7 @@ local lazy_plugins = {
         },
         config = function(_, opts)
             require("telescope").setup(opts)
+            require("telescope").load_extension("neoclip")
             --    require("telescope").load_extension("persisted")
             --    require('telescope').load_extension('projects')
         end
@@ -563,6 +567,17 @@ local lazy_plugins = {
             })
         end
     },
+    {
+        "AckslD/nvim-neoclip.lua",
+        lazy = true,
+        keys = {
+            { "<leader>fc", "<cmd>Telescope neoclip<cr>", desc = "Telescope clipboard manager" }
+        },
+        opts = {},
+        dependencies = {
+            'nvim-telescope/telescope.nvim'
+        },
+    }
 }
 
 require("lazy").setup(lazy_plugins, lazy_opts)
