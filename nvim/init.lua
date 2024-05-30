@@ -116,6 +116,7 @@ local lazy_plugins = {
     },
     {
         "nvim-lualine/lualine.nvim",
+        event = "VeryLazy",
         opts = {
             options = {
                 theme = "catppuccin",
@@ -202,7 +203,7 @@ local lazy_plugins = {
                 enable = true,
 
                 -- list of language that will be disabled
-                disable = { "c", "rust" },
+                --disable = { "c", "rust" },
 
                 -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
                 -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
@@ -242,6 +243,10 @@ local lazy_plugins = {
         end
     },
     {
+        "mrbjarksen/neo-tree-diagnostics.nvim",
+        dependencies = "nvim-neo-tree/neo-tree.nvim"
+    },
+    {
         "nvim-neo-tree/neo-tree.nvim",
         lazy = true,
         cmd = "Neotree",
@@ -252,6 +257,12 @@ local lazy_plugins = {
             "MunifTanjim/nui.nvim",
         },
         opts = {
+            sources = {
+                "filesystem",
+                "buffers",
+                "git_status",
+                "diagnostics",
+            },
             close_if_last_window = true,
             filesystem = {
                 bind_to_cwd = false,
@@ -394,8 +405,8 @@ local lazy_plugins = {
         "sindrets/diffview.nvim",
         lazy = true,
         keys = {
-            { "<leader>dd", "<cmd>DiffviewOpen<cr>", desc = "DiffviewOpen" },
-            { "<leader>dc", "<cmd>DiffviewClose<cr>", desc = "DiffviewClose" },
+            { "<leader>dd", "<cmd>DiffviewOpen<cr>",        desc = "DiffviewOpen" },
+            { "<leader>dc", "<cmd>DiffviewClose<cr>",       desc = "DiffviewClose" },
             { "<leader>dh", "<cmd>DiffviewFileHistory<cr>", desc = "DiffviewFilesHistory" },
         },
 
@@ -411,7 +422,7 @@ local lazy_plugins = {
     },
     {
         "folke/which-key.nvim",
-        lazy = false,
+        event = "VeryLazy",
         init = function()
             vim.o.timeout = true
             vim.o.timeoutlen = 300
@@ -423,13 +434,67 @@ local lazy_plugins = {
         event = { "BufReadPre", "BufNewFile" },
         lazy = true,
         config = function()
-            require("gitsigns").setup()
+            require("gitsigns").setup {
+                on_attach = function(bufnr)
+                    local gitsigns = require('gitsigns')
+
+                    local function map(mode, l, r, opts)
+                        opts = opts or {}
+                        opts.buffer = bufnr
+                        vim.keymap.set(mode, l, r, opts)
+                    end
+
+                    -- Navigation
+                    map('n', ']c', function()
+                        if vim.wo.diff then
+                            vim.cmd.normal({ ']c', bang = true })
+                        else
+                            gitsigns.nav_hunk('next')
+                        end
+                    end)
+
+                    map('n', '[c', function()
+                        if vim.wo.diff then
+                            vim.cmd.normal({ '[c', bang = true })
+                        else
+                            gitsigns.nav_hunk('prev')
+                        end
+                    end)
+
+                    -- Actions
+                    map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Stage hunk" })
+                    map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Reset hunk" })
+                    map('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, { desc = "Stage hunk" })
+                    map('v', '<leader>hr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, { desc = "Reset hunk" })
+                    map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
+                    map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
+                    map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
+                    map('n', '<leader>hp', gitsigns.preview_hunk, { desc = "Preview hunk" })
+                    map('n', '<leader>hb', function() gitsigns.blame_line { full = true } end, { desc = "Blame line" })
+                    map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = "Toggle blame line" })
+                    map('n', '<leader>hd', gitsigns.diffthis, { desc = "Diff this" })
+                    map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this (reverse)" })
+                    map('n', '<leader>td', gitsigns.toggle_deleted, { desc = "Toggle deleted" })
+
+                    -- Text object
+                    map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+                end
+            }
         end,
+        keys = {
+            { "<leader>gb", "<cmd>Git<cr>",                 desc = "DiffviewOpen" },
+            { "<leader>dc", "<cmd>DiffviewClose<cr>",       desc = "DiffviewClose" },
+            { "<leader>dh", "<cmd>DiffviewFileHistory<cr>", desc = "DiffviewFilesHistory" },
+        },
+
     },
     {
-        "tpope/vim-surround",
-        lazy = true,
-        keys = { "cs", "ds", "ys" },
+        "kylechui/nvim-surround",
+        version = "*", -- Use for stability; omit to use `main` branch for the latest features
+        event = "VeryLazy",
+        config = function()
+            require("nvim-surround").setup({})
+        end
     },
     {
         "windwp/nvim-autopairs",
@@ -492,7 +557,7 @@ local lazy_plugins = {
     },
     {
         'mrcjkb/rustaceanvim',
-        version = '^3', -- Recommended
+        version = '^4', -- Recommended
         ft = { 'rust' },
         opts = {
             server = {
@@ -726,6 +791,7 @@ vim.keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>")
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
 vim.keymap.set("n", "<leader>nb", "<cmd>Neotree reveal_force_cwd toggle focus buffers right<cr>")
 vim.keymap.set("n", "<leader>ng", "<cmd>Neotree reveal float git_status<cr>")
+vim.keymap.set("n", "<leader>nd", "<cmd>Neotree reveal toggle diagnostics bottom<cr>")
 
 
 -- # Extra Settings
@@ -774,14 +840,6 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = "NeogitCommitMessage",
     command = "silent! set filetype=gitcommit",
 })
-
--- -- ### Listen lsp-progress event and refresh lualine
--- vim.api.nvim_create_augroup("lualine_augroup", { clear = true })
--- vim.api.nvim_create_autocmd("User", {
---     group = "lualine_augroup",
---     pattern = "LspProgressStatusUpdated",
---     callback = require("lualine").refresh,
--- })
 
 -- ### Open Neotree when Nvim started with a directory argument
 vim.api.nvim_create_augroup("neotree", {})
@@ -833,10 +891,27 @@ require('lspconfig.ui.windows').default_options.border = 'single'
 -- Configure borders for LSP floating window
 lsp.handlers["textDocument/hover"] = lsp.with(vim.lsp.handlers.hover, { border = "single" })
 
+lsp.inlay_hint.enable()
 
 -- ## Golang
 require("lspconfig").gopls.setup({
-    capabilities = capabilities
+    capabilities = capabilities,
+    settings = {
+        gopls = {
+            hints = {
+                compositeLiteralFields = true,
+                constantValues = true,
+                parameterNames = true,
+                assignedVariables = true,
+
+            },
+            analyses = {
+                unusedparams = true,
+            },
+            staticcheck = true,
+            gofumpt = true,
+        },
+    },
 })
 
 -- ## Typescript
