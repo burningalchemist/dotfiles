@@ -243,15 +243,12 @@ local lazy_plugins = {
         end
     },
     {
-        "mrbjarksen/neo-tree-diagnostics.nvim",
-        dependencies = "nvim-neo-tree/neo-tree.nvim"
-    },
-    {
         "nvim-neo-tree/neo-tree.nvim",
         lazy = true,
         cmd = "Neotree",
         branch = "v3.x",
         dependencies = {
+            "mrbjarksen/neo-tree-diagnostics.nvim",
             "nvim-lua/plenary.nvim",
             "nvim-tree/nvim-web-devicons",
             "MunifTanjim/nui.nvim",
@@ -464,8 +461,10 @@ local lazy_plugins = {
                     -- Actions
                     map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Stage hunk" })
                     map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Reset hunk" })
-                    map('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end, { desc = "Stage hunk" })
-                    map('v', '<leader>hr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end, { desc = "Reset hunk" })
+                    map('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
+                        { desc = "Stage hunk" })
+                    map('v', '<leader>hr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
+                        { desc = "Reset hunk" })
                     map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
                     map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
                     map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
