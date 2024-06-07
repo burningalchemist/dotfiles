@@ -3,6 +3,18 @@ local config = wezterm.config_builder();
 
 config.font = wezterm.font_with_fallback({ "JetBrains Mono", "Apple Color Emoji" })
 config.font_size = 14.0
+config.font_rules = {
+    {
+        intensity = "Bold",
+        italic = false,
+        font = wezterm.font("JetBrains Mono", { weight = "Bold", stretch = "Normal", style = "Normal" }),
+    },
+    {
+        intensity = "Bold",
+        italic = true,
+        font = wezterm.font("JetBrains Mono", { weight = "Bold", stretch = "Normal", style = "Italic" }),
+    },
+}
 
 config.initial_cols = 120
 config.initial_rows = 30
@@ -14,6 +26,15 @@ config.use_cap_height_to_scale_fallback_fonts = true
 config.adjust_window_size_when_changing_font_size = false
 config.custom_block_glyphs = true
 
+
+-- Hyperlink rules
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+
+-- make username/project paths clickable for github
+table.insert(config.hyperlink_rules, {
+    regex = [[["]?([\w\d]{1}[-\w\d]+)(/){1}([-\w\d\.]+)["]?]],
+    format = 'https://www.github.com/$1/$3',
+})
 
 -- Shortcuts
 config.keys = {
@@ -88,10 +109,25 @@ wezterm.on('augment-command-palette', function(window, pane)
                 local overrides = window:get_config_overrides() or {}
                 if not overrides.font then
                     overrides.font = wezterm.font_with_fallback({ "CozetteVector", "Apple Color Emoji" })
-                    overrides.font_size = 18.1
+                    overrides.font_size = 20.1 -- 18.1
+                    overrides.font_rules = {
+                        {
+                            intensity = "Bold",
+                            italic = false,
+                            font = wezterm.font("CozetteVectorBold",
+                                { weight = "Bold", stretch = "Normal", style = "Normal" }),
+                        },
+                        {
+                            intensity = "Bold",
+                            italic = true,
+                            font = wezterm.font("CozetteVectorBold",
+                                { weight = "Bold", stretch = "Normal", style = "Italic" }),
+                        },
+                    }
                 else
                     overrides.font = nil
                     overrides.font_size = nil
+                    overrides.font_rules = nil
                 end
                 window:set_config_overrides(overrides)
             end),
@@ -104,9 +140,22 @@ wezterm.on('augment-command-palette', function(window, pane)
                 local overrides = window:get_config_overrides() or {}
                 if not overrides.font then
                     overrides.font = wezterm.font_with_fallback({ "CozetteHiDpi", "Apple Color Emoji" })
+                    overrides.font_rules = {
+                        {
+                            intensity = "Bold",
+                            italic = false,
+                            font = wezterm.font("CozetteHiDpi", { weight = "Bold", stretch = "Normal", style = "Normal" }),
+                        },
+                        {
+                            intensity = "Bold",
+                            italic = true,
+                            font = wezterm.font("CozetteHiDpi", { weight = "Bold", stretch = "Normal", style = "Italic" }),
+                        },
+                    }
                 else
                     overrides.font = nil
                     overrides.font_size = nil
+                    overrides.font_rules = nil
                 end
                 window:set_config_overrides(overrides)
             end),
