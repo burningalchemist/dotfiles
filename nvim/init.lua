@@ -474,18 +474,13 @@ local lazy_plugins = {
                     map('n', '<leader>hd', gitsigns.diffthis, { desc = "Diff this" })
                     map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this (reverse)" })
                     map('n', '<leader>td', gitsigns.toggle_deleted, { desc = "Toggle deleted" })
+                    map('n', '<leader>gb', gitsigns.blame, { desc = "Toggle git blame" })
 
                     -- Text object
                     map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
                 end
             }
         end,
-        keys = {
-            { "<leader>gb", "<cmd>Git<cr>",                 desc = "DiffviewOpen" },
-            { "<leader>dc", "<cmd>DiffviewClose<cr>",       desc = "DiffviewClose" },
-            { "<leader>dh", "<cmd>DiffviewFileHistory<cr>", desc = "DiffviewFilesHistory" },
-        },
-
     },
     {
         "kylechui/nvim-surround",
