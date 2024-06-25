@@ -76,6 +76,9 @@ local lazy_opts = {
     },
     ui = {
         border = "single"
+    },
+    rocks = {
+        enabled = false
     }
 }
 
