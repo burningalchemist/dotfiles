@@ -42,15 +42,13 @@ KUBE_PS1_SYMBOL_ENABLE=false
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # --- Misc
-## Common Tokens
-# source "/Users/sergei/.secrets"
-
+## Common Secret Tokens
+source "/Users/sergei/.secrets"
 
 # --- Apps
 ## Fzf
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git -d 3'
 source ~/.fzf.zsh
-
 
 # --- Programming Languages
 ## Golang
@@ -63,4 +61,7 @@ export PATH="$PNPM_HOME:$PATH"
 
 # Zig
 export PATH="/Users/sergei/zls:$PATH"
-export PATH="$PATH:/Users/sergei/Downloads/zig-0.11.0"
+export PATH="$PATH:/Users/sergei/Downloads/zig-0.12.0"
+
+# Haskell
+export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
