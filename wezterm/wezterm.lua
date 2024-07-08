@@ -1,6 +1,7 @@
 local wezterm = require 'wezterm';
 local config = wezterm.config_builder();
 
+config.term = 'wezterm'
 config.font = wezterm.font_with_fallback({ "JetBrains Mono", "Apple Color Emoji" })
 config.font_size = 14.0
 config.font_rules = {
