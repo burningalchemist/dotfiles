@@ -33,6 +33,7 @@ vim.opt.termguicolors = true
 vim.opt.autochdir = true
 vim.opt.splitbelow = true
 vim.opt.splitright = true
+vim.opt.smoothscroll = true
 vim.opt.showmatch = false
 vim.opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
 vim.opt.list = false
@@ -111,7 +112,9 @@ local lazy_plugins = {
                     indent_blankline = { enabled = true },
                     leap = true,
                     neotest = true,
-                    diffview = true
+                    diffview = true,
+                    nvim_surround = true,
+                    render_markdown = true
                 },
             })
             vim.cmd.colorscheme("catppuccin")
@@ -177,7 +180,7 @@ local lazy_plugins = {
     {
         "nvim-treesitter/nvim-treesitter",
         lazy = true,
-        event = "BufRead",
+        event = { "BufRead", "BufEnter" },
         build = ":TSUpdate",
         opts = {
             -- One of "all", "maintained" (parsers with maintainers), or a list of languages
@@ -190,6 +193,7 @@ local lazy_plugins = {
                 "gomod",
                 "markdown",
                 "markdown_inline",
+                "vue"
             },
             -- Install languages synchronously (only applied to `ensure_installed`)
             sync_install = false,
@@ -490,7 +494,20 @@ local lazy_plugins = {
         version = "*", -- Use for stability; omit to use `main` branch for the latest features
         event = "VeryLazy",
         config = function()
-            require("nvim-surround").setup({})
+            require("nvim-surround").setup({
+                --    keymaps = {
+                --        insert          = '<C-g>z',
+                --        insert_line     = 'gC-ggZ',
+                --        normal          = 'gz',
+                --        normal_cur      = 'gZ',
+                --        normal_line     = 'gzgz',
+                --        normal_cur_line = 'gZgZ',
+                --        visual          = 'gz',
+                --        visual_line     = 'gZ',
+                --        delete          = 'gzd',
+                --        change          = 'gzc',
+                --    }
+            })
         end
     },
     {
@@ -554,66 +571,88 @@ local lazy_plugins = {
     },
     {
         'mrcjkb/rustaceanvim',
-        version = '^4', -- Recommended
-        ft = { 'rust' },
-        opts = {
-            server = {
-                settings = {
-                    -- rust-analyzer language server configuration
-                    ["rust-analyzer"] = {
-                        cargo = {
-                            allFeatures = true,
-                            loadOutDirsFromCheck = true,
-                            runBuildScripts = true,
-                        },
-                        -- Add clippy lints for Rust.
-                        checkOnSave = {
-                            allFeatures = true,
-                            command = "clippy",
-                            extraArgs = { "--no-deps" },
-                        },
-                        procMacro = {
-                            enable = true,
-                            ignored = {
-                                ["async-trait"] = { "async_trait" },
-                                ["napi-derive"] = { "napi" },
-                                ["async-recursion"] = { "async_recursion" },
+        version = '^5', -- Recommended
+        lazy = false,
+        init = function()
+            -- Configure rustaceanvim here
+            vim.g.rustaceanvim = {
+                server = {
+                    on_attach = function(_, bufnr)
+                        vim.keymap.set("n", "<leader>cR", function()
+                            vim.cmd.RustLsp("codeAction")
+                        end, { desc = "Code Action", buffer = bufnr })
+                        vim.keymap.set("n", "<leader>dr", function()
+                            vim.cmd.RustLsp("debuggables")
+                        end, { desc = "Rust Debuggables", buffer = bufnr })
+                    end,
+
+                    settings = {
+                        ["rust-analyzer"] = {
+                            cargo = {
+                                allFeatures = true,
+                                loadOutDirsFromCheck = true,
+                                buildScripts = {
+                                    enable = true,
+                                },
                             },
-                        }
-                    }
-                }
+                            -- Add clippy lints for Rust.
+                            checkOnSave = true,
+                            procMacro = {
+                                enable = true,
+                                ignored = {
+                                    -- ["async-trait"] = { "async_trait" },
+                                    ["napi-derive"] = { "napi" },
+                                    ["async-recursion"] = { "async_recursion" },
+                                },
+                            },
+                            -- We have to set watcher to client, otherwise it's 'Roots Scanned' loop (fseventd related)
+                            files = {
+                                watcher = 'client'
+                            }
+                        },
+                    },
+                    capabilities = {
+                        workspace = {
+                            didChangeConfiguration = {
+                                dynamicRegistration = true,
+                            },
+                        },
+                        textDocument = {
+                            completion = {
+                                completionItem = {
+                                    snippetSupport = false,
+                                },
+                            }
+                        },
+                    },
+                },
             }
-        },
-        config = function(_, opts)
-            vim.g.rustaceanvim = vim.tbl_deep_extend("force",
-                {},
-                opts or {})
         end
     },
     {
-        'rcarriga/nvim-notify',
-        lazy = true,
+        "j-hui/fidget.nvim",
+        version = "^1",
         opts = {
-            stages = 'static',
-            background_colour = 'FloatShadow',
-            timeout = 3000,
-        },
-        config = function(_, opts)
-            require("notify").setup(opts)
-            vim.notify = require('notify')
-        end
-    },
-    {
-        'mrded/nvim-lsp-notify',
-        dependencies = {
-            'rcarriga/nvim-notify'
-        },
-        config = function()
-            require('lsp-notify').setup({})
-        end
+            notification = {
+                -- Automatically override vim.notify() with Fidget
+                override_vim_notify = true,
+            },
+        }
     },
     {
         "nvim-pack/nvim-spectre",
+        opts = {
+            replace_engine = {
+                ["sed"] = {
+                    cmd = "sed",
+                    args = {
+                        "-i",
+                        "",
+                        "-E",
+                    },
+                },
+            },
+        },
         keys = {
             { "<leader>sr", function() require("spectre").open() end, desc = "Replace in files (Spectre)" },
         },
@@ -640,6 +679,15 @@ local lazy_plugins = {
                 theme = "Monokai Extended"
             })
         end
+    },
+    {
+        'MeanderingProgrammer/render-markdown.nvim',
+        lazy = true,
+        ft = { 'markdown', 'markdown_inline' },
+        dependencies = {
+            'nvim-treesitter/nvim-treesitter',
+            'nvim-tree/nvim-web-devicons'
+        }
     },
     {
         "AckslD/nvim-neoclip.lua",
@@ -866,6 +914,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts("Display info about the symbol"))
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("List symbol implementations"))
         vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts("Jump to the type definition of the symbol"))
+        vim.keymap.set('n', '<space>d', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
         vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts("Rename all references of the symbol"))
         vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts("Select an available code action"))
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts("Show all references to the symbol in quickfix list"))
@@ -885,8 +934,23 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 --end
 -- Configure borders for LspInfo
 require('lspconfig.ui.windows').default_options.border = 'single'
--- Configure borders for LSP floating window
-lsp.handlers["textDocument/hover"] = lsp.with(vim.lsp.handlers.hover, { border = "single" })
+-- Configure borders for LSP floating window and ignore "No information available" messages
+lsp.handlers['textDocument/hover'] = function(_, result, ctx, config)
+    config = config or {}
+    config.border = "single"
+    config.focus_id = ctx.method
+    if not (result and result.contents) then
+        return
+    end
+
+    local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
+    markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
+    if vim.tbl_isempty(markdown_lines) then
+        return
+    end
+
+    return vim.lsp.util.open_floating_preview(markdown_lines, 'markdown', config)
+end
 
 lsp.inlay_hint.enable()
 
@@ -912,9 +976,30 @@ require("lspconfig").gopls.setup({
 })
 
 -- ## Typescript
-require("lspconfig").tsserver.setup({
-    capabilities = capabilities
+--local vue_language_server_path = '/Users/sergei/Library/pnpm/global/5/node_modules/@vue/language-server'
+require("lspconfig").ts_ls.setup({
+    capabilities = capabilities,
+    filetypes = {
+        'typescript',
+        'javascript',
+    },
 })
+
+
+require("lspconfig").volar.setup {
+    capabilities = capabilities,
+    filetypes = { 'typescript', 'javascript', 'vue' },
+    init_options = {
+        typescript = {
+            tsdk = "/Users/sergei/Library/pnpm/global/5/node_modules/typescript/lib",
+        },
+        vue = {
+            -- hybridMode currently doesn't work well when it comes to using DocumentSymbols with tsserver, or should
+            -- be configured better
+            hybridMode = false,
+        }
+    }
+}
 
 -- ## Python
 require("lspconfig").ruff_lsp.setup({
