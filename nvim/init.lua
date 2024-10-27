@@ -576,6 +576,11 @@ local lazy_plugins = {
         init = function()
             -- Configure rustaceanvim here
             vim.g.rustaceanvim = {
+                tools = {
+                    float_win_config = {
+                        border = "single",
+                    },
+                },
                 server = {
                     on_attach = function(_, bufnr)
                         vim.keymap.set("n", "<leader>cR", function()
@@ -965,9 +970,6 @@ require("lspconfig").gopls.setup({
                 parameterNames = true,
                 assignedVariables = true,
 
-            },
-            analyses = {
-                unusedparams = true,
             },
             staticcheck = true,
             gofumpt = true,
