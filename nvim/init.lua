@@ -138,7 +138,7 @@ local lazy_plugins = {
                     -- Replace LSP progress in cmdline with notifications, only keep active clients
                     -- "require('lsp-progress').progress()",
                     { function()
-                        local active_clients = vim.lsp.get_active_clients()
+                        local active_clients = vim.lsp.get_clients()
                         local client_names = {}
                         for _, client in ipairs(active_clients) do
                             if client and client.name ~= "" then
@@ -277,6 +277,15 @@ local lazy_plugins = {
                     mappings = {
                         -- disable fuzzy finder
                         ["/"] = "noop",
+                        -- cd to current root
+                        ["="] = {
+                            function(state)
+                                local path = state.path
+                                vim.cmd("cd " .. path)
+                                vim.notify("cd to current root: " .. path)
+                            end,
+                            desc = "cd to current root",
+                        },
                     },
                 },
             },
@@ -853,7 +862,6 @@ vim.diagnostic.config {
     --    update_in_insert = true,
     float = {
         -- UI
-        header = false,
         border = 'single',
         focusable = true
     }
@@ -926,6 +934,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<space>f', function()
             vim.lsp.buf.format { async = true }
         end, opts("Format code with the attached language"))
+        vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, opts("Show the signature help for the symbol"))
     end,
 })
 
@@ -939,23 +948,10 @@ local capabilities = require("cmp_nvim_lsp").default_capabilities()
 --end
 -- Configure borders for LspInfo
 require('lspconfig.ui.windows').default_options.border = 'single'
--- Configure borders for LSP floating window and ignore "No information available" messages
-lsp.handlers['textDocument/hover'] = function(_, result, ctx, config)
-    config = config or {}
-    config.border = "single"
-    config.focus_id = ctx.method
-    if not (result and result.contents) then
-        return
-    end
-
-    local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
-    markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
-    if vim.tbl_isempty(markdown_lines) then
-        return
-    end
-
-    return vim.lsp.util.open_floating_preview(markdown_lines, 'markdown', config)
-end
+-- -- Configure LPS Handlers
+vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'single', max_width = 100 })
+vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help,
+    { title = 'Signature', border = 'single', max_width = 100 })
 
 lsp.inlay_hint.enable()
 
