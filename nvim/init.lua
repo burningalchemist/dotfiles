@@ -705,14 +705,10 @@ local lazy_plugins = {
     },
     {
         "AckslD/nvim-neoclip.lua",
-        lazy = true,
-        keys = {
-            { "<leader>fc", "<cmd>Telescope neoclip<cr>", desc = "Telescope clipboard manager" }
-        },
-        opts = {},
-        dependencies = {
-            'nvim-telescope/telescope.nvim'
-        },
+        event = "TextYankPost",
+        config = function()
+            require('neoclip').setup()
+        end,
     },
     {
         "nvim-neotest/neotest",
@@ -845,6 +841,8 @@ vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
 vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
 vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>")
 vim.keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>")
+vim.keymap.set("n", "<leader>fc", "<cmd>Telescope neoclip<cr>")
+
 
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
