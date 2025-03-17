@@ -37,6 +37,7 @@ vim.opt.smoothscroll = true
 vim.opt.showmatch = false
 vim.opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
 vim.opt.list = false
+vim.opt.fixeol = false
 vim.go.showcmd = true
 vim.go.hlsearch = true
 vim.go.incsearch = true
