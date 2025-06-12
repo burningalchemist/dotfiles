@@ -37,6 +37,7 @@ vim.opt.smoothscroll = true
 vim.opt.showmatch = false
 vim.opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
 vim.opt.list = false
+vim.opt.fixeol = false
 vim.go.showcmd = true
 vim.go.hlsearch = true
 vim.go.incsearch = true
@@ -686,9 +687,10 @@ local lazy_plugins = {
         lazy = true,
         cmd = "Silicon",
         config = function()
-            require("silicon").setup({
+            require("nvim-silicon").setup({
                 -- Configuration here, or leave empty to use defaults
-                font = "CozetteVector",
+                -- font = "CozetteVector",
+                font = "JetBrains Mono",
                 background = "#00000000",
                 theme = "Monokai Extended"
             })
