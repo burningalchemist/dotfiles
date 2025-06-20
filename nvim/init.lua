@@ -15,6 +15,7 @@ end
 
 -- Local scoped functions
 local lsp = vim.lsp
+lsp.inlay_hint.enable()
 
 -- # NVim Settings
 -- ## Global Options
@@ -483,14 +484,13 @@ local lazy_plugins = {
                     map('v', '<leader>hr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
                         { desc = "Reset hunk" })
                     map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
-                    map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
                     map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
                     map('n', '<leader>hp', gitsigns.preview_hunk, { desc = "Preview hunk" })
                     map('n', '<leader>hb', function() gitsigns.blame_line { full = true } end, { desc = "Blame line" })
                     map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = "Toggle blame line" })
                     map('n', '<leader>hd', gitsigns.diffthis, { desc = "Diff this" })
                     map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this (reverse)" })
-                    map('n', '<leader>td', gitsigns.toggle_deleted, { desc = "Toggle deleted" })
+                    map('n', '<leader>hw', gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
                     map('n', '<leader>gb', gitsigns.blame, { desc = "Toggle git blame" })
 
                     -- Text object
@@ -811,9 +811,12 @@ require("lazy").setup(lazy_plugins, lazy_opts)
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
 vim.keymap.set("t", "<S-Esc>", "<C-\\><C-n>")
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Move to the previous diagnostic in the buffer" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Move to the next diagnostic in the buffer" })
+vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = 1 }) end,
+    { desc = "Move to the previous diagnostic in the buffer" })
+vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = -1 }) end,
+    { desc = "Move to the next diagnostic in the buffer" })
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Add diagnostics to the location list" })
+
 
 -- ## Detach Neovim from the remote server
 vim.keymap.set("n", "<leader>rd", function()
@@ -854,7 +857,6 @@ vim.keymap.set("n", "<leader>nd", "<cmd>Neotree reveal toggle diagnostics bottom
 
 
 -- # Extra Settings
-
 -- ## Diagnostics
 vim.diagnostic.config {
     --    virtual_text = false,
@@ -862,8 +864,11 @@ vim.diagnostic.config {
     --    update_in_insert = true,
     float = {
         -- UI
-        border = 'single',
+        border = "single",
         focusable = true
+    },
+    jump = {
+        float = true
     }
 }
 -- ## Folding
@@ -924,7 +929,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         end
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts("Jump to the symbol declaration"))
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts("Display info about the symbol"))
+        vim.keymap.set('n', 'K', function() vim.lsp.buf.hover({ border = 'rounded', max_width = 100 }) end,
+            opts("Display info about the symbol"))
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("List symbol implementations"))
         vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts("Jump to the type definition of the symbol"))
         vim.keymap.set('n', '<space>d', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
@@ -934,7 +940,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', '<space>f', function()
             vim.lsp.buf.format { async = true }
         end, opts("Format code with the attached language"))
-        vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, opts("Show the signature help for the symbol"))
+        vim.keymap.set('i', '<C-s>',
+            function() vim.lsp.buf.signature_help({ title = 'Signature', border = 'rounded', max_width = 100 }) end,
+            opts("Show the signature help for the symbol"))
     end,
 })
 
@@ -942,18 +950,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 -- # LSP Configuration
 -- ## Common
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
--- Disable hover in favor of Pyright
---local pyright_on_attach = function(client, bufnr)
---    client.server_capabilities.hoverProvider = false
---end
--- Configure borders for LspInfo
-require('lspconfig.ui.windows').default_options.border = 'single'
--- -- Configure LPS Handlers
-vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, { border = 'single', max_width = 100 })
-vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help,
-    { title = 'Signature', border = 'single', max_width = 100 })
-
-lsp.inlay_hint.enable()
 
 -- ## Golang
 require("lspconfig").gopls.setup({
