@@ -680,6 +680,7 @@ local lazy_plugins = {
         opts = {
             suggestion = { enabled = false },
             panel = { enabled = false },
+            copilot_model = "gpt-4o-copilot"
         },
     },
     {
