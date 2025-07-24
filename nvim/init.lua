@@ -935,7 +935,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("List symbol implementations"))
         vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts("Jump to the type definition of the symbol"))
         vim.keymap.set('n', '<space>d', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
-        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts("Rename all references of the symbol"))
+        vim.keymap.set('n', '<space>rn', LspRename, opts("Rename all references of the symbol"))
         vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts("Select an available code action"))
         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts("Show all references to the symbol in quickfix list"))
         vim.keymap.set('n', '<space>f', function()
@@ -1026,3 +1026,93 @@ require("lspconfig").lua_ls.setup({
         },
     },
 })
+
+
+-- # Custom functions
+
+-- ## Float input prompt
+local function float_input(opts, on_confirm)
+    local buf = vim.api.nvim_create_buf(false, true)
+    vim.bo[buf].buftype = "prompt"
+    vim.bo[buf].bufhidden = "wipe"
+
+    -- Keymaps for prompt buffer
+    vim.keymap.set({ "i", "n" }, "<CR>", "<CR><ESC><CMD>close!<CR><CMD>stopinsert<CR>", { buffer = buf, silent = true })
+    vim.keymap.set("n", "u", "<CMD>undo<CR>", { buffer = buf, silent = true })
+    for _, key in ipairs({ "<esc>", "q" }) do
+        vim.keymap.set("n", key, "<CMD>close!<CR>", { buffer = buf, silent = true })
+    end
+
+    vim.fn.prompt_setprompt(buf, " ")
+    vim.fn.prompt_setcallback(buf, function(input)
+        vim.defer_fn(function() on_confirm(input) end, 10)
+    end)
+
+    local default_text = opts.default or ""
+    local win_opts = {
+        border = "rounded",
+        col = 0,
+        focusable = true,
+        height = 1,
+        relative = "cursor",
+        row = 1,
+        style = "minimal",
+        width = math.max(30, #default_text + 2),
+        title = { { opts.prompt, "FloatTitle" } },
+        title_pos = "left",
+    }
+
+    local win = vim.api.nvim_open_win(buf, true, win_opts)
+    vim.cmd("startinsert")
+
+    vim.defer_fn(function()
+        vim.api.nvim_buf_set_text(buf, 0, 1, 0, 1, { default_text })
+        vim.api.nvim_win_set_cursor(win, { 1, #default_text + 1 })
+        vim.cmd("startinsert")
+    end, 10)
+end
+
+-- ## Count instances and files in a workspace edit
+local function count(edit)
+    local files, instances = 0, 0
+    if edit.documentChanges then
+        for _, f in pairs(edit.documentChanges) do
+            files = files + 1
+            instances = instances + #f.edits
+        end
+    elseif edit.changes then
+        for _, f in pairs(edit.changes) do
+            files = files + 1
+            instances = instances + #f
+        end
+    end
+    return instances, files
+end
+
+-- ## Float Window Rename
+function LspRename()
+    local curr = vim.fn.expand("<cword>")
+    float_input({ prompt = " Rename symbol › ", default = curr }, function(new_name)
+        if not new_name or new_name == "" or new_name == curr then return end
+
+        local client = vim.lsp.get_clients({ bufnr = 0 })[1]
+        if not client then return end
+        local enc = client.offset_encoding or "utf-16"
+        local params = vim.lsp.util.make_position_params(0, enc)
+        params.newName = new_name
+
+        vim.lsp.buf_request(0, "textDocument/rename", params, function(err, res)
+            if err or not res then return end
+            vim.lsp.util.apply_workspace_edit(res, client.offset_encoding)
+            local n, f = count(res)
+            vim.notify(string.format(
+                "%d occurrence%s renamed in %d file%s%s",
+                n,
+                n == 1 and "" or "s",
+                f,
+                f == 1 and "" or "s",
+                f > 0 and ".  :wa to save" or ""
+            ))
+        end)
+    end)
+end
