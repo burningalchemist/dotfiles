@@ -305,7 +305,7 @@ local lazy_plugins = {
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
             "hrsh7th/cmp-cmdline",
-            { "hrsh7th/cmp-vsnip",      commit = "1ae05c6c867d9ad44bce811056e861e0d5c531cb" },
+            { "hrsh7th/cmp-vsnip",      commit = "989a8a73c44e926199bfd05fa7a516d51f2d2752" },
             { "zbirenbaum/copilot-cmp", opts = {} },
             "onsails/lspkind.nvim",
             "hrsh7th/vim-vsnip",
