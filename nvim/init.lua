@@ -56,6 +56,7 @@ vim.wo.number = true
 vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
+vim.o.winborder = "rounded"
 -- ## Cmd Options
 vim.cmd.syntax("off")
 
@@ -754,7 +755,6 @@ local lazy_plugins = {
                     unknown = ""
                 },
                 floating = {
-                    border = "rounded",
                     max_height = 0.9,
                     max_width = 0.9,
                     options = {}
@@ -937,7 +937,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
         end
         vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts("Jump to the symbol declaration"))
         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
-        vim.keymap.set('n', 'K', function() vim.lsp.buf.hover({ border = 'rounded', max_width = 100 }) end,
+        vim.keymap.set('n', 'K', function() vim.lsp.buf.hover({ max_width = 100 }) end,
             opts("Display info about the symbol"))
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("List symbol implementations"))
         vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts("Jump to the type definition of the symbol"))
@@ -949,7 +949,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
             vim.lsp.buf.format { async = true }
         end, opts("Format code with the attached language"))
         vim.keymap.set('i', '<C-s>',
-            function() vim.lsp.buf.signature_help({ title = 'Signature', border = 'rounded', max_width = 100 }) end,
+            function() vim.lsp.buf.signature_help({ title = 'Signature', max_width = 100 }) end,
             opts("Show the signature help for the symbol"))
     end,
 })
@@ -1057,7 +1057,6 @@ local function float_input(opts, on_confirm)
 
     local default_text = opts.default or ""
     local win_opts = {
-        border = "rounded",
         col = 0,
         focusable = true,
         height = 1,
