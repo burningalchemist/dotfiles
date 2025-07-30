@@ -966,7 +966,8 @@ lsp.enable({
     "gopls",
     "ts_ls",
     "vue_ls",
-    "pyright"
+    "basedpyright",
+    "ruff"
 })
 
 lsp.inlay_hint.enable()
@@ -1011,6 +1012,7 @@ lsp.config.gopls = {
     }
 }
 
+-- ## VueJS
 lsp.config.vue_ls = {
     init_options = {
         typescript = {
@@ -1022,6 +1024,28 @@ lsp.config.vue_ls = {
             hybridMode = false,
         }
     }
+}
+
+-- ## Python
+lsp.config.basedpyright = {
+    settings = {
+        basedpyright = {
+            analysis = {
+                diagnosticMode = 'openFilesOnly',
+                typeCheckingMode = 'basic',
+                useLibraryCodeForTypes = true,
+                diagnosticSeverityOverrides = {
+                    autoSearchPaths = true,
+                    enableTypeIgnoreComments = false,
+                    reportGeneralTypeIssues = 'none',
+                    reportArgumentType = 'none',
+                    reportUnknownMemberType = 'none',
+                    reportAssignmentType = 'none',
+                    reportAttributeAccessIssue = 'none'
+                },
+            },
+        },
+    },
 }
 
 -- # Custom functions
