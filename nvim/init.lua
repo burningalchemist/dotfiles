@@ -13,9 +13,8 @@ if not vim.loop.fs_stat(lazypath) then
     })
 end
 
--- Local scoped functions
+-- # Local scoped functions
 local lsp = vim.lsp
-lsp.inlay_hint.enable()
 
 -- # NVim Settings
 -- ## Global Options
@@ -38,6 +37,7 @@ vim.opt.smoothscroll = true
 vim.opt.showmatch = false
 vim.opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
 vim.opt.list = false
+vim.opt.signcolumn = "yes"
 vim.opt.fixeol = false
 vim.go.showcmd = true
 vim.go.hlsearch = true
@@ -59,7 +59,6 @@ vim.wo.cursorline = true
 vim.o.winborder = "rounded"
 -- ## Cmd Options
 vim.cmd.syntax("off")
-
 
 -- # Plugins
 -- ## Lazy Plugin Manager Settings
@@ -429,8 +428,13 @@ local lazy_plugins = {
     },
     {
         "neovim/nvim-lspconfig",
-        event = { "BufReadPre", "BufNewFile" },
-        cmd = { "LspInfo", "LspInstall", "LspUninstall" },
+        -- no need to load the plugin, since we just want its configs, adding the
+        -- plugin to the runtime is enough
+        lazy = true,
+        init = function()
+            local lspConfigPath = require("lazy.core.config").options.root .. "/nvim-lspconfig"
+            vim.opt.runtimepath:prepend(lspConfigPath)
+        end,
         dependencies = {
             { "folke/neodev.nvim", opts = {} },
             "linrongbin16/lsp-progress.nvim"
@@ -582,7 +586,7 @@ local lazy_plugins = {
     },
     {
         'mrcjkb/rustaceanvim',
-        version = '^5', -- Recommended
+        version = '^6', -- Recommended
         lazy = false,
         init = function()
             -- Configure rustaceanvim here
@@ -807,6 +811,7 @@ local lazy_plugins = {
 }
 
 require("lazy").setup(lazy_plugins, lazy_opts)
+
 -- # Key Mappings
 -- ## General
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
@@ -817,7 +822,6 @@ vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = 1 }) end,
 vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = -1 }) end,
     { desc = "Move to the next diagnostic in the buffer" })
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Add diagnostics to the location list" })
-
 
 -- ## Detach Neovim from the remote server
 vim.keymap.set("n", "<leader>rd", function()
@@ -849,7 +853,6 @@ vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>")
 vim.keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>")
 vim.keymap.set("n", "<leader>fc", "<cmd>Telescope neoclip<cr>")
 
-
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
 vim.keymap.set("n", "<leader>nb", "<cmd>Neotree reveal_force_cwd toggle focus buffers right<cr>")
@@ -879,6 +882,7 @@ vim.diagnostic.config {
         end
     }
 }
+
 -- ## Folding
 vim.o.foldmethod = "expr"
 vim.o.foldlevelstart = 20
@@ -924,7 +928,7 @@ vim.api.nvim_create_autocmd("UiEnter", {
 })
 
 -- ### Use LspAttach autocommand to only map the following keys after the language server attaches to the current
--- buffer
+--     buffer
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = function(ev)
@@ -957,11 +961,40 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 -- # LSP Configuration
 -- ## Common
+lsp.enable({
+    "lua_ls",
+    "gopls",
+    "ts_ls",
+    "vue_ls",
+    "pyright"
+})
+
+lsp.inlay_hint.enable()
+
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
+lsp.config('*', {
+    capabilities = capabilities
+})
+
+-- ## Lua
+lsp.config.lua_ls = {
+    settings = {
+        Lua = {
+            diagnostics = {
+                globals = { "vim" },
+            },
+            workspace = {
+                library = vim.api.nvim_get_runtime_file("", true),
+            },
+            telemetry = {
+                enable = false,
+            },
+        },
+    },
+}
 
 -- ## Golang
-require("lspconfig").gopls.setup({
-    capabilities = capabilities,
+lsp.config.gopls = {
     settings = {
         gopls = {
             hints = {
@@ -973,24 +1006,12 @@ require("lspconfig").gopls.setup({
             },
             staticcheck = true,
             gofumpt = true,
+            semanticTokens = true
         },
-    },
-})
+    }
+}
 
--- ## Typescript
---local vue_language_server_path = '/Users/sergei/Library/pnpm/global/5/node_modules/@vue/language-server'
-require("lspconfig").ts_ls.setup({
-    capabilities = capabilities,
-    filetypes = {
-        'typescript',
-        'javascript',
-    },
-})
-
-
-require("lspconfig").volar.setup {
-    capabilities = capabilities,
-    filetypes = { 'typescript', 'javascript', 'vue' },
+lsp.config.vue_ls = {
     init_options = {
         typescript = {
             tsdk = "/Users/sergei/Library/pnpm/global/5/node_modules/typescript/lib",
@@ -1002,38 +1023,6 @@ require("lspconfig").volar.setup {
         }
     }
 }
-
--- ## Python
-require("lspconfig").ruff.setup({
-    capabilities = capabilities,
-    on_attach = function(client)
-        client.server_capabilities.hoverProvider = false
-    end
-})
-require("lspconfig").pyright.setup({
-    capabilities = capabilities
-})
-
--- ## Lua
-require("lspconfig").lua_ls.setup({
-    capabilities = capabilities,
-    settings = {
-        Lua = {
-            diagnostics = {
-                globals = { "vim" },
-            },
-            workspace = {
-                library = vim.api.nvim_get_runtime_file("", true),
-                -- https://github.com/LuaLS/lua-language-server/pull/2406
-                checkThirdParty = "Disable",
-            },
-            telemetry = {
-                enable = false,
-            },
-        },
-    },
-})
-
 
 -- # Custom functions
 
@@ -1101,7 +1090,7 @@ function LspRename()
     float_input({ prompt = " Rename symbol › ", default = curr }, function(new_name)
         if not new_name or new_name == "" or new_name == curr then return end
 
-        local client = vim.lsp.get_clients({ bufnr = 0 })[1]
+        local client = lsp.get_clients({ bufnr = 0 })[1]
         if not client then return end
         local enc = client.offset_encoding or "utf-16"
         local params = vim.lsp.util.make_position_params(0, enc)
