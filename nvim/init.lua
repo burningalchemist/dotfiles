@@ -2,7 +2,7 @@
 
 -- # LazyVIM Init
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
     vim.fn.system({
         "git",
         "clone",
@@ -15,7 +15,6 @@ end
 
 -- # Local scoped functions
 local lsp = vim.lsp
-
 -- # NVim Settings
 -- ## Global Options
 vim.opt.mouse:append("a")
@@ -859,6 +858,10 @@ vim.keymap.set("n", "<leader>nb", "<cmd>Neotree reveal_force_cwd toggle focus bu
 vim.keymap.set("n", "<leader>ng", "<cmd>Neotree reveal float git_status<cr>")
 vim.keymap.set("n", "<leader>nd", "<cmd>Neotree reveal toggle diagnostics bottom<cr>")
 
+-- ## Remap Macro Recording
+vim.keymap.set('n', 'q', '<nop>', { noremap = true })
+vim.keymap.set('n', 'Q', 'q', { noremap = true, desc = 'Record macro' })
+vim.keymap.set('n', '<M-q>', 'Q', { noremap = true, desc = 'Replay last register' })
 
 -- # Extra Settings
 -- ## Diagnostics
@@ -902,6 +905,22 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end
 })
 
+vim.api.nvim_create_autocmd("RecordingEnter", {
+    callback = function(ctx)
+        vim.opt.cmdheight = 1
+        local msg = string.format("Key:  %s\nFile: %s", vim.fn.reg_recording(), ctx.file)
+        vim.notify(msg, vim.log.levels.INFO, {
+            annote = "Recording"
+        })
+    end
+})
+
+vim.api.nvim_create_autocmd("RecordingLeave", {
+    callback = function()
+        vim.opt.cmdheight = 0
+    end
+})
+
 -- ### Fix weird yaml indent shifts
 vim.api.nvim_create_autocmd("Filetype", {
     pattern = "yaml",
@@ -922,7 +941,7 @@ vim.api.nvim_create_autocmd("UiEnter", {
     desc = "Open Neotree automatically",
     group = "neotree",
     callback = function()
-        local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(0))
+        local stats = vim.uv.fs_stat(vim.api.nvim_buf_get_name(0))
         if stats and stats.type == "directory" then require("neo-tree.setup.netrw").hijack() end
     end,
 })
@@ -981,11 +1000,20 @@ lsp.config('*', {
 lsp.config.lua_ls = {
     settings = {
         Lua = {
+            version = "LuaJIT",
+            path = {
+                'lua/?.lua',
+                'lua/?/init.lua'
+            },
             diagnostics = {
                 globals = { "vim" },
             },
             workspace = {
-                library = vim.api.nvim_get_runtime_file("", true),
+                checkThirdParty = false,
+                library = {
+                    vim.env.VIMRUNTIME,
+                    '${3rd}/luv/library'
+                },
             },
             telemetry = {
                 enable = false,
@@ -1049,7 +1077,6 @@ lsp.config.basedpyright = {
 }
 
 -- # Custom functions
-
 -- ## Float input prompt
 local function float_input(opts, on_confirm)
     local buf = vim.api.nvim_create_buf(false, true)
@@ -1117,9 +1144,11 @@ function LspRename()
         local client = lsp.get_clients({ bufnr = 0 })[1]
         if not client then return end
         local enc = client.offset_encoding or "utf-16"
-        local params = vim.lsp.util.make_position_params(0, enc)
-        params.newName = new_name
-
+        local params = {
+            textDocument = vim.lsp.util.make_text_document_params(0),
+            position = vim.lsp.util.make_position_params(0, enc).position,
+            newName = new_name,
+        }
         vim.lsp.buf_request(0, "textDocument/rename", params, function(err, res)
             if err or not res then return end
             vim.lsp.util.apply_workspace_edit(res, client.offset_encoding)
