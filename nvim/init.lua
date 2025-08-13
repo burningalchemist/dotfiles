@@ -220,7 +220,7 @@ local lazy_plugins = {
                 additional_vim_regex_highlighting = false,
             },
 
-            indent = { enable = true, disable = { "yaml" } },
+            indent = { enable = true, disable = { "yaml", "markdown" } },
             autopairs = { enable = true },
         },
         config = function(_, opts)
