@@ -35,9 +35,11 @@ vim.opt.splitright = true
 vim.opt.smoothscroll = true
 vim.opt.showmatch = false
 vim.opt.sessionoptions = "buffers,curdir,folds,globals,tabpages,winpos,winsize"
+vim.opt.iskeyword:append({ '-' })
 vim.opt.list = false
 vim.opt.signcolumn = "yes"
 vim.opt.fixeol = false
+vim.opt.fillchars = "foldopen:,foldclose:,fold: ,foldsep: ,eob:~,diff:╱"
 vim.go.showcmd = true
 vim.go.hlsearch = true
 vim.go.incsearch = true
@@ -56,6 +58,8 @@ vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
 vim.o.winborder = "rounded"
+vim.o.diffopt = "internal,filler,closeoff,algorithm:patience,indent-heuristic,linematch:40"
+vim.o.undofile = true
 -- ## Cmd Options
 vim.cmd.syntax("off")
 
@@ -421,8 +425,10 @@ local lazy_plugins = {
         keys = {
             { "<leader>dd", "<cmd>DiffviewOpen<cr>",        desc = "DiffviewOpen" },
             { "<leader>dc", "<cmd>DiffviewClose<cr>",       desc = "DiffviewClose" },
-            { "<leader>dh", "<cmd>DiffviewFileHistory<cr>", desc = "DiffviewFilesHistory" },
+            { "<leader>dt", "<cmd>DiffviewToggleFiles<cr>", desc = "DiffviewToggleFiles" },
+            { "<leader>dh", "<cmd>DiffviewFileHistory<cr>", desc = "DiffviewFileHistory" },
         },
+
 
     },
     {
@@ -914,8 +920,11 @@ vim.diagnostic.config {
 
 -- ## Folding
 vim.o.foldmethod = "expr"
-vim.o.foldlevelstart = 20
-vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldcolumn = "1"
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 
 -- ## Autocommands
 -- ### Show the break character if `number` option is enabled
@@ -1002,7 +1011,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
             opts("Show the signature help for the symbol"))
     end,
 })
-
 
 -- # LSP Configuration
 -- ## Common
