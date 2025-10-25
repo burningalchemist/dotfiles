@@ -586,7 +586,16 @@ local lazy_plugins = {
     {
         "ggandor/leap.nvim",
         config = function()
-            require("leap").add_default_mappings()
+            require('leap').opts.preview = function(ch0, ch1, ch2)
+                return not (
+                    ch1:match('%s')
+                    or (ch0:match('%a') and ch1:match('%a') and ch2:match('%a'))
+                )
+            end
+            require('leap').opts.equivalence_classes = {
+                ' \t\r\n', '([{', ')]}', '\'"`'
+            }
+            require('leap.user').set_repeat_keys('<enter>', '<backspace>')
         end
     },
     {
@@ -895,6 +904,10 @@ vim.keymap.set('n', 'q', '<nop>', { noremap = true })
 vim.keymap.set('n', 'Q', 'q', { noremap = true, desc = 'Record macro' })
 vim.keymap.set('n', '<M-q>', 'Q', { noremap = true, desc = 'Replay last register' })
 
+-- ## Leap Mappings (like `s` in vim-sneak, :help leap-mappings)
+vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
+vim.keymap.set('n', 'S', '<Plug>(leap-from-window)')
+
 -- # Extra Settings
 -- ## Diagnostics
 vim.diagnostic.config {
@@ -919,12 +932,12 @@ vim.diagnostic.config {
 }
 
 -- ## Folding
-vim.o.foldmethod = "expr"
-vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.o.foldcolumn = "1"
+vim.o.foldenable = true
+vim.o.foldcolumn = "0"
 vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
-vim.o.foldenable = true
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
 -- ## Autocommands
 -- ### Show the break character if `number` option is enabled
