@@ -60,6 +60,7 @@ vim.wo.cursorline = true
 vim.o.winborder = "rounded"
 vim.o.diffopt = "internal,filler,closeoff,algorithm:patience,indent-heuristic,linematch:40"
 vim.o.undofile = true
+vim.o.conceallevel = 2
 -- ## Cmd Options
 vim.cmd.syntax("off")
 
@@ -337,6 +338,7 @@ local lazy_plugins = {
                 mapping = cmp.mapping.preset.insert({
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
+                    -- ["<Esc>"] = cmp.mapping.close(),
                     ["<M-Esc>"] = cmp.mapping.complete({
                         config = {
                             sources = {
@@ -346,8 +348,13 @@ local lazy_plugins = {
                         }
                     }),
                     ["<C-e>"] = cmp.mapping.abort(),
-                    ["<CR>"] = cmp.mapping.confirm(),
+                    ["<C-CR>"] = cmp.mapping.confirm({ select = true }),
+                    ["<CR>"] = cmp.mapping(function(fallback)
+                        fallback()
+                    end, { "i", "s" }),
                     ["<C-l>"] = cmp.mapping.complete_common_string(),
+                    ["<Tab>"] = cmp.mapping.select_next_item(),
+                    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
                 }),
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
@@ -584,7 +591,7 @@ local lazy_plugins = {
         },
     },
     {
-        "ggandor/leap.nvim",
+        url = "https://codeberg.org/andyg/leap.nvim",
         config = function()
             require('leap').opts.preview = function(ch0, ch1, ch2)
                 return not (
@@ -595,7 +602,7 @@ local lazy_plugins = {
             require('leap').opts.equivalence_classes = {
                 ' \t\r\n', '([{', ')]}', '\'"`'
             }
-            require('leap.user').set_repeat_keys('<enter>', '<backspace>')
+            --            require('leap.user').set_repeat_keys('<enter>', '<backspace>')
         end
     },
     {
@@ -699,7 +706,22 @@ local lazy_plugins = {
         opts = {
             suggestion = { enabled = false },
             panel = { enabled = false },
-            copilot_model = "gpt-4o-copilot"
+            copilot_model = "gpt-41-copilot"
+        },
+    },
+    {
+        "CopilotC-Nvim/CopilotChat.nvim",
+        enabled = true,
+        command = { "CopilotChat", "CopilotChatOpen", "CopilotChatToggle" },
+        keys = {
+            { "<space>cc", "<cmd>CopilotChatToggle<cr>", desc = "Toggle Copilot Chat" },
+        },
+        dependencies = {
+            { "nvim-lua/plenary.nvim", branch = "master" },
+        },
+        build = "make tiktoken",
+        opts = {
+            -- See Configuration section for options
         },
     },
     {
@@ -723,6 +745,9 @@ local lazy_plugins = {
         dependencies = {
             'nvim-treesitter/nvim-treesitter',
             'nvim-tree/nvim-web-devicons'
+        },
+        opts = {
+            yaml = { enabled = false },
         }
     },
     {
@@ -757,6 +782,34 @@ local lazy_plugins = {
         config = function()
             require('neoclip').setup()
         end,
+    },
+    {
+        "hat0uma/csvview.nvim",
+        ---@module "csvview"
+        ---@type CsvView.Options
+        opts = {
+            parser = { comments = { "#", "//" } },
+            view = {
+                max_col_width = 50,
+                min_col_width = 8,
+                auto_resize = true,
+                display_mode = "border",
+            },
+            keymaps = {
+                -- Text objects for selecting fields
+                textobject_field_inner = { "if", mode = { "o", "x" } },
+                textobject_field_outer = { "af", mode = { "o", "x" } },
+                -- Excel-like navigation:
+                -- Use <Tab> and <S-Tab> to move horizontally between fields.
+                -- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
+                -- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
+                jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
+                jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
+                jump_next_row = { "<Enter>", mode = { "n", "v" } },
+                jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+            },
+        },
+        cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
     },
     {
         "nvim-neotest/neotest",
@@ -1025,6 +1078,15 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
+-- ## Disable line wrapping in markdown files
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "markdown", "markdown_inline" },
+    callback = function()
+        vim.opt_local.wrap = false
+    end,
+})
+
+
 -- # LSP Configuration
 -- ## Common
 lsp.enable({
@@ -1033,7 +1095,8 @@ lsp.enable({
     "ts_ls",
     "vue_ls",
     "basedpyright",
-    "ruff"
+    "ruff",
+    "zls"
 })
 
 lsp.inlay_hint.enable()
@@ -1119,6 +1182,15 @@ lsp.config.basedpyright = {
                     reportAttributeAccessIssue = 'none'
                 },
             },
+        },
+    },
+}
+
+-- ## Zig
+lsp.config.zls = {
+    settings = {
+        zig = {
+            semanticTokens = 'partial',
         },
     },
 }
