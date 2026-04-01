@@ -1,36 +1,24 @@
 -- This file can be loaded by calling `lua require("plugins")` from your init.vim
-
 vim.pack.add({
+    "https://github.com/nvim-mini/mini.misc",
     "https://github.com/nvim-lua/plenary.nvim",
     "https://github.com/MunifTanjim/nui.nvim",
     "https://github.com/nvim-tree/nvim-web-devicons",
-    "https://github.com/kylechui/nvim-surround",
-    "https://github.com/stevearc/aerial.nvim",
-    "https://github.com/esmuellert/codediff.nvim",
-    "https://github.com/neogitOrg/neogit",
-    "https://github.com/folke/which-key.nvim",
-    "https://github.com/nvim-treesitter/nvim-treesitter",
-    "https://github.com/nvim-telescope/telescope.nvim",
-    "https://github.com/AckslD/nvim-neoclip.lua",
-    "https://github.com/lewis6991/gitsigns.nvim",
     "https://github.com/j-hui/fidget.nvim",
     "https://github.com/neovim/nvim-lspconfig",
-    "https://codeberg.org/andyg/leap.nvim",
-    "https://github.com/nvim-pack/nvim-spectre",
-    "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
-    "https://github.com/MeanderingProgrammer/render-markdown.nvim",
-    "https://github.com/hat0uma/csvview.nvim",
+    "https://github.com/nvim-treesitter/nvim-treesitter",
+
     "https://github.com/catppuccin/nvim",
-    "https://github.com/rose-pine/neovim",
-    "https://github.com/mrbjarksen/neo-tree-diagnostics.nvim",
+    "https://github.com/esmuellert/codediff.nvim",
+    "https://github.com/lewis6991/gitsigns.nvim",
     "https://github.com/nvim-neo-tree/neo-tree.nvim",
-    "https://github.com/zbirenbaum/copilot.lua",
-    "https://github.com/fang2hou/blink-copilot",
-    "https://github.com/Kaiser-Yang/blink-cmp-git",
     "https://github.com/nvim-lualine/lualine.nvim",
-    { src = 'https://github.com/Saghen/blink.cmp', version = vim.version.range('*') }
 })
 
+-- Load Misc early for utility functions and event handling
+local misc = require('mini.misc')
+local later = function(f) misc.safely('later', f) end
+local on_event = function(ev, f) misc.safely('event:' .. ev, f) end
 
 -- Catppuccin theme
 require("catppuccin").setup({
@@ -59,119 +47,38 @@ require("catppuccin").setup({
 -- Catppuccin Theme
 vim.cmd.colorscheme("catppuccin-nvim")
 
--- Treesitter
-vim.api.nvim_create_autocmd('PackChanged', {
-    callback = function(ev)
-        local name, kind = ev.data.spec.name, ev.data.kind
-        if name == 'nvim-treesitter' and kind == 'update' then
-            if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
-            vim.cmd('TSUpdate')
-        end
-        if name == 'copilotchat' and kind == 'update' then
-            if not ev.data.active then vim.cmd.packadd('copilotchat') end
-            vim.cmd('make tiktoken')
-        end
-    end
+require("fidget").setup({
+    notification = {
+        -- Automatically override vim.notify() with Fidget
+        override_vim_notify = true,
+    },
 })
 
-
-require("telescope").setup({
-    defaults = {
-        file_ignore_patterns = {
-            ".git/",
-            ".cache",
-            "%.o",
-            "%.a",
-            "%.out",
-            "%.class",
-            "%.pdf",
-            "%.mkv",
-            "%.mp4",
-            "%.zip"
+require("lualine").setup({
+    options = {
+        theme = "catppuccin-nvim",
+        icons_enabled = false,
+        disabled_filetypes = { "neo-tree" },
+        ignore_focus = { "neo-tree" },
+        section_separators = "",
+    },
+    sections = {
+        lualine_c = {
+            { "filename", path = 4 },
+            { function()
+                local active_clients = vim.lsp.get_clients()
+                local client_names = {}
+                for _, client in ipairs(active_clients) do
+                    if client and client.name ~= "" then
+                        table.insert(client_names, "[" .. client.name .. "]")
+                    end
+                end
+                return #active_clients > 0 and "LSP: " .. table.concat(client_names) or ""
+            end
+            },
         }
     }
-}
-)
-
-require("neo-tree").setup({
-    sources = {
-        "filesystem",
-        "buffers",
-        "git_status",
-        "diagnostics",
-    },
-    close_if_last_window = true,
-    filesystem = {
-        bind_to_cwd = false,
-        follow_current_file = {
-            enabled = true,
-        },
-        window = {
-            mappings = {
-                -- disable fuzzy finder
-                ["/"] = "noop",
-                -- cd to current root
-                ["="] = {
-                    function(state)
-                        local path = state.path
-                        vim.cmd("cd " .. path)
-                        vim.notify("cd to current root: " .. path)
-                    end,
-                    desc = "cd to current root",
-                },
-            },
-        },
-    },
 })
-
-require("copilot").setup({
-    suggestion = { enabled = false },
-    panel = { enabled = true },
-    copilot_model = "gpt-41-copilot"
-})
-
--- Lazy load on first insert mode entry (may not necessary)
-local group = vim.api.nvim_create_augroup("BlinkCmpLazyLoad", { clear = true })
-vim.api.nvim_create_autocmd("InsertEnter", {
-    pattern = "*",
-    group = group,
-    once = true,
-    callback = function()
-        require("blink.cmp").setup({
-            --            keymap = { preset = "default" },
-            appearance = {
-                nerd_font_variant = "mono",
-                use_nvim_cmp_as_default = true,
-            },
-            completion = {
-                documentation = { auto_show = false },
-            },
-            sources = {
-                default = { "git", "lsp", "path", "snippets", "buffer", "copilot" },
-                providers = {
-                    copilot = {
-                        name = "copilot",
-                        module = "blink-copilot",
-                        score_offset = 100,
-                        async = true,
-                    },
-                    git = {
-                        module = 'blink-cmp-git',
-                        enabled = function()
-                            return vim.tbl_contains({ 'octo', 'gitcommit', 'markdown' }, vim.bo.filetype)
-                        end,
-                        name = 'Git',
-                        opts = {
-                            -- options for the blink-cmp-git
-                        },
-                    },
-                }
-            },
-            fuzzy = { implementation = "prefer_rust_with_warning" },
-        })
-    end,
-})
-
 
 require("gitsigns").setup({
     on_attach = function(bufnr)
@@ -222,93 +129,223 @@ require("gitsigns").setup({
     end
 })
 
-require("fidget").setup({
-    notification = {
-        -- Automatically override vim.notify() with Fidget
-        override_vim_notify = true,
+require("neo-tree").setup({
+    sources = {
+        "filesystem",
+        "buffers",
+        "git_status",
+        "diagnostics",
     },
-})
-
-require('leap').opts.preview = function(ch0, ch1, ch2)
-    return not (
-        ch1:match('%s')
-        or (ch0:match('%a') and ch1:match('%a') and ch2:match('%a'))
-    )
-end
-require('leap').opts.equivalence_classes = {
-    ' \t\r\n', '([{', ')]}', '\'"`'
-}
-
-require("lualine").setup({
-    options = {
-        theme = "catppuccin-nvim",
-        icons_enabled = false,
-        disabled_filetypes = { "neo-tree" },
-        ignore_focus = { "neo-tree" },
-        section_separators = "",
-    },
-    extensions = { "neo-tree", "lazy" },
-    sections = {
-        lualine_c = {
-            { "filename", path = 4 },
-            { function()
-                local active_clients = vim.lsp.get_clients()
-                local client_names = {}
-                for _, client in ipairs(active_clients) do
-                    if client and client.name ~= "" then
-                        table.insert(client_names, "[" .. client.name .. "]")
-                    end
-                end
-                return #active_clients > 0 and "LSP: " .. table.concat(client_names) or ""
-            end
-            },
-        }
-    }
-})
-
--- Make it load for markdown docs only
-require("render-markdown").setup({
-    yaml = { enabled = false },
-})
-
-require("csvview").setup({
-    parser = { comments = { "#", "//" } },
-    view = {
-        max_col_width = 50,
-        min_col_width = 8,
-        auto_resize = true,
-        display_mode = "border",
-    },
-    keymaps = {
-        -- Text objects for selecting fields
-        textobject_field_inner = { "if", mode = { "o", "x" } },
-        textobject_field_outer = { "af", mode = { "o", "x" } },
-        -- Excel-like navigation:
-        -- Use <Tab> and <S-Tab> to move horizontally between fields.
-        -- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
-        -- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
-        jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
-        jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
-        jump_next_row = { "<Enter>", mode = { "n", "v" } },
-        jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
-    },
-})
-
-require("spectre").setup({
-    replace_engine = {
-        ["sed"] = {
-            cmd = "sed",
-            args = {
-                "-i",
-                "",
-                "-E",
+    close_if_last_window = true,
+    filesystem = {
+        bind_to_cwd = false,
+        follow_current_file = {
+            enabled = true,
+        },
+        window = {
+            mappings = {
+                -- disable fuzzy finder
+                ["/"] = "noop",
+                -- cd to current root
+                ["="] = {
+                    function(state)
+                        local path = state.path
+                        vim.cmd("cd " .. path)
+                        vim.notify("cd to current root: " .. path)
+                    end,
+                    desc = "cd to current root",
+                },
             },
         },
     },
 })
 
-require("CopilotChat").setup({
-    model = "claude-sonnet-4.6",
-})
+-- ## Load the rest  of the plugins after startup to improve startup time
+later(function()
+    vim.pack.add({
+        "https://github.com/rose-pine/neovim",
+        "https://github.com/neogitOrg/neogit",
+        "https://github.com/kylechui/nvim-surround",
+        "https://github.com/mrbjarksen/neo-tree-diagnostics.nvim",
+        "https://github.com/hat0uma/csvview.nvim",
+        "https://github.com/nvim-pack/nvim-spectre",
+        "https://github.com/nvim-telescope/telescope.nvim",
+        "https://github.com/AckslD/nvim-neoclip.lua",
+        "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
+        "https://github.com/stevearc/aerial.nvim",
+        "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+        "https://codeberg.org/andyg/leap.nvim",
+        "https://github.com/folke/which-key.nvim",
+    })
 
-require('neoclip').setup()
+
+    require("telescope").setup({
+        defaults = {
+            file_ignore_patterns = {
+                ".git/",
+                ".cache",
+                "%.o",
+                "%.a",
+                "%.out",
+                "%.class",
+                "%.pdf",
+                "%.mkv",
+                "%.mp4",
+                "%.zip"
+            }
+        }
+    })
+
+    -- Make it load for markdown docs only
+    require("render-markdown").setup({
+        yaml = { enabled = false },
+    })
+
+    require("csvview").setup({
+        parser = { comments = { "#", "//" } },
+        view = {
+            max_col_width = 50,
+            min_col_width = 8,
+            auto_resize = true,
+            display_mode = "border",
+        },
+        keymaps = {
+            -- Text objects for selecting fields
+            textobject_field_inner = { "if", mode = { "o", "x" } },
+            textobject_field_outer = { "af", mode = { "o", "x" } },
+            -- Excel-like navigation:
+            -- Use <Tab> and <S-Tab> to move horizontally between fields.
+            -- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
+            -- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
+            jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
+            jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
+            jump_next_row = { "<Enter>", mode = { "n", "v" } },
+            jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+        },
+    })
+
+    require("spectre").setup({
+        replace_engine = {
+            ["sed"] = {
+                cmd = "sed",
+                args = { "-i", "", "-E", },
+            },
+        },
+    })
+
+    require("CopilotChat").setup({
+        model = "claude-sonnet-4.6",
+    })
+
+    require('neoclip').setup()
+
+    require('leap').opts.preview = function(ch0, ch1, ch2)
+        return not (
+            ch1:match('%s')
+            or (ch0:match('%a') and ch1:match('%a') and ch2:match('%a'))
+        )
+    end
+    require('leap').opts.equivalence_classes = {
+        ' \t\r\n', '([{', ')]}', '\'"`'
+    }
+
+    require('aerial').setup({
+        on_attach = function(bufnr)
+            -- Jump forwards/backwards with '{' and '}'
+            vim.keymap.set("n", "(", "<cmd>AerialPrev<CR>", { buffer = bufnr })
+            vim.keymap.set("n", ")", "<cmd>AerialNext<CR>", { buffer = bufnr })
+        end,
+    })
+end)
+
+-- Package Updates with rebuilds
+on_event('PackChanged', function(ev)
+    local name, kind = ev.data.spec.name, ev.data.kind
+    if name == 'nvim-treesitter' and kind == 'update' then
+        if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
+        vim.cmd('TSUpdate')
+    end
+    if name == 'copilotchat' and kind == 'update' then
+        if not ev.data.active then vim.cmd.packadd('copilotchat') end
+        vim.cmd('make tiktoken')
+    end
+end)
+
+
+on_event("InsertEnter", function()
+    vim.pack.add({
+        "https://github.com/zbirenbaum/copilot.lua",
+        "https://github.com/fang2hou/blink-copilot",
+        "https://github.com/Kaiser-Yang/blink-cmp-git",
+        {
+            src = 'https://github.com/Saghen/blink.cmp',
+            version = vim.version.range('*')
+        },
+    })
+    require("copilot").setup({
+        suggestion = { enabled = false },
+        panel = { enabled = true },
+        copilot_model = "gpt-41-copilot"
+    })
+    require("blink.cmp").setup({
+        --            keymap = { preset = "default" },
+        appearance = {
+            nerd_font_variant = "mono",
+            use_nvim_cmp_as_default = true,
+        },
+        completion = {
+            documentation = { auto_show = false },
+        },
+        sources = {
+            default = { "git", "lsp", "path", "snippets", "buffer", "copilot" },
+            providers = {
+                copilot = {
+                    name = "copilot",
+                    module = "blink-copilot",
+                    score_offset = 100,
+                    async = true,
+                },
+                git = {
+                    module = 'blink-cmp-git',
+                    enabled = function()
+                        return vim.tbl_contains({ 'octo', 'gitcommit', 'markdown' }, vim.bo.filetype)
+                    end,
+                    name = 'Git',
+                    opts = {
+                        -- options for the blink-cmp-git
+                    },
+                },
+            }
+        },
+        fuzzy = { implementation = "prefer_rust_with_warning" },
+    })
+end)
+
+
+-- Make TS install a parser for each new filetype. To only use specific filetypes change pattern to a list of preferred
+-- filetypes (not languages).
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "*" },
+    callback = function(args)
+        local ft = vim.bo[args.buf].filetype
+        local lang = vim.treesitter.language.get_lang(ft)
+
+        if not vim.treesitter.language.add(lang) then
+            local available = vim.g.ts_available
+                or require("nvim-treesitter").get_available()
+            if not vim.g.ts_available then
+                vim.g.ts_available = available
+            end
+            if vim.tbl_contains(available, lang) then
+                require("nvim-treesitter").install(lang)
+            end
+        end
+
+        if vim.treesitter.language.add(lang) then
+            vim.treesitter.start(args.buf, lang)
+            -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+            -- vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            -- vim.wo[0][0].foldmethod = "expr"
+        end
+    end,
+})

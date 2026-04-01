@@ -112,6 +112,9 @@ vim.keymap.set('n', '<M-q>', 'Q', { noremap = true, desc = 'Replay last register
 vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
 vim.keymap.set('n', 'S', '<Plug>(leap-from-window)')
 
+-- ## Aerial
+vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle symbols" })
+
 -- # Extra Settings
 -- ## Diagnostics
 vim.diagnostic.config {
