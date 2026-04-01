@@ -31,7 +31,6 @@ require("catppuccin").setup({
         gitsigns = true,
         neotree = true,
         neogit = true,
-        telescope = true,
         treesitter = true,
         treesitter_context = true,
         octo = true,
@@ -41,7 +40,8 @@ require("catppuccin").setup({
         neotest = true,
         codediff = true,
         nvim_surround = true,
-        render_markdown = true
+        render_markdown = true,
+        snacks = true
     },
 })
 -- Catppuccin Theme
@@ -169,9 +169,8 @@ later(function()
         "https://github.com/mrbjarksen/neo-tree-diagnostics.nvim",
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/nvim-pack/nvim-spectre",
-        "https://github.com/nvim-telescope/telescope.nvim",
+        "https://github.com/folke/snacks.nvim",
         "https://github.com/AckslD/nvim-neoclip.lua",
-        "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
         "https://github.com/stevearc/aerial.nvim",
         "https://github.com/MeanderingProgrammer/render-markdown.nvim",
         "https://codeberg.org/andyg/leap.nvim",
@@ -179,21 +178,34 @@ later(function()
     })
 
 
-    require("telescope").setup({
-        defaults = {
-            file_ignore_patterns = {
-                ".git/",
-                ".cache",
-                "%.o",
-                "%.a",
-                "%.out",
-                "%.class",
-                "%.pdf",
-                "%.mkv",
-                "%.mp4",
-                "%.zip"
-            }
-        }
+    --    require("telescope").setup({
+    --        defaults = {
+    --            file_ignore_patterns = {
+    --                ".git/",
+    --                ".cache",
+    --                "%.o",
+    --                "%.a",
+    --                "%.out",
+    --                "%.class",
+    --                "%.pdf",
+    --                "%.mkv",
+    --                "%.mp4",
+    --                "%.zip"
+    --            }
+    --        }
+    --    })
+
+    require("snacks").setup({
+        picker = {
+            enabled = true,
+            ui_select = true,       -- optional: replaces the default vim.ui.select
+            layout = {
+                preset = "default", -- or "vertical", "select", "vscode"
+            },
+        },
+        bigfile = { enabled = true },
+        quickfile = { enabled = true },
+        words = { enabled = true },
     })
 
     -- Make it load for markdown docs only
@@ -233,9 +245,6 @@ later(function()
         },
     })
 
-    require("CopilotChat").setup({
-        model = "claude-sonnet-4.6",
-    })
 
     require('neoclip').setup()
 
@@ -275,6 +284,7 @@ end)
 on_event("InsertEnter", function()
     vim.pack.add({
         "https://github.com/zbirenbaum/copilot.lua",
+        "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
         "https://github.com/fang2hou/blink-copilot",
         "https://github.com/Kaiser-Yang/blink-cmp-git",
         {
@@ -318,6 +328,9 @@ on_event("InsertEnter", function()
             }
         },
         fuzzy = { implementation = "prefer_rust_with_warning" },
+    })
+    require("CopilotChat").setup({
+        model = "claude-sonnet-4.6",
     })
 end)
 

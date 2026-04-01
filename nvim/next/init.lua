@@ -88,14 +88,18 @@ vim.keymap.set("n", "<leader>tw", function()
     end
 end, { noremap = true, desc = "Toggle auto-wrapping by textwidth" })
 
--- ## Telescope
-vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
-vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
-vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<cr>")
-vim.keymap.set("n", "<leader>fh", "<cmd>Telescope help_tags<cr>")
-vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>")
-vim.keymap.set("n", "<leader>fw", "<cmd>Telescope grep_string<cr>")
-vim.keymap.set("n", "<leader>fc", "<cmd>Telescope neoclip<cr>")
+-- ## Snacks
+vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files() end, { desc = "Find files" })
+vim.keymap.set("n", "<leader>fg", function() Snacks.picker.grep() end, { desc = "Live Grep" })
+vim.keymap.set("n", "<leader>fb", function() Snacks.picker.buffers() end, { desc = "Buffers" })
+vim.keymap.set("n", "<leader>fh", function() Snacks.picker.tags() end, { desc = "Tags" })
+vim.keymap.set("n", "<leader>fw", function() Snacks.picker.grep_buffers() end, { desc = "Grep in open buffers" })
+vim.keymap.set("n", "<leader>fr", function() Snacks.picker.recent() end, { desc = "Recent" })
+vim.keymap.set("n", "<leader>gd", function() Snacks.picker.lsp_definitions() end, { desc = "Go to Definition" })
+vim.keymap.set("n", "<leader>gr", function() Snacks.picker.lsp_references() end, { desc = "References" })
+vim.keymap.set("n", "<leader>sd", function() Snacks.picker.diagnostics() end, { desc = "Diagnostics" })
+vim.keymap.set("n", "<leader>sh", function() Snacks.picker.help() end, { desc = "Help" })
+vim.keymap.set("n", "<leader>sk", function() Snacks.picker.keymaps() end, { desc = "Keymaps" })
 
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
