@@ -122,7 +122,7 @@ require("gitsigns").setup({
         map('n', '<leader>hd', gitsigns.diffthis, { desc = "Diff this" })
         map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this (reverse)" })
         map('n', '<leader>hw', gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
-        map('n', '<leader>gb', gitsigns.blame, { desc = "Toggle git blame" })
+        map('n', '<leader>gb', gitsigns.blame, { desc = "Open git blame" })
 
         -- Text object
         map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
@@ -267,18 +267,6 @@ later(function()
     })
 end)
 
--- Package Updates with rebuilds
-on_event('PackChanged', function(ev)
-    local name, kind = ev.data.spec.name, ev.data.kind
-    if name == 'nvim-treesitter' and kind == 'update' then
-        if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
-        vim.cmd('TSUpdate')
-    end
-    if name == 'copilotchat' and kind == 'update' then
-        if not ev.data.active then vim.cmd.packadd('copilotchat') end
-        vim.cmd('make tiktoken')
-    end
-end)
 
 
 on_event("InsertEnter", function()
@@ -334,6 +322,20 @@ on_event("InsertEnter", function()
     })
 end)
 
+-- Package Updates with rebuilds
+vim.api.nvim_create_autocmd('PackChanged', {
+    callback = function(ev)
+        local name, kind = ev.data.spec.name, ev.data.kind
+        if name == 'nvim-treesitter' and kind == 'update' then
+            if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
+            vim.cmd('TSUpdate')
+        end
+        if name == 'copilotchat' and kind == 'update' then
+            if not ev.data.active then vim.cmd.packadd('copilotchat') end
+            vim.cmd('make tiktoken')
+        end
+    end
+})
 
 -- Make TS install a parser for each new filetype. To only use specific filetypes change pattern to a list of preferred
 -- filetypes (not languages).
@@ -362,3 +364,7 @@ vim.api.nvim_create_autocmd("FileType", {
         end
     end,
 })
+
+vim.api.nvim_create_user_command("Snpick", function()
+    require('snacks').picker()
+end, { desc = "Open Snacks Pickers list" })

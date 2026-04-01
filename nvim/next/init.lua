@@ -119,6 +119,10 @@ vim.keymap.set('n', 'S', '<Plug>(leap-from-window)')
 -- ## Aerial
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle symbols" })
 
+-- ## Vimpack
+vim.keymap.set("n", "<leader>vu", function() vim.pack.update() end, { desc = "Update packages" })
+
+
 -- # Extra Settings
 -- ## Diagnostics
 vim.diagnostic.config {
