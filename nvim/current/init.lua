@@ -73,11 +73,11 @@ local lazy_opts = {
             reset = true, -- reset the runtime path to $VIMRUNTIME and your config directory
             disabled_plugins = {
                 "netrwPlugin",
-                "tarPlugin",
+                --                "tarPlugin",
                 "tohtml",
                 "tutor",
-                "zipPlugin",
-                "gzip"
+                --                "zipPlugin",
+                --                "gzip"
             },
         },
     },
@@ -118,12 +118,13 @@ local lazy_plugins = {
                     indent_blankline = { enabled = true },
                     leap = true,
                     neotest = true,
-                    diffview = true,
+                    --                    diffview = true,
+                    codediff = true,
                     nvim_surround = true,
                     render_markdown = true
                 },
             })
-            vim.cmd.colorscheme("catppuccin")
+            vim.cmd.colorscheme("catppuccin-nvim")
         end,
     },
     {
@@ -131,7 +132,7 @@ local lazy_plugins = {
         event = "VeryLazy",
         opts = {
             options = {
-                theme = "catppuccin",
+                theme = "catppuccin-nvim",
                 icons_enabled = false,
                 disabled_filetypes = { "neo-tree" },
                 ignore_focus = { "neo-tree" },
@@ -185,58 +186,58 @@ local lazy_plugins = {
     },
     {
         "nvim-treesitter/nvim-treesitter",
-        lazy = true,
+        branch = "main",
         event = { "BufRead", "BufEnter" },
         build = ":TSUpdate",
-        opts = {
-            -- One of "all", "maintained" (parsers with maintainers), or a list of languages
-            ensure_installed = {
-                "yaml",
-                "hcl",
-                "terraform",
-                "dockerfile",
-                "go",
-                "gomod",
-                "markdown",
-                "markdown_inline",
-                "vue"
-            },
-            -- Install languages synchronously (only applied to `ensure_installed`)
-            sync_install = false,
-
-            -- Automatically install missing parsers when entering buffer
-            -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-            auto_install = true,
-
-            -- List of parsers to ignore installing
-            ignore_install = { "javascript" },
-
-            highlight = {
-                -- `false` will disable the whole extension
-                enable = true,
-
-                -- list of language that will be disabled
-                --disable = { "c", "rust" },
-
-                -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-                -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-                -- Using this option may slow down your editor, and you may see some duplicate highlights.
-                -- Instead of true it can also be a list of languages
-                additional_vim_regex_highlighting = false,
-            },
-
-            indent = { enable = true, disable = { "yaml", "markdown" } },
-            autopairs = { enable = true },
-        },
+        --        opts = {
+        --            -- One of "all", "maintained" (parsers with maintainers), or a list of languages
+        --            ensure_installed = {
+        --                "yaml",
+        --                "hcl",
+        --                "terraform",
+        --                "dockerfile",
+        --                "go",
+        --                "gomod",
+        --                "markdown",
+        --                "markdown_inline",
+        --                "vue"
+        --            },
+        --            -- Install languages synchronously (only applied to `ensure_installed`)
+        --            sync_install = false,
+        --
+        --            -- Automatically install missing parsers when entering buffer
+        --            -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+        --            auto_install = true,
+        --
+        --            -- List of parsers to ignore installing
+        --            ignore_install = { "javascript" },
+        --
+        --            highlight = {
+        --                -- `false` will disable the whole extension
+        --                enable = true,
+        --
+        --                -- list of language that will be disabled
+        --                --disable = { "c", "rust" },
+        --
+        --                -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+        --                -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+        --                -- Using this option may slow down your editor, and you may see some duplicate highlights.
+        --                -- Instead of true it can also be a list of languages
+        --                additional_vim_regex_highlighting = false,
+        --            },
+        --
+        --            indent = { enable = true, disable = { "yaml", "markdown" } },
+        --            autopairs = { enable = true },
+        --        },
         config = function(_, opts)
-            require("nvim-treesitter.configs").setup(opts)
-            vim.treesitter.language.register("bash", "zsh")
+            --            require("nvim-treesitter.configs").setup(opts)
+            --            vim.treesitter.language.register("bash", "zsh")
         end,
     },
     {
         "nvim-telescope/telescope.nvim",
         lazy = true,
-        branch = "0.1.x",
+        version = '*',
         dependencies = {
             "nvim-lua/plenary.nvim",
             "olimorris/persisted.nvim",
@@ -422,22 +423,25 @@ local lazy_plugins = {
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-telescope/telescope.nvim",
-            "sindrets/diffview.nvim",
+            "esmuellert/codediff.nvim",
         },
         config = true
     },
     {
-        "sindrets/diffview.nvim",
-        lazy = true,
-        keys = {
-            { "<leader>dd", "<cmd>DiffviewOpen<cr>",        desc = "DiffviewOpen" },
-            { "<leader>dc", "<cmd>DiffviewClose<cr>",       desc = "DiffviewClose" },
-            { "<leader>dt", "<cmd>DiffviewToggleFiles<cr>", desc = "DiffviewToggleFiles" },
-            { "<leader>dh", "<cmd>DiffviewFileHistory<cr>", desc = "DiffviewFileHistory" },
-        },
-
-
+        "esmuellert/codediff.nvim",
+        dependencies = { "MunifTanjim/nui.nvim" },
+        cmd = "CodeDiff",
     },
+    --    {
+    --        "sindrets/diffview.nvim",
+    --        lazy = true,
+    --        keys = {
+    --            { "<leader>dd", "<cmd>DiffviewOpen<cr>",        desc = "DiffviewOpen" },
+    --            { "<leader>dc", "<cmd>DiffviewClose<cr>",       desc = "DiffviewClose" },
+    --            { "<leader>dt", "<cmd>DiffviewToggleFiles<cr>", desc = "DiffviewToggleFiles" },
+    --            { "<leader>dh", "<cmd>DiffviewFileHistory<cr>", desc = "DiffviewFileHistory" },
+    --        },
+    --    },
     {
         "neovim/nvim-lspconfig",
         -- no need to load the plugin, since we just want its configs, adding the
@@ -704,7 +708,7 @@ local lazy_plugins = {
         cmd = "Copilot",
         event = "InsertEnter",
         opts = {
-            suggestion = { enabled = false },
+            suggestion = { enabled = true },
             panel = { enabled = false },
             copilot_model = "gpt-41-copilot"
         },
@@ -721,7 +725,7 @@ local lazy_plugins = {
         },
         build = "make tiktoken",
         opts = {
-            -- See Configuration section for options
+            model = "claude-sonnet-4.6",
         },
     },
     {
@@ -908,7 +912,7 @@ require("lazy").setup(lazy_plugins, lazy_opts)
 -- # Key Mappings
 -- ## General
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
-vim.keymap.set("t", "<S-Esc>", "<C-\\><C-n>")
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
 vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = 1 }) end,
     { desc = "Move to the previous diagnostic in the buffer" })
@@ -972,7 +976,9 @@ vim.diagnostic.config {
         focusable = true
     },
     jump = {
-        float = true
+        on_jump = function()
+            vim.diagnostic.open_float({ border = "single", focusable = true })
+        end
     },
 
     virtual_lines = {
@@ -1085,6 +1091,25 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.wrap = false
     end,
 })
+
+-- ## Stop Copilot LSP on exit to prevent potential issues with hanging processes
+vim.api.nvim_create_autocmd("VimLeavePre", {
+    callback = function()
+        require("copilot.client").teardown()
+    end,
+    desc = "Stop Copilot LSP on exit",
+})
+
+-- ## Zoom in the split under the cursor when it's focused using Ctrl-W z, then zoom out when the same key combination is used again
+vim.api.nvim_create_autocmd("WinEnter", {
+    callback = function()
+        if vim.fn.winnr('$') == 1 then
+            vim.cmd("wincmd z")
+        end
+    end,
+    desc = "Zoom in the split under the cursor when it's focused",
+})
+
 
 
 -- # LSP Configuration
