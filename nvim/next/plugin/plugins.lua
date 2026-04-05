@@ -132,7 +132,6 @@ require("neo-tree").setup({
         "filesystem",
         "buffers",
         "git_status",
-        "diagnostics",
     },
     close_if_last_window = true,
     filesystem = {
@@ -158,13 +157,14 @@ require("neo-tree").setup({
     },
 })
 
+
+
 -- ## Load the rest  of the plugins after startup to improve startup time
 later(function()
     vim.pack.add({
         "https://github.com/rose-pine/neovim",
         "https://github.com/neogitOrg/neogit",
         "https://github.com/kylechui/nvim-surround",
-        "https://github.com/mrbjarksen/neo-tree-diagnostics.nvim",
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/nvim-pack/nvim-spectre",
         "https://github.com/AckslD/nvim-neoclip.lua",

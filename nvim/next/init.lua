@@ -56,6 +56,8 @@ vim.o.winborder = "rounded"
 vim.o.diffopt = "internal,filler,closeoff,algorithm:patience,indent-heuristic,linematch:40"
 vim.o.undofile = true
 vim.o.conceallevel = 2
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 -- ## Cmd Options
 vim.cmd.syntax("off")
 -- Enable Undotree

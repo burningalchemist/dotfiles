@@ -82,7 +82,7 @@
       "src": "https://github.com/rafamadriz/friendly-snippets"
     },
     "gitsigns.nvim": {
-      "rev": "07ff073b84d3ef48f286529c36658a65d1a64707",
+      "rev": "4e34ff26875b92167d47038bd83a11026d57dcd8",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "leap.nvim": {
