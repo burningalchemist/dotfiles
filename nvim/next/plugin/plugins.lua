@@ -1,18 +1,21 @@
 -- This file can be loaded by calling `lua require("plugins")` from your init.vim
 vim.pack.add({
+    { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
+
     "https://github.com/nvim-mini/mini.misc",
     "https://github.com/nvim-lua/plenary.nvim",
     "https://github.com/MunifTanjim/nui.nvim",
     "https://github.com/nvim-tree/nvim-web-devicons",
+    "https://github.com/nvim-mini/mini.icons",
     "https://github.com/j-hui/fidget.nvim",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/nvim-treesitter/nvim-treesitter",
 
-    "https://github.com/catppuccin/nvim",
+    "https://github.com/nvim-lualine/lualine.nvim",
+    "https://codeberg.org/comfysage/artio.nvim",
+    "https://github.com/nvim-neo-tree/neo-tree.nvim",
     "https://github.com/esmuellert/codediff.nvim",
     "https://github.com/lewis6991/gitsigns.nvim",
-    "https://github.com/nvim-neo-tree/neo-tree.nvim",
-    "https://github.com/nvim-lualine/lualine.nvim",
 })
 
 -- Load Misc early for utility functions and event handling
@@ -27,24 +30,19 @@ require("catppuccin").setup({
     transparent_background = false,
     integrations = {
         aerial = true,
-        cmp = true,
-        gitsigns = true,
-        neotree = true,
-        neogit = true,
         treesitter = true,
         treesitter_context = true,
         octo = true,
-        which_key = false,
-        indent_blankline = { enabled = true },
+        which_key = true,
         leap = true,
         neotest = true,
         codediff = true,
         nvim_surround = true,
-        render_markdown = true,
-        snacks = true
+        snacks = true,
+        fidget = true,
+
     },
 })
--- Catppuccin Theme
 vim.cmd.colorscheme("catppuccin-nvim")
 
 require("fidget").setup({
@@ -169,7 +167,6 @@ later(function()
         "https://github.com/mrbjarksen/neo-tree-diagnostics.nvim",
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/nvim-pack/nvim-spectre",
-        "https://github.com/folke/snacks.nvim",
         "https://github.com/AckslD/nvim-neoclip.lua",
         "https://github.com/stevearc/aerial.nvim",
         "https://github.com/MeanderingProgrammer/render-markdown.nvim",
@@ -177,36 +174,37 @@ later(function()
         "https://github.com/folke/which-key.nvim",
     })
 
-
-    --    require("telescope").setup({
-    --        defaults = {
-    --            file_ignore_patterns = {
-    --                ".git/",
-    --                ".cache",
-    --                "%.o",
-    --                "%.a",
-    --                "%.out",
-    --                "%.class",
-    --                "%.pdf",
-    --                "%.mkv",
-    --                "%.mp4",
-    --                "%.zip"
-    --            }
-    --        }
-    --    })
-
-    require("snacks").setup({
-        picker = {
-            enabled = true,
-            ui_select = true,       -- optional: replaces the default vim.ui.select
-            layout = {
-                preset = "default", -- or "vertical", "select", "vscode"
-            },
+    require("artio").setup({
+        opts = {
+            preselect = true, -- whether to preselect the first match
+            bottom = true, -- whether to draw the prompt at the bottom
+            shrink = true, -- whether the window should shrink to fit the matches
+            promptprefix = "", -- prefix for the prompt
+            prompt_title = true, -- whether to draw the prompt title
+            pointer = "", -- pointer for the selected match
+            marker = "│", -- prefix for marked items
+            infolist = { "list" }, -- index: [1] list: (4/5)
+            use_icons = true, -- requires mini.icons
         },
-        bigfile = { enabled = true },
-        quickfile = { enabled = true },
-        words = { enabled = true },
+        win = {
+            height = 12,
+            hidestatusline = false, -- works best with laststatus=3
+        },
+        -- NOTE: if you override the mappings, make sure to provide keys for all actions
+        mappings = {
+            ["<down>"] = "down",
+            ["<up>"] = "up",
+            ["<cr>"] = "accept",
+            ["<esc>"] = "cancel",
+            ["<tab>"] = "mark",
+            ["<c-g>"] = "togglelive",
+            ["<c-l>"] = "togglepreview",
+            ["<c-q>"] = "setqflist",
+            ["<m-q>"] = "setqflistmark",
+        },
     })
+    -- Use Artio for UI select and input
+    vim.ui.select = require("artio").select
 
     -- Make it load for markdown docs only
     require("render-markdown").setup({

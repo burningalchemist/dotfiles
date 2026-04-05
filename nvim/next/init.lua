@@ -2,7 +2,12 @@
 
 -- (!) Magic Optimizer
 vim.loader.enable()
-require('vim._core.ui2').enable({})
+require('vim._core.ui2').enable({ {
+    enable = true,
+    msg = {
+        target = "msg",
+    }
+} })
 
 -- # Local scoped functions
 local lsp = vim.lsp
@@ -78,28 +83,34 @@ end, { noremap = true, desc = "Detach TUI from the remote RPC server" })
 
 -- ## Toggle auto-wrapping by textwidth value
 vim.keymap.set("n", "<leader>tw", function()
-    local format_opts = vim.opt.formatoptions:get()
-    if format_opts.t == nil then
+    if vim.opt.formatoptions:get().t == nil then
         vim.opt.formatoptions:append("t")
-        vim.print("Text auto-wrapping is enabled")
+        vim.notify("Text auto-wrapping is enabled", vim.log.levels.INFO)
     else
         vim.opt.formatoptions:remove("t")
-        vim.print("Text auto-wrapping is disabled")
+        vim.notify("Text auto-wrapping is disabled", vim.log.levels.INFO)
     end
-end, { noremap = true, desc = "Toggle auto-wrapping by textwidth" })
+end, { desc = "Toggle auto-wrapping by textwidth" })
 
--- ## Snacks
-vim.keymap.set("n", "<leader>ff", function() Snacks.picker.files() end, { desc = "Find files" })
-vim.keymap.set("n", "<leader>fg", function() Snacks.picker.grep() end, { desc = "Live Grep" })
-vim.keymap.set("n", "<leader>fb", function() Snacks.picker.buffers() end, { desc = "Buffers" })
-vim.keymap.set("n", "<leader>fh", function() Snacks.picker.tags() end, { desc = "Tags" })
-vim.keymap.set("n", "<leader>fw", function() Snacks.picker.grep_buffers() end, { desc = "Grep in open buffers" })
-vim.keymap.set("n", "<leader>fr", function() Snacks.picker.recent() end, { desc = "Recent" })
-vim.keymap.set("n", "<leader>gd", function() Snacks.picker.lsp_definitions() end, { desc = "Go to Definition" })
-vim.keymap.set("n", "<leader>gr", function() Snacks.picker.lsp_references() end, { desc = "References" })
-vim.keymap.set("n", "<leader>sd", function() Snacks.picker.diagnostics() end, { desc = "Diagnostics" })
-vim.keymap.set("n", "<leader>sh", function() Snacks.picker.help() end, { desc = "Help" })
-vim.keymap.set("n", "<leader>sk", function() Snacks.picker.keymaps() end, { desc = "Keymaps" })
+-- ## Toggle between line numbers and relative line numbers
+vim.keymap.set("n", "<leader>tn", function()
+    local on = vim.wo.statuscolumn == ""
+    vim.opt.number = true
+    vim.opt.relativenumber = not on
+    vim.wo.statuscolumn = on and "%=%{v:lnum} " or ""
+end, { desc = "Toggle line numbers" })
+
+-- ## Artio
+vim.keymap.set("n", "<leader>fg", "<Plug>(artio-grep)", { desc = "Live grep" })
+vim.keymap.set("n", "<leader>ff", "<Plug>(artio-smart)", { desc = "Smart file picker" })
+vim.keymap.set("n", "<leader>fh", "<Plug>(artio-helptags)", { desc = "Tags" })
+vim.keymap.set("n", "<leader>fb", "<Plug>(artio-buffers)", { desc = "Buffers" })
+vim.keymap.set("n", "<leader>f/", "<Plug>(artio-buffergrep)", { desc = "Grep in open buffers" })
+vim.keymap.set("n", "<leader>fr", "<Plug>(artio-oldfiles)", { desc = "Recent files" })
+vim.keymap.set("n", "<leader>fd", "<Plug>(artio-diagnostics-buffer)", { desc = "Diagnostics for buffer" })
+-- ## Artio Custom Pickers
+vim.keymap.set("n", "<leader>gd", function() require('artio_lsp').definitions() end, { desc = "LSP Definitions" })
+vim.keymap.set("n", "<leader>gr", function() require('artio_lsp').references() end, { desc = "LSP References" })
 
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
