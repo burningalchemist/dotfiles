@@ -23,6 +23,7 @@ local misc = require('mini.misc')
 local later = function(f) misc.safely('later', f) end
 local on_event = function(ev, f) misc.safely('event:' .. ev, f) end
 
+
 -- Catppuccin theme
 require("catppuccin").setup({
     compile_path = vim.fn.stdpath "cache" .. "/catppuccin",
@@ -165,13 +166,13 @@ later(function()
         "https://github.com/rose-pine/neovim",
         "https://github.com/neogitOrg/neogit",
         "https://github.com/kylechui/nvim-surround",
-        "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/nvim-pack/nvim-spectre",
         "https://github.com/AckslD/nvim-neoclip.lua",
         "https://github.com/stevearc/aerial.nvim",
         "https://github.com/MeanderingProgrammer/render-markdown.nvim",
         "https://codeberg.org/andyg/leap.nvim",
         "https://github.com/folke/which-key.nvim",
+        "https://github.com/hat0uma/csvview.nvim",
     })
 
     require("artio").setup({
@@ -206,31 +207,22 @@ later(function()
     -- Use Artio for UI select and input
     vim.ui.select = require("artio").select
 
+
     -- Make it load for markdown docs only
     require("render-markdown").setup({
         yaml = { enabled = false },
     })
 
     require("csvview").setup({
-        parser = { comments = { "#", "//" } },
-        view = {
-            max_col_width = 50,
-            min_col_width = 8,
-            auto_resize = true,
-            display_mode = "border",
+        parser = {
+            delimiter = {
+                ft = {},
+            },
         },
-        keymaps = {
-            -- Text objects for selecting fields
-            textobject_field_inner = { "if", mode = { "o", "x" } },
-            textobject_field_outer = { "af", mode = { "o", "x" } },
-            -- Excel-like navigation:
-            -- Use <Tab> and <S-Tab> to move horizontally between fields.
-            -- Use <Enter> and <S-Enter> to move vertically between rows and place the cursor at the end of the field.
-            -- Note: In terminals, you may need to enable CSI-u mode to use <S-Tab> and <S-Enter>.
-            jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
-            jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
-            jump_next_row = { "<Enter>", mode = { "n", "v" } },
-            jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+
+        view = {
+            min_col_width = 8,
+            display_mode = "border",
         },
     })
 
