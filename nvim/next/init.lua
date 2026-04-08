@@ -266,9 +266,18 @@ vim.api.nvim_create_autocmd("FileType", {
 -- ## Stop Copilot LSP on exit to prevent potential issues with hanging processes
 vim.api.nvim_create_autocmd("VimLeavePre", {
     callback = function()
-        require("copilot.client").teardown()
+        local clients = vim.lsp.get_clients({ name = "copilot" })
+
+        for _, client in ipairs(clients) do
+            client.stop(client, true)
+        end
+
+        local copilot_client = package.loaded["copilot.client"]
+        if copilot_client and type(copilot_client.teardown) == "function" then
+            pcall(copilot_client.teardown)
+        end
     end,
-    desc = "Stop Copilot LSP on exit",
+    desc = "Graceful Copilot teardown",
 })
 
 -- ## Zoom in the split under the cursor when it's focused using Ctrl-W z, then zoom out when the same key combination is used again
