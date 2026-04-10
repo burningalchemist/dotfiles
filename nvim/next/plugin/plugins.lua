@@ -175,6 +175,7 @@ later(function()
         "https://github.com/hat0uma/csvview.nvim",
     })
 
+    require("mini.icons").setup()
     require("artio").setup({
         opts = {
             preselect = true, -- whether to preselect the first match
@@ -211,6 +212,7 @@ later(function()
     -- Make it load for markdown docs only
     require("render-markdown").setup({
         yaml = { enabled = false },
+        latex = { enabled = false },
     })
 
     require("csvview").setup({
@@ -276,10 +278,15 @@ on_event("InsertEnter", function()
         copilot_model = "gpt-41-copilot"
     })
     require("blink.cmp").setup({
-        --            keymap = { preset = "default" },
+        keymap = {
+            preset = "default",
+            ['<M-Esc>'] = { 'show', 'show_documentation', 'hide_documentation' },
+            ['C-Enter>'] = { 'select_and_accept', 'fallback' },
+            ['<C-Space>'] = false,
+            ['<C-y>'] = false,
+        },
         appearance = {
             nerd_font_variant = "mono",
-            use_nvim_cmp_as_default = true,
         },
         completion = {
             documentation = { auto_show = false },
