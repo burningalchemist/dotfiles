@@ -67,6 +67,14 @@ vim.cmd("packadd nvim.undotree")
 -- ## General
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+
+vim.keymap.set("n", "x", [["_x]])
+vim.keymap.set("n", "X", [["_X]])
+vim.keymap.set("n", "d", [["_d]])
+vim.keymap.set("n", "D", [["_D]])
+
+vim.keymap.set("x", "p", [["_dP]], { desc = "paste from yank register" })
+
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
 vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = 1 }) end,
     { desc = "Move to the previous diagnostic in the buffer" })
@@ -104,7 +112,6 @@ end, { desc = "Toggle line numbers" })
 
 -- ## Artio
 vim.keymap.set("n", "<leader>fg", "<Plug>(artio-grep)", { desc = "Live grep" })
-vim.keymap.set("n", "<leader>ff", "<Plug>(artio-smart)", { desc = "Smart file picker" })
 vim.keymap.set("n", "<leader>fh", "<Plug>(artio-helptags)", { desc = "Tags" })
 vim.keymap.set("n", "<leader>fb", "<Plug>(artio-buffers)", { desc = "Buffers" })
 vim.keymap.set("n", "<leader>f/", "<Plug>(artio-buffergrep)", { desc = "Grep in open buffers" })
@@ -113,7 +120,16 @@ vim.keymap.set("n", "<leader>fd", "<Plug>(artio-diagnostics-buffer)", { desc = "
 -- ## Artio Custom Pickers
 vim.keymap.set("n", "<leader>gd", function() require('artio_lsp').definitions() end, { desc = "LSP Definitions" })
 vim.keymap.set("n", "<leader>gr", function() require('artio_lsp').references() end, { desc = "LSP References" })
-
+vim.keymap.set("n", "<leader>ff", function()
+    local depth_limit = ""
+    if vim.fn.getcwd() == vim.fn.expand("~") then
+        depth_limit = "-d 3"
+    end
+    require('artio.builtins').smart({
+        findprg = [[ fd -p -a --color=never -E go -E Library ]] ..
+            depth_limit .. ' -- '
+    })
+end, { desc = "Smart picker" })
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
 vim.keymap.set("n", "<leader>nb", "<cmd>Neotree reveal_force_cwd toggle focus buffers right<cr>")
@@ -301,7 +317,8 @@ lsp.enable({
     "vue_ls",
     "basedpyright",
     "ruff",
-    "zls"
+    "zls",
+    "terraformls"
 })
 
 lsp.inlay_hint.enable()

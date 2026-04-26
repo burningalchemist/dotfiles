@@ -281,7 +281,7 @@ on_event("InsertEnter", function()
         keymap = {
             preset = "default",
             ['<M-Esc>'] = { 'show', 'show_documentation', 'hide_documentation' },
-            ['C-Enter>'] = { 'select_and_accept', 'fallback' },
+            ['C-CR>'] = { 'select_and_accept', 'fallback' },
             ['<C-Space>'] = false,
             ['<C-y>'] = false,
         },
