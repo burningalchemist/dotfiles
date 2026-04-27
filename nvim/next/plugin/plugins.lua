@@ -166,13 +166,13 @@ later(function()
         "https://github.com/rose-pine/neovim",
         "https://github.com/neogitOrg/neogit",
         "https://github.com/kylechui/nvim-surround",
-        "https://github.com/nvim-pack/nvim-spectre",
         "https://github.com/AckslD/nvim-neoclip.lua",
         "https://github.com/stevearc/aerial.nvim",
         "https://github.com/MeanderingProgrammer/render-markdown.nvim",
         "https://codeberg.org/andyg/leap.nvim",
         "https://github.com/folke/which-key.nvim",
         "https://github.com/hat0uma/csvview.nvim",
+        "https://github.com/stevearc/oil.nvim",
     })
 
     require("mini.icons").setup()
@@ -228,15 +228,6 @@ later(function()
         },
     })
 
-    require("spectre").setup({
-        replace_engine = {
-            ["sed"] = {
-                cmd = "sed",
-                args = { "-i", "", "-E", },
-            },
-        },
-    })
-
 
     require('neoclip').setup()
 
@@ -257,9 +248,28 @@ later(function()
             vim.keymap.set("n", ")", "<cmd>AerialNext<CR>", { buffer = bufnr })
         end,
     })
+
+    require("oil").setup({
+        default_file_explorer = false,
+        delete_to_trash = true,
+        skip_confirm_for_simple_edits = false,
+        columns = { 'icon', 'permissions', 'size' },
+        view_options = {
+            show_hidden = true,
+            is_always_hidden = function(name, _)
+                return name == '..' or name == '.git'
+            end,
+        },
+        win_options = {
+            signcolumn = "yes",
+            foldcolumn = "0",
+            conceallevel = 3,
+            concealcursor = "nvic",
+        },
+        watch_for_changes = true,
+        use_default_keymaps = true,
+    })
 end)
-
-
 
 on_event("InsertEnter", function()
     vim.pack.add({
@@ -319,49 +329,143 @@ on_event("InsertEnter", function()
     })
 end)
 
--- Package Updates with rebuilds
-vim.api.nvim_create_autocmd('PackChanged', {
-    callback = function(ev)
-        local name, kind = ev.data.spec.name, ev.data.kind
-        if name == 'nvim-treesitter' and kind == 'update' then
-            if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
-            vim.cmd('TSUpdate')
-        end
-        if name == 'copilotchat' and kind == 'update' then
-            if not ev.data.active then vim.cmd.packadd('copilotchat') end
-            vim.cmd('make tiktoken')
-        end
-    end
-})
+-- Neotest is a bit special because we want it to load only for test files or when explicitly triggered.
+local function setup_neotest()
+    -- Using package.loaded check because safely() ensures 'f' runs only once,
+    -- but it's good practice if this function is ever called manually.
+    if package.loaded['neotest'] then return end
 
--- Make TS install a parser for each new filetype. To only use specific filetypes change pattern to a list of preferred
--- filetypes (not languages).
+    -- Add to runtimepath via vim.pack
+    vim.pack.add({
+        { src = 'https://github.com/nvim-neotest/neotest' },
+        { src = 'https://github.com/nvim-neotest/nvim-nio' },
+        { src = 'https://github.com/nvim-lua/plenary.nvim' },
+        { src = 'https://github.com/antoinemadec/FixCursorHold.nvim' },
+        { src = 'https://github.com/nvim-treesitter/nvim-treesitter' },
+        -- Add your specific adapters here
+        { src = 'https://github.com/fredrikaverpil/neotest-golang' },
+    })
+
+    -- Refresh runtimepath so require() finds the new modules
+    vim.cmd('packloadall')
+
+    require('neotest').setup({
+        adapters = {
+            require('neotest-golang')({
+                root_files = { "go.mod", ".git" }
+            }),
+        },
+        discovery = {
+            enabled = true,
+        },
+        quickfix = {
+            open = false,
+            enabled = false,
+        },
+        status = {
+            enabled = true,
+            signs = true, -- Sign after function signature
+            virtual_text = false
+        },
+        icons = {
+            child_indent = "│",
+            child_prefix = "├",
+            collapsed = "─",
+            expanded = "╮",
+            failed = "✘",
+            final_child_indent = " ",
+            final_child_prefix = "╰",
+            non_collapsible = "─",
+            passed = "✓",
+            running = "",
+            running_animated = { "/", "|", "\\", "-", "/", "|", "\\", "-" },
+            skipped = "↓",
+            unknown = ""
+        },
+        floating = {
+            max_height = 0.9,
+            max_width = 0.9,
+            options = {}
+        },
+        summary = {
+            open = "botright vsplit | vertical resize 60",
+            mappings = {
+                attach = "a",
+                clear_marked = "M",
+                clear_target = "T",
+                debug = "d",
+                debug_marked = "D",
+                expand = { "<CR>", "<2-LeftMouse>" },
+                expand_all = "e",
+                jumpto = "i",
+                mark = "m",
+                next_failed = "J",
+                output = "o",
+                prev_failed = "K",
+                run = "r",
+                run_marked = "R",
+                short = "O",
+                stop = "u",
+                target = "t",
+                watch = "w"
+            },
+        },
+        highlights = {
+            adapter_name = "NeotestAdapterName",
+            border = "NeotestBorder",
+            dir = "NeotestDir",
+            expand_marker = "NeotestExpandMarker",
+            failed = "NeotestFailed",
+            file = "NeotestFile",
+            focused = "NeotestFocused",
+            indent = "NeotestIndent",
+            marked = "NeotestMarked",
+            namespace = "NeotestNamespace",
+            passed = "NeotestPassed",
+            running = "NeotestRunning",
+            select_win = "NeotestWinSelect",
+            skipped = "NeotestSkipped",
+            target = "NeotestTarget",
+            test = "NeotestTest",
+            unknown = "NeotestUnknown"
+        }
+    })
+
+    vim.schedule(function()
+        vim.cmd('doautocmd BufRead')
+    end)
+end
+
+-- Trigger A: For languages with built-in testing (like Go)
+-- This fires as soon as a .go file is opened and handles ftdetect.
+misc.safely('filetype:go', setup_neotest)
+
+-- Trigger B: For specific test file patterns (the "necessary files")
+-- Fires when opening files matching common test naming conventions.
+misc.safely('event:BufReadPost~*_test.go,test_*.py,*.spec.*,*.test.*', setup_neotest)
+
+-- In case we need it in a file that doesn't match the triggers above.
+vim.keymap.set('n', '<leader>tn', function()
+    -- We call setup_neotest() here; if safely() already ran it,
+    -- our package.loaded check prevents a double setup.
+    setup_neotest()
+    require('neotest').run.run()
+end, { desc = 'Run nearest test (Manual/Lazy)' })
+
+vim.keymap.set('n', '<leader>ts', function()
+    setup_neotest()
+    require('neotest').summary.toggle()
+end, { desc = 'Toggle Test Summary' })
+
+local group = vim.api.nvim_create_augroup("NeotestConfig", {})
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "*" },
-    callback = function(args)
-        local ft = vim.bo[args.buf].filetype
-        local lang = vim.treesitter.language.get_lang(ft)
-
-        if not vim.treesitter.language.add(lang) then
-            local available = vim.g.ts_available
-                or require("nvim-treesitter").get_available()
-            if not vim.g.ts_available then
-                vim.g.ts_available = available
-            end
-            if vim.tbl_contains(available, lang) then
-                require("nvim-treesitter").install(lang)
-            end
-        end
-
-        if vim.treesitter.language.add(lang) then
-            vim.treesitter.start(args.buf, lang)
-            -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-            -- vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-            -- vim.wo[0][0].foldmethod = "expr"
-        end
+    pattern = "neotest-output",
+    group = group,
+    callback = function(opts)
+        vim.keymap.set("n", "q", function()
+            pcall(vim.api.nvim_win_close, 0, true)
+        end, {
+            buffer = opts.buf,
+        })
     end,
 })
-
-vim.api.nvim_create_user_command("Snpick", function()
-    require('snacks').picker()
-end, { desc = "Open Snacks Pickers list" })
