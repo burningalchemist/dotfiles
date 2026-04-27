@@ -118,6 +118,7 @@ vim.keymap.set("n", "<leader>fd", "<Plug>(artio-diagnostics-buffer)", { desc = "
 -- ## Artio Custom Pickers
 vim.keymap.set("n", "<leader>gd", function() require('artio_lsp').definitions() end, { desc = "LSP Definitions" })
 vim.keymap.set("n", "<leader>gr", function() require('artio_lsp').references() end, { desc = "LSP References" })
+vim.keymap.set("n", "<leader>yl", function() require('artio_lsp').neoclip() end, { desc = "Yank history" })
 vim.keymap.set("n", "<leader>ff", function()
     local depth_limit = ""
     if vim.fn.getcwd() == vim.fn.expand("~") then

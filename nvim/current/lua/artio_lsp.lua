@@ -69,16 +69,93 @@ local function make_lsp_picker(method, prompt, extra_params)
     })
 end
 
-local lsp_pickers = {}
+local function make_neoclip_picker()
+    local ok, storage = pcall(require, "neoclip.storage")
+    if not ok then
+        vim.notify("[artio] Neoclip is not loaded.", vim.log.levels.WARN)
+        return
+    end
 
-function lsp_pickers.definitions()
+    local yanks = storage.get().yanks
+    if not yanks or #yanks == 0 then
+        vim.notify("[artio] No yanks found in Neoclip.", vim.log.levels.INFO)
+        return
+    end
+
+    local handlers = require("neoclip.handlers")
+    local items = {}
+    for i, entry in ipairs(yanks) do
+        local preview_text = table.concat(entry.contents, "\n")
+        local preview_lines = vim.split(preview_text, "\n")
+        local first_line = (entry.contents[1] or ""):gsub("\n", " ")
+        local display = first_line .. (#entry.contents > 1 and " ..." or "")
+
+        local type_label = entry.regtype == "l" and "linewise" or entry.regtype == "c" and "charwise" or "blockwise"
+
+        table.insert(items, {
+            idx = i,
+            text = preview_text,
+            line_count = #preview_lines,
+            display = display,
+            type_label = type_label,
+            entry = entry,
+            preview = { text = preview_text, ft = entry.filetype or "" },
+        })
+    end
+
+    local function paste_as(item, regtype)
+        vim.schedule(function()
+            local entry = vim.tbl_extend("force", {}, item.entry)
+            entry.regtype = regtype
+            handlers.paste(entry, "p")
+        end)
+    end
+
+    return artio.pick({
+        items = items,
+        prompt = "yank history",
+        fn = artio.sorter,
+        format_item = function(item)
+            return ("%s %s (%d lines)"):format(item.display, item.type_label, item.line_count)
+        end,
+        preview_item = function(item)
+            return vim.api.nvim_create_buf(false, true),
+                function(w)
+                    local buf = vim.api.nvim_win_get_buf(w)
+                    local lines = vim.split(item.preview.text or "", "\n")
+
+                    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+                    if item.preview and item.preview.ft then
+                        vim.bo[buf].filetype = item.preview.ft
+                    end
+
+                    vim.bo[buf].bufhidden = "wipe"
+                    vim.bo[buf].buftype = "nofile"
+                    vim.api.nvim_set_option_value("number", false, { scope = "local", win = w })
+                    vim.api.nvim_set_option_value("cursorline", true, { scope = "local", win = w })
+                end
+        end,
+        on_close = function(item, _)
+            paste_as(item, "c")
+        end,
+    })
+end
+
+local custom_pickers = {}
+
+function custom_pickers.definitions()
     return make_lsp_picker("textDocument/definition", "lsp definitions")
 end
 
-function lsp_pickers.references()
+function custom_pickers.references()
     return make_lsp_picker("textDocument/references", "lsp references", {
         context = { includeDeclaration = false },
     })
 end
 
-return lsp_pickers
+function custom_pickers.neoclip()
+    return make_neoclip_picker()
+end
+
+return custom_pickers

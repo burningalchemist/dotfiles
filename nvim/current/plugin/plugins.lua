@@ -486,10 +486,10 @@ local function setup_rustaceanvim()
         src = 'https://github.com/mrcjkb/rustaceanvim',
         version = vim.version.range('^9')
     } }
-   
+
     -- Refresh runtimepath so require() finds the new modules
     vim.cmd('packloadall')
- 
+
     vim.g.rustaceanvim = {
         tools = {
             float_win_config = {
