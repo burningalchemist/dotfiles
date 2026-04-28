@@ -67,19 +67,23 @@ vim.cmd("packadd nvim.undotree")
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
+-- ## Delete without yanking
 vim.keymap.set("n", "x", [["_x]])
 vim.keymap.set("n", "X", [["_X]])
 vim.keymap.set("n", "d", [["_d]])
 vim.keymap.set("n", "D", [["_D]])
 
-vim.keymap.set("x", "p", [["_dP]], { desc = "paste from yank register" })
+vim.keymap.set("x", "p", [["_dP]], { desc = "Paste from yank register" })
+vim.keymap.set("x", "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
 
-vim.keymap.set("n", "<space>e", vim.diagnostic.open_float, { desc = "Show diagnostics in a floating window" })
+vim.keymap.set("n", "<space>e", vim.diagnostic.open_float,
+    { desc = "Show diagnostics in a floating window" })
 vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = 1 }) end,
     { desc = "Move to the previous diagnostic in the buffer" })
 vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = -1 }) end,
     { desc = "Move to the next diagnostic in the buffer" })
-vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist, { desc = "Add diagnostics to the location list" })
+vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist,
+    { desc = "Add diagnostics to the location list" })
 
 -- ## Detach Neovim from the remote server
 vim.keymap.set("n", "<leader>rd", function()
@@ -115,11 +119,16 @@ vim.keymap.set("n", "<leader>fh", "<Plug>(artio-helptags)", { desc = "Tags" })
 vim.keymap.set("n", "<leader>fb", "<Plug>(artio-buffers)", { desc = "Buffers" })
 vim.keymap.set("n", "<leader>f/", "<Plug>(artio-buffergrep)", { desc = "Grep in open buffers" })
 vim.keymap.set("n", "<leader>fr", "<Plug>(artio-oldfiles)", { desc = "Recent files" })
-vim.keymap.set("n", "<leader>fd", "<Plug>(artio-diagnostics-buffer)", { desc = "Diagnostics for buffer" })
+vim.keymap.set("n", "<leader>fd", "<Plug>(artio-diagnostics-buffer)",
+    { desc = "Diagnostics for buffer" })
 -- ## Artio Custom Pickers
-vim.keymap.set("n", "<leader>gd", function() require('artio_lsp').definitions() end, { desc = "LSP Definitions" })
-vim.keymap.set("n", "<leader>gr", function() require('artio_lsp').references() end, { desc = "LSP References" })
-vim.keymap.set("n", "<leader>yl", function() require('artio_lsp').neoclip() end, { desc = "Yank history" })
+vim.keymap.set("n", "<leader>gd", function() require('artio_lsp').definitions() end, {
+    desc = "LSP Definitions" })
+vim.keymap.set("n", "<leader>gr", function() require('artio_lsp').references() end, {
+    desc = "LSP References" })
+vim.keymap.set("n", "<leader>yl", function() require('artio_lsp').neoclip() end, {
+    desc = "Yank history",
+})
 vim.keymap.set("n", "<leader>ff", function()
     local depth_limit = ""
     if vim.fn.getcwd() == vim.fn.expand("~") then
@@ -130,6 +139,7 @@ vim.keymap.set("n", "<leader>ff", function()
             depth_limit .. ' -- '
     })
 end, { desc = "Smart picker" })
+
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
 vim.keymap.set("n", "<leader>nb", "<cmd>Neotree reveal_force_cwd toggle focus buffers right<cr>")

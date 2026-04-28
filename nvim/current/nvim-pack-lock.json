@@ -25,7 +25,7 @@
       "src": "https://github.com/fang2hou/blink-copilot"
     },
     "blink.cmp": {
-      "rev": "03c11da4349d44ea582c363bc9c75fe0b3a5d2ef",
+      "rev": "b381784f40b07347baeb8707d26d5ed270b9c232",
       "src": "https://github.com/saghen/blink.cmp",
       "version": "'main'"
     },
@@ -147,7 +147,8 @@
     },
     "rustaceanvim": {
       "rev": "135f40f1243cf73963d34cf4694f8587cc07bee9",
-      "src": "https://github.com/mrcjkb/rustaceanvim"
+      "src": "https://github.com/mrcjkb/rustaceanvim",
+      "version": "9.0.0 - 10.0.0"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",
