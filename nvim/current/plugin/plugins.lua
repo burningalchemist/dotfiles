@@ -275,23 +275,29 @@ on_event("InsertEnter", function()
     vim.pack.add({
         "https://github.com/zbirenbaum/copilot.lua",
         "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
+        "https://github.com/saghen/blink.lib",
         "https://github.com/fang2hou/blink-copilot",
         "https://github.com/Kaiser-Yang/blink-cmp-git",
         {
-            src = 'https://github.com/Saghen/blink.cmp',
-            version = vim.version.range('*')
+            src = 'https://github.com/saghen/blink.cmp',
+            --            version = vim.version.range('*')
+            version = 'main',
         },
     })
+
     require("copilot").setup({
         suggestion = { enabled = false },
         panel = { enabled = true },
         copilot_model = "gpt-41-copilot"
     })
-    require("blink.cmp").setup({
+
+    local cmp = require('blink.cmp')
+    cmp.build():wait(60000)
+    cmp.setup({
         keymap = {
             preset = "default",
             ['<M-Esc>'] = { 'show', 'show_documentation', 'hide_documentation' },
-            ['C-CR>'] = { 'select_and_accept', 'fallback' },
+            ['<C-CR>'] = { 'select_and_accept', 'fallback' },
             ['<C-Space>'] = false,
             ['<C-y>'] = false,
         },
@@ -469,14 +475,6 @@ vim.api.nvim_create_autocmd("FileType", {
         })
     end,
 })
-
---        'mrcjkb/rustaceanvim',
---        version = '^6', -- Recommended
---        lazy = false,
---        init = function()
---            -- Configure rustaceanvim here
---        end
---    },
 
 local function setup_rustaceanvim()
     if package.loaded['rustaceanvim'] then return end

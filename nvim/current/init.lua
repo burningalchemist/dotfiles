@@ -33,6 +33,7 @@ vim.opt.list = false
 vim.opt.signcolumn = "yes"
 vim.opt.fixeol = false
 vim.opt.fillchars = "foldopen:,foldclose:,fold: ,foldsep: ,eob:~,diff:╱"
+vim.opt.completeopt:append("popup")
 vim.go.showcmd = true
 vim.go.hlsearch = true
 vim.go.incsearch = true
