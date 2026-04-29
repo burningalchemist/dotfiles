@@ -1,7 +1,20 @@
----@diagnostic disable: missing-fields, undefined-global
+---@ diagnostic disable : missing-fields, undefined-global
 local lsp = vim.lsp
 
+
 -- # LSP Configuration
+
+-- ## Custom LSP Servers not supported by nvim-lspconfig
+
+-- ### Terragrunt
+lsp.config.terragrunt_ls = {
+    cmd       = { "terragrunt-ls" },
+    filetypes = { "hcl" },
+    root_dir  = vim.fs.dirname(vim.fs.find({ '.terragrunt-version ', ' terragrunt.hcl ', ' root.hcl ' },
+            { upward = true })
+        [1]),
+}
+
 -- ## Common
 lsp.enable({
     "lua_ls",
@@ -11,14 +24,11 @@ lsp.enable({
     "basedpyright",
     "ruff",
     "zls",
-    "terraformls"
+    "terraformls",
+    "terragrunt_ls"
 })
 
 lsp.inlay_hint.enable()
-
-lsp.config('*', {
-    capabilities = capabilities
-})
 
 -- ## Lua
 lsp.config.lua_ls = {
@@ -26,8 +36,8 @@ lsp.config.lua_ls = {
         Lua = {
             version = "LuaJIT",
             path = {
-                'lua/?.lua',
-                'lua/?/init.lua'
+                ' lua / ?.lua ',
+                ' lua / ? / init.lua '
             },
             diagnostics = {
                 globals = { "vim" },
@@ -36,7 +46,7 @@ lsp.config.lua_ls = {
                 checkThirdParty = false,
                 library = {
                     vim.env.VIMRUNTIME,
-                    '${3rd}/luv/library'
+                    ' $ { 3 rd } / luv / library '
                 },
             },
             telemetry = {
@@ -50,15 +60,15 @@ lsp.config.lua_ls = {
 lsp.config.gopls = {
     settings = {
         gopls = {
-            hints = {
+            hints          = {
                 compositeLiteralFields = true,
-                constantValues = true,
-                parameterNames = true,
-                assignedVariables = true,
+                constantValues         = true,
+                parameterNames         = true,
+                assignedVariables      = true,
 
             },
-            staticcheck = true,
-            gofumpt = true,
+            staticcheck    = true,
+            gofumpt        = true,
             semanticTokens = true
         },
     }
@@ -71,8 +81,8 @@ lsp.config.vue_ls = {
             tsdk = "/Users/sergei/Library/pnpm/global/5/node_modules/typescript/lib",
         },
         vue = {
-            -- hybridMode currently doesn't work well when it comes to using DocumentSymbols with tsserver, or should
-            -- be configured better
+            --hybridMode currently doesn ' t work well when it comes to using DocumentSymbols with tsserver, or should
+            --be configured better
             hybridMode = false,
         }
     }
@@ -83,17 +93,17 @@ lsp.config.basedpyright = {
     settings = {
         basedpyright = {
             analysis = {
-                diagnosticMode = 'openFilesOnly',
-                typeCheckingMode = 'basic',
-                useLibraryCodeForTypes = true,
+                diagnosticMode              = ' openFilesOnly ',
+                typeCheckingMode            = ' basic ',
+                useLibraryCodeForTypes      = true,
                 diagnosticSeverityOverrides = {
-                    autoSearchPaths = true,
-                    enableTypeIgnoreComments = false,
-                    reportGeneralTypeIssues = 'none',
-                    reportArgumentType = 'none',
-                    reportUnknownMemberType = 'none',
-                    reportAssignmentType = 'none',
-                    reportAttributeAccessIssue = 'none'
+                    autoSearchPaths            = true,
+                    enableTypeIgnoreComments   = false,
+                    reportGeneralTypeIssues    = ' none ',
+                    reportArgumentType         = ' none ',
+                    reportUnknownMemberType    = ' none ',
+                    reportAssignmentType       = ' none ',
+                    reportAttributeAccessIssue = ' none '
                 },
             },
         },
@@ -104,7 +114,7 @@ lsp.config.basedpyright = {
 lsp.config.zls = {
     settings = {
         zig = {
-            semanticTokens = 'partial',
+            semanticTokens = ' partial ',
         },
     },
 }

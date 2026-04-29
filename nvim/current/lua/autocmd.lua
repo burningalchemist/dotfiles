@@ -58,6 +58,24 @@ vim.api.nvim_create_autocmd("UIEnter", {
 vim.api.nvim_create_autocmd('LspAttach', {
     group = vim.api.nvim_create_augroup('UserLspConfig', {}),
     callback = function(ev)
+        local client = vim.lsp.get_client_by_id(ev.data.client_id)
+        if not client then return end
+
+        -- Check if blink.cmp is loaded, if not try to load it. If loading fails, notify the user and exit the
+        -- callback.
+        if not package.loaded['blink.cmp'] then
+            local success, _ = pcall(vim.pack.add, { 'blink.lib', 'blink.cmp' })
+            if not success then
+                vim.notify("Failed to load blink.cmp for LSP capabilities", vim.log.levels.ERROR)
+                return
+            end
+        end
+        local my_caps = require('blink.cmp').get_lsp_capabilities()
+
+        -- 2. Safely merge capabilities
+        client.capabilities = vim.tbl_deep_extend('force', client.capabilities or {}, my_caps)
+
+
         -- Enable completion triggered by <c-x><c-o>
         vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
         -- Buffer local mappings.
@@ -143,6 +161,16 @@ vim.api.nvim_create_autocmd("FileType", {
         local ft = vim.bo[args.buf].filetype
         local lang = vim.treesitter.language.get_lang(ft)
 
+        -- Check if nvim-treesitter is loaded, if not try to load it. If loading fails, notify the user and exit the
+        -- callback.
+        if not package.loaded['nvim-treesitter'] then
+            local success, _ = pcall(vim.pack.add, { 'nvim-treesitter' })
+            if not success then
+                vim.notify("Failed to load nvim-treesitter", vim.log.levels.ERROR)
+                return
+            end
+        end
+
         if lang ~= nil and not vim.treesitter.language.add(lang) then
             local available = vim.g.ts_available
                 or require("nvim-treesitter").get_available()
@@ -162,7 +190,3 @@ vim.api.nvim_create_autocmd("FileType", {
         end
     end,
 })
-
-vim.api.nvim_create_user_command("Snpick", function()
-    require('snacks').picker()
-end, { desc = "Open Snacks Pickers list" })
