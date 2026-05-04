@@ -119,22 +119,18 @@ local function make_neoclip_picker()
             return ("%s %s (%d lines)"):format(item.display, item.type_label, item.line_count)
         end,
         preview_item = function(item)
-            return vim.api.nvim_create_buf(false, true),
-                function(w)
-                    local buf = vim.api.nvim_win_get_buf(w)
-                    local lines = vim.split(item.preview.text or "", "\n")
+            local buf = vim.api.nvim_create_buf(false, true)
 
-                    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+            vim.bo[buf].bufhidden = "wipe"
+            vim.bo[buf].buftype = "help"
 
-                    if item.preview and item.preview.ft then
-                        vim.bo[buf].filetype = item.preview.ft
-                    end
+            local lines = vim.split(item.preview.text or "", "\n")
+            vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 
-                    vim.bo[buf].bufhidden = "wipe"
-                    vim.bo[buf].buftype = "nofile"
-                    vim.api.nvim_set_option_value("number", false, { scope = "local", win = w })
-                    vim.api.nvim_set_option_value("cursorline", true, { scope = "local", win = w })
-                end
+            if item.preview and item.preview.ft then
+                vim.bo[buf].filetype = item.preview.ft
+            end
+            return { buf = buf }
         end,
         on_close = function(item, _)
             paste_as(item, "c")
