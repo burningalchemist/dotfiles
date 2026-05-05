@@ -278,6 +278,7 @@ on_event("InsertEnter", function()
         "https://github.com/saghen/blink.lib",
         "https://github.com/fang2hou/blink-copilot",
         "https://github.com/Kaiser-Yang/blink-cmp-git",
+        "https://github.com/onsails/lspkind.nvim",
         {
             src = 'https://github.com/saghen/blink.cmp',
             --            version = vim.version.range('*')
@@ -306,6 +307,17 @@ on_event("InsertEnter", function()
         },
         completion = {
             documentation = { auto_show = false },
+            menu = {
+                draw = {
+                    components = {
+                        kind_icon = {
+                            text = function(ctx)
+                                return require('lspkind').symbol_map[ctx.kind] or ''
+                            end,
+                        },
+                    },
+                },
+            },
         },
         sources = {
             default = { "git", "lsp", "path", "snippets", "buffer", "copilot" },
@@ -332,6 +344,8 @@ on_event("InsertEnter", function()
     })
     require("CopilotChat").setup({
         model = "claude-sonnet-4.6",
+
+
     })
 end)
 
@@ -345,7 +359,6 @@ local function setup_neotest()
     vim.pack.add({
         { src = 'https://github.com/nvim-neotest/neotest' },
         { src = 'https://github.com/nvim-neotest/nvim-nio' },
-        { src = 'https://github.com/nvim-lua/plenary.nvim' },
         { src = 'https://github.com/antoinemadec/FixCursorHold.nvim' },
         -- Add your specific adapters here
         { src = 'https://github.com/fredrikaverpil/neotest-golang' },

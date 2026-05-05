@@ -10,6 +10,7 @@ vim.keymap.set("n", "X", [["_X]])
 vim.keymap.set("x", "p", [["_dP]], { desc = "Paste from yank register" })
 vim.keymap.set("x", "<leader>y", [["+y]], { desc = "Yank to system clipboard" })
 
+-- ## Diagnostics
 vim.keymap.set("n", "<space>e", vim.diagnostic.open_float,
     { desc = "Show diagnostics in a floating window" })
 vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = 1 }) end,
