@@ -10,7 +10,7 @@ local lsp = vim.lsp
 lsp.config.terragrunt_ls = {
     cmd       = { "terragrunt-ls" },
     filetypes = { "hcl" },
-    root_dir  = vim.fs.dirname(vim.fs.find({ '.terragrunt-version ', ' terragrunt.hcl ', ' root.hcl ' },
+    root_dir  = vim.fs.dirname(vim.fs.find({ '.terragrunt-version ', 'terragrunt.hcl', 'root.hcl' },
             { upward = true })
         [1]),
 }
@@ -36,8 +36,8 @@ lsp.config.lua_ls = {
         Lua = {
             version = "LuaJIT",
             path = {
-                ' lua / ?.lua ',
-                ' lua / ? / init.lua '
+                'lua/?.lua',
+                'lua/?/init.lua'
             },
             diagnostics = {
                 globals = { "vim" },
@@ -46,7 +46,7 @@ lsp.config.lua_ls = {
                 checkThirdParty = false,
                 library = {
                     vim.env.VIMRUNTIME,
-                    ' $ { 3 rd } / luv / library '
+                    '${3rd}/luv/library'
                 },
             },
             telemetry = {
@@ -93,17 +93,17 @@ lsp.config.basedpyright = {
     settings = {
         basedpyright = {
             analysis = {
-                diagnosticMode              = ' openFilesOnly ',
-                typeCheckingMode            = ' basic ',
+                diagnosticMode              = 'openFilesOnly',
+                typeCheckingMode            = 'basic',
                 useLibraryCodeForTypes      = true,
                 diagnosticSeverityOverrides = {
                     autoSearchPaths            = true,
                     enableTypeIgnoreComments   = false,
-                    reportGeneralTypeIssues    = ' none ',
-                    reportArgumentType         = ' none ',
-                    reportUnknownMemberType    = ' none ',
-                    reportAssignmentType       = ' none ',
-                    reportAttributeAccessIssue = ' none '
+                    reportGeneralTypeIssues    = 'none',
+                    reportArgumentType         = 'none',
+                    reportUnknownMemberType    = 'none',
+                    reportAssignmentType       = 'none',
+                    reportAttributeAccessIssue = 'none'
                 },
             },
         },
@@ -114,7 +114,14 @@ lsp.config.basedpyright = {
 lsp.config.zls = {
     settings = {
         zig = {
-            semanticTokens = ' partial ',
+            semanticTokens = 'partial',
         },
     },
+}
+
+lsp.config.terraformls = {
+    on_attach = function(client, bufnr)
+        -- Disable semantic tokens to prevent conflicts with treesitter
+        client.server_capabilities.semanticTokensProvider = nil
+    end,
 }

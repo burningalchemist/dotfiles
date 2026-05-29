@@ -275,14 +275,16 @@ on_event("InsertEnter", function()
     vim.pack.add({
         "https://github.com/zbirenbaum/copilot.lua",
         "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
-        "https://github.com/saghen/blink.lib",
         "https://github.com/fang2hou/blink-copilot",
         "https://github.com/Kaiser-Yang/blink-cmp-git",
         "https://github.com/onsails/lspkind.nvim",
         {
-            src = 'https://github.com/saghen/blink.cmp',
-            --            version = vim.version.range('*')
-            version = 'main',
+            src = "https://github.com/saghen/blink.lib",
+            version = "220979f3fcd388a08990189bc3b4e82aa1637ce9"
+        },
+        {
+            src = "https://github.com/saghen/blink.cmp",
+            version = "0194153e0a5646097801578813bde085c94ecaef", -- version = 'main' is broken
         },
     })
 
@@ -312,7 +314,11 @@ on_event("InsertEnter", function()
                     components = {
                         kind_icon = {
                             text = function(ctx)
-                                return require('lspkind').symbol_map[ctx.kind] or ''
+                                local lspkind_icon = require('lspkind').symbol_map[ctx.kind]
+                                if lspkind_icon then
+                                    return lspkind_icon
+                                end
+                                return ctx.kind_icon or ""
                             end,
                         },
                     },
