@@ -15,7 +15,7 @@ vim.pack.add({
     "https://codeberg.org/comfysage/artio.nvim",
     "https://github.com/nvim-neo-tree/neo-tree.nvim",
     "https://github.com/esmuellert/codediff.nvim",
-    "https://github.com/lewis6991/gitsigns.nvim",
+    "https://github.com/lewis6991/gitsigns.nvim"
 })
 
 -- Load Misc early for utility functions and event handling
@@ -173,6 +173,7 @@ later(function()
         "https://github.com/folke/which-key.nvim",
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/stevearc/oil.nvim",
+        "https://github.com/pwntester/octo.nvim"
     })
 
     require("mini.icons").setup()
@@ -249,6 +250,10 @@ later(function()
         end,
     })
 
+    require("octo").setup({
+        picker = "default" -- which is 'artio'
+    })
+
     require("oil").setup({
         default_file_explorer = false,
         delete_to_trash = true,
@@ -280,18 +285,15 @@ on_event("InsertEnter", function()
         "https://github.com/onsails/lspkind.nvim",
         {
             src = "https://github.com/saghen/blink.lib",
-            version = "220979f3fcd388a08990189bc3b4e82aa1637ce9"
         },
         {
             src = "https://github.com/saghen/blink.cmp",
-            version = "0194153e0a5646097801578813bde085c94ecaef", -- version = 'main' is broken
         },
     })
 
     require("copilot").setup({
         suggestion = { enabled = false },
-        panel = { enabled = true },
-        copilot_model = "gpt-41-copilot"
+        panel = { enabled = false },
     })
 
     local cmp = require('blink.cmp')

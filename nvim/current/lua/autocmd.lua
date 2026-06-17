@@ -111,6 +111,14 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+-- ## Disable conceal in JSON files to prevent hiding of characters like quotes and brackets, which can make editing more difficult
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "json", "jsonc" },
+    callback = function()
+        vim.opt_local.conceallevel = 0
+    end,
+})
+
 -- ## Stop Copilot LSP on exit to prevent potential issues with hanging processes
 vim.api.nvim_create_autocmd("VimLeavePre", {
     callback = function()

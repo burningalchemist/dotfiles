@@ -13,7 +13,12 @@ lsp.config.terragrunt_ls = {
     root_dir  = vim.fs.dirname(vim.fs.find({ '.terragrunt-version ', 'terragrunt.hcl', 'root.hcl' },
             { upward = true })
         [1]),
+    on_attach = function(client, bufnr)
+        -- Disable semantic tokens to prevent conflicts with treesitter
+        client.server_capabilities.semanticTokensProvider = nil
+    end
 }
+
 
 -- ## Common
 lsp.enable({
@@ -25,7 +30,8 @@ lsp.enable({
     "ruff",
     "zls",
     "terraformls",
-    "terragrunt_ls"
+    "terragrunt_ls",
+    "dprint"
 })
 
 lsp.inlay_hint.enable()
@@ -119,9 +125,7 @@ lsp.config.zls = {
     },
 }
 
-lsp.config.terraformls = {
-    on_attach = function(client, bufnr)
-        -- Disable semantic tokens to prevent conflicts with treesitter
-        client.server_capabilities.semanticTokensProvider = nil
-    end,
+-- ## Dprint (JSON, YAML, Markdown, TOML, Dockerfiles formatter)
+lsp.config.dprint = {
+    filetypes = { 'json', 'jsonc', 'markdown', 'toml', 'yaml', 'dockerfile' }
 }

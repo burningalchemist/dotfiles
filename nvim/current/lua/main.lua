@@ -84,3 +84,6 @@ vim.o.foldlevel = 99
 vim.o.foldlevelstart = 99
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+-- ## Treesitter parser to filetype custom mapping
+vim.treesitter.language.register("markdown", "octo")
