@@ -1,7 +1,6 @@
 -- # NVim Settings
 -- ## Global Options
 vim.opt.mouse:append("a")
-vim.opt.rtp:append("~/.fzf")
 vim.opt.expandtab = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
@@ -41,11 +40,15 @@ vim.wo.relativenumber = true
 vim.wo.scrolloff = 3
 vim.wo.cursorline = true
 vim.o.winborder = "rounded"
+vim.o.pumborder = "rounded"
 vim.o.diffopt = "internal,filler,closeoff,algorithm:patience,indent-heuristic,linematch:40"
 vim.o.undofile = true
 vim.o.conceallevel = 2
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_netrwSettings = 1
+vim.g.loaded_netrwFileHandlers = 1
+vim.g.loaded_tutor_mode_plugin = 1
 -- ## Cmd Options
 vim.cmd.syntax("off")
 -- Enable Undotree

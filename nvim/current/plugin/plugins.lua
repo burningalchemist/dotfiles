@@ -10,11 +10,9 @@ vim.pack.add({
     "https://github.com/j-hui/fidget.nvim",
     "https://github.com/neovim/nvim-lspconfig",
     "https://github.com/nvim-treesitter/nvim-treesitter",
-
     "https://github.com/nvim-lualine/lualine.nvim",
     "https://codeberg.org/comfysage/artio.nvim",
     "https://github.com/nvim-neo-tree/neo-tree.nvim",
-    "https://github.com/esmuellert/codediff.nvim",
     "https://github.com/lewis6991/gitsigns.nvim"
 })
 
@@ -160,7 +158,7 @@ require("neo-tree").setup({
 
 
 
--- ## Load the rest  of the plugins after startup to improve startup time
+-- ## Load the rest of the plugins after startup to improve startup time
 later(function()
     vim.pack.add({
         "https://github.com/rose-pine/neovim",
@@ -173,7 +171,8 @@ later(function()
         "https://github.com/folke/which-key.nvim",
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/stevearc/oil.nvim",
-        "https://github.com/pwntester/octo.nvim"
+        "https://github.com/pwntester/octo.nvim",
+        "https://github.com/esmuellert/codediff.nvim"
     })
 
     require("mini.icons").setup()

@@ -25,11 +25,11 @@
       "src": "https://github.com/fang2hou/blink-copilot"
     },
     "blink.cmp": {
-      "rev": "39682a9c737920578cf68887c21eaa4ce3845c67",
+      "rev": "26ec6f0a1a8101eb134f8b8568d6099be015fe70",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
-      "rev": "08ac9a9b873d3c7376e408a36c40c4131e2809ce",
+      "rev": "e8cd0d6b0ffac8e1cd33ce66df70a8b24808b4cd",
       "src": "https://github.com/saghen/blink.lib"
     },
     "catppuccin": {
