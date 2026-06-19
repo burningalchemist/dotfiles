@@ -12,6 +12,7 @@ require('vim._core.ui2').enable({ {
 -- Import lua modules
 require("main")
 require("keymaps")
-require("autocmd")
+require("plugins")
 require("custom_func")
+require("autocmd")
 require("lsp")

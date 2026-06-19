@@ -4,8 +4,7 @@ local lsp = vim.lsp
 
 -- # LSP Configuration
 
--- ## Custom LSP Servers not supported by nvim-lspconfig
-
+-- ## Custom LSP Servers not supported by nvim-lspconfig (yet?)
 -- ### Terragrunt
 lsp.config.terragrunt_ls = {
     cmd       = { "terragrunt-ls" },
@@ -13,12 +12,14 @@ lsp.config.terragrunt_ls = {
     root_dir  = vim.fs.dirname(vim.fs.find({ '.terragrunt-version ', 'terragrunt.hcl', 'root.hcl' },
             { upward = true })
         [1]),
-    on_attach = function(client, bufnr)
+    on_attach = function(client)
         -- Disable semantic tokens to prevent conflicts with treesitter
         client.server_capabilities.semanticTokensProvider = nil
     end
 }
 
+-- ## Inlay Hints
+lsp.inlay_hint.enable()
 
 -- ## Common
 lsp.enable({
@@ -33,8 +34,6 @@ lsp.enable({
     "terragrunt_ls",
     "dprint"
 })
-
-lsp.inlay_hint.enable()
 
 -- ## Lua
 lsp.config.lua_ls = {
@@ -127,5 +126,5 @@ lsp.config.zls = {
 
 -- ## Dprint (JSON, YAML, Markdown, TOML, Dockerfiles formatter)
 lsp.config.dprint = {
-    filetypes = { 'json', 'jsonc', 'markdown', 'toml', 'yaml', 'dockerfile' }
+    filetypes = { 'json', 'jsonc', 'markdown', 'toml', 'yaml', 'dockerfile' },
 }

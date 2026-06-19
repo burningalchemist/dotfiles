@@ -16,6 +16,7 @@ vim.pack.add({
     "https://github.com/lewis6991/gitsigns.nvim"
 })
 
+
 -- Load Misc early for utility functions and event handling
 local misc = require('mini.misc')
 local later = function(f) misc.safely('later', f) end
@@ -44,10 +45,15 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme("catppuccin-nvim")
 
+
+
 require("fidget").setup({
     notification = {
         -- Automatically override vim.notify() with Fidget
         override_vim_notify = true,
+    },
+    progress = {
+        ignore = { "basedpyright" }, -- Explicitly silence basedpyright status logs
     },
 })
 
@@ -172,9 +178,34 @@ later(function()
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/stevearc/oil.nvim",
         "https://github.com/pwntester/octo.nvim",
-        "https://github.com/esmuellert/codediff.nvim"
+        "https://github.com/esmuellert/codediff.nvim",
+        "https://github.com/milanglacier/minuet-ai.nvim"
     })
 
+    require("minuet").setup({
+        provider = 'openai_fim_compatible',
+        n_completions = 1, -- recommend for local model for resource saving
+        -- I recommend beginning with a small context window size and incrementally
+        -- expanding it, depending on your local computing power. A context window
+        -- of 512, serves as an good starting point to estimate your computing
+        -- power. Once you have a reliable estimate of your local computing power,
+        -- you should adjust the context window to a larger value.
+        context_window = 512,
+        provider_options = {
+            openai_fim_compatible = {
+                -- For Windows users, TERM may not be present in environment variables.
+                -- Consider using APPDATA instead.
+                api_key = 'TERM',
+                name = 'Ollama',
+                end_point = 'http://localhost:11434/v1/completions',
+                model = 'qwen2.5-coder:3b-base',
+                optional = {
+                    max_tokens = 56,
+                    top_p = 0.9,
+                },
+            },
+        },
+    })
     require("mini.icons").setup()
     require("artio").setup({
         opts = {
@@ -294,9 +325,8 @@ on_event("InsertEnter", function()
         suggestion = { enabled = false },
         panel = { enabled = false },
     })
-
     local cmp = require('blink.cmp')
-    cmp.build():wait(60000)
+    cmp.build():pwait()
     cmp.setup({
         keymap = {
             preset = "default",
@@ -304,9 +334,14 @@ on_event("InsertEnter", function()
             ['<C-CR>'] = { 'select_and_accept', 'fallback' },
             ['<C-Space>'] = false,
             ['<C-y>'] = false,
+            ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
+            ['<M-y>'] = require('minuet').make_blink_map(),
         },
         appearance = {
             nerd_font_variant = "mono",
+        },
+        signature = {
+            enabled = true,
         },
         completion = {
             documentation = { auto_show = false },
@@ -327,8 +362,17 @@ on_event("InsertEnter", function()
             },
         },
         sources = {
-            default = { "git", "lsp", "path", "snippets", "buffer", "copilot" },
+            default = { "lsp", "path", "snippets", "buffer", "git", "copilot", "minuet" },
             providers = {
+                minuet = {
+                    -- Minuet is a provider that fetches suggestions from a local-hosted model.
+                    name = 'minuet',
+                    enabled = false,
+                    module = 'minuet.blink',
+                    async = true,
+                    timeout_ms = 3000,
+                    score_offset = 0, -- Gives minuet higher priority among suggestions
+                },
                 copilot = {
                     name = "copilot",
                     module = "blink-copilot",

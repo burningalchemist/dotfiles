@@ -64,8 +64,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- Check if blink.cmp is loaded, if not try to load it. If loading fails, notify the user and exit the
         -- callback.
         if not package.loaded['blink.cmp'] then
-            local success, _ = pcall(vim.pack.add,
-                { 'https://github.com/saghen/blink.lib', 'https://github.com/saghen/blink.cmp' })
+            local success, _ = pcall(function()
+                vim.pack.add({ 'blink.lib', 'blink.cmp' })
+            end)
             if not success then
                 vim.notify("Failed to load blink.cmp for LSP capabilities", vim.log.levels.ERROR)
                 return
@@ -173,7 +174,7 @@ vim.api.nvim_create_autocmd("FileType", {
         -- Check if nvim-treesitter is loaded, if not try to load it. If loading fails, notify the user and exit the
         -- callback.
         if not package.loaded['nvim-treesitter'] then
-            local success, _ = pcall(vim.pack.add, { 'https://github.com/nvim-treesitter/nvim-treesitter' })
+            local success, _ = pcall(vim.pack.add, { 'nvim-treesitter' })
             if not success then
                 vim.notify("Failed to load nvim-treesitter", vim.log.levels.ERROR)
                 return

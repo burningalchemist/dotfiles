@@ -95,5 +95,3 @@ vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle symb
 
 -- ## Vimpack
 vim.keymap.set("n", "<leader>vu", function() vim.pack.update() end, { desc = "Update packages" })
-
-

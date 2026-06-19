@@ -1,7 +1,7 @@
 {
   "plugins": {
     "CopilotChat.nvim": {
-      "rev": "ab5cf12ea8b8c8af82feb616bf7fbac096edc0e0",
+      "rev": "f0c2a23ab79dc295f5e0eef0d8b587a39020c852",
       "src": "https://github.com/CopilotC-Nvim/CopilotChat.nvim"
     },
     "FixCursorHold.nvim": {
@@ -25,11 +25,11 @@
       "src": "https://github.com/fang2hou/blink-copilot"
     },
     "blink.cmp": {
-      "rev": "26ec6f0a1a8101eb134f8b8568d6099be015fe70",
+      "rev": "50c696b5c3ca359305f8e241e9458b0d2d787540",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
-      "rev": "e8cd0d6b0ffac8e1cd33ce66df70a8b24808b4cd",
+      "rev": "5876dd95deeb70aadbe9f1c0b7117a135061cdac",
       "src": "https://github.com/saghen/blink.lib"
     },
     "catppuccin": {
@@ -53,7 +53,7 @@
       "src": "https://github.com/j-hui/fidget.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "25050e4ed39e628282831d4cbecb1850454ce915",
+      "rev": "2038c666bd9d8a0b7349a0b6ee00dc83104b9ecf",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "leap.nvim": {
@@ -69,19 +69,23 @@
       "src": "https://github.com/nvim-lualine/lualine.nvim"
     },
     "mini.icons": {
-      "rev": "ac38c983aed0a2bd32a65ca3e2348e12e58ca292",
+      "rev": "e56797f90192d81f1fda02e662fc3e8e3d775027",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
     "mini.misc": {
-      "rev": "317e20ad3bdf0f4535f9a7efdae7fbe5c4439f29",
+      "rev": "29e2b6838b3f1399d5062f6d735ebc79eb8765f4",
       "src": "https://github.com/nvim-mini/mini.misc"
+    },
+    "minuet-ai.nvim": {
+      "rev": "d29dec4c36be2b41aa10e70938b7b09a03f0bdba",
+      "src": "https://github.com/milanglacier/minuet-ai.nvim"
     },
     "neo-tree.nvim": {
       "rev": "1b4c40051f2623d0a7dcf19d5b74b997b97b0a9a",
       "src": "https://github.com/nvim-neo-tree/neo-tree.nvim"
     },
     "neogit": {
-      "rev": "5d1b65d6215928e941e1a6a4e76e02fd45ada31f",
+      "rev": "828dd073e6ad180fdb5c1603c7ad7f68a384c40b",
       "src": "https://github.com/neogitOrg/neogit"
     },
     "neotest": {
@@ -101,7 +105,7 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-lspconfig": {
-      "rev": "a683e0ddf0cf64c6cd689e18ffb480ade3c162b7",
+      "rev": "bfcc0171a43f22afa61d927ffe9fcb6cb85dc99e",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-neoclip.lua": {
@@ -125,7 +129,7 @@
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
     "octo.nvim": {
-      "rev": "7fed87415c401954f73401bbed0fd736b9611e7c",
+      "rev": "66b8eeca8e18213a19742f8a031e6947c738342f",
       "src": "https://github.com/pwntester/octo.nvim"
     },
     "oil.nvim": {
@@ -137,7 +141,7 @@
       "src": "https://github.com/nvim-lua/plenary.nvim"
     },
     "render-markdown.nvim": {
-      "rev": "5adf0895310c1904e5abfaad40a2baad7fe44a07",
+      "rev": "f422cb5c6855f150e2ddcfaf44e7157b98b34f6a",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "rustaceanvim": {

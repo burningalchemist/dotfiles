@@ -34,6 +34,7 @@ vim.go.title = true
 vim.go.listchars = "tab:▏ ,trail:▓"
 --vim.go.listchars = "tab:▒░,trail:▓,nbsp:░"
 vim.g.mapleader = "\\"
+
 -- ## Window Options
 vim.wo.number = true
 vim.wo.relativenumber = true
@@ -49,6 +50,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.g.loaded_netrwSettings = 1
 vim.g.loaded_netrwFileHandlers = 1
 vim.g.loaded_tutor_mode_plugin = 1
+
 -- ## Cmd Options
 vim.cmd.syntax("off")
 -- Enable Undotree
@@ -73,7 +75,7 @@ vim.diagnostic.config {
 
     virtual_lines = {
         current_line = true,
-        severity = { min = vim.diagnostic.severity.WARN },
+        severity = { min = vim.diagnostic.severity.HINT },
         format = function(diagnostic)
             return string.format("%s: %s", diagnostic.source, diagnostic.message)
         end
