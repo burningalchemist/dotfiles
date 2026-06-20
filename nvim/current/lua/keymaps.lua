@@ -95,3 +95,18 @@ vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle symb
 
 -- ## Vimpack
 vim.keymap.set("n", "<leader>vu", function() vim.pack.update() end, { desc = "Update packages" })
+
+-- Create user command to load copilotchat plugin when we type CopilotChat command
+vim.api.nvim_create_user_command("CChat", function()
+    if not package.loaded["CopilotChat"] then
+        local success, _ = pcall(vim.pack.add, { "https://github.com/CopilotC-Nvim/CopilotChat.nvim" })
+        if not success then
+            vim.notify("Failed to load CopilotChat plugin", vim.log.levels.ERROR)
+            return
+        end
+    end
+    local chat = require("CopilotChat")
+    chat.toggle({ model = "claude-sonnet-4.6" })
+end, {
+    desc = "Open Copilot Chat",
+})

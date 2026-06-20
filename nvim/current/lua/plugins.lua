@@ -239,29 +239,14 @@ later(function()
     -- Use Artio for UI select and input
     vim.ui.select = require("artio").select
 
-
     -- Make it load for markdown docs only
     require("render-markdown").setup({
         yaml = { enabled = false },
         latex = { enabled = false },
     })
 
-    require("csvview").setup({
-        parser = {
-            delimiter = {
-                ft = {},
-            },
-        },
-
-        view = {
-            min_col_width = 8,
-            display_mode = "border",
-        },
-    })
-
 
     require('neoclip').setup()
-
     require('leap').opts.preview = function(ch0, ch1, ch2)
         return not (
             ch1:match('%s')
@@ -309,7 +294,6 @@ end)
 on_event("InsertEnter", function()
     vim.pack.add({
         "https://github.com/zbirenbaum/copilot.lua",
-        "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
         "https://github.com/fang2hou/blink-copilot",
         "https://github.com/Kaiser-Yang/blink-cmp-git",
         "https://github.com/onsails/lspkind.nvim",
@@ -371,7 +355,7 @@ on_event("InsertEnter", function()
                     module = 'minuet.blink',
                     async = true,
                     timeout_ms = 3000,
-                    score_offset = 0, -- Gives minuet higher priority among suggestions
+                    score_offset = -100,
                 },
                 copilot = {
                     name = "copilot",
@@ -391,12 +375,7 @@ on_event("InsertEnter", function()
                 },
             }
         },
-        fuzzy = { implementation = "prefer_rust_with_warning" },
-    })
-    require("CopilotChat").setup({
-        model = "claude-sonnet-4.6",
-
-
+        fuzzy = { implementation = "rust" },
     })
 end)
 
@@ -611,3 +590,17 @@ local function setup_rustaceanvim()
 end
 
 misc.safely('filetype:rust', setup_rustaceanvim)
+misc.safely('filetype:csv', function()
+    require("csvview").setup({
+        parser = {
+            delimiter = {
+                ft = { csv = "," },
+            },
+        },
+
+        view = {
+            min_col_width = 8,
+            display_mode = "border",
+        },
+    })
+end)
