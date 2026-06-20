@@ -49,6 +49,11 @@ local function make_lsp_picker(method, prompt, extra_params)
         end,
         on_close = function(loc, _)
             vim.schedule(function()
+                if vim.api.nvim_buf_is_loaded(loc.bufnr) then
+                    vim.api.nvim_set_current_buf(loc.bufnr)
+                    vim.api.nvim_win_set_cursor(0, { loc.lnum, loc.col })
+                    return
+                end
                 vim.cmd.edit(loc.filename)
                 vim.api.nvim_win_set_cursor(0, { loc.lnum, loc.col })
             end)
