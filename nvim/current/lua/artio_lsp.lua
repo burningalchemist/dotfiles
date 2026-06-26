@@ -1,5 +1,4 @@
 local artio = require("artio")
-local utils = require("artio.utils")
 local config = require("artio.config")
 
 local base_dir = vim.fn.getcwd(0)
@@ -68,9 +67,6 @@ local function make_lsp_picker(method, prompt, extra_params)
         get_icon = config.get().opts.use_icons and function(item)
             return require("mini.icons").get("file", item.v.filename)
         end or nil,
-        actions = utils.make_setqflistactions(function(item)
-            return { filename = item.v.filename, lnum = item.v.lnum, col = item.v.col + 1, text = item.text }
-        end),
     })
 end
 
@@ -142,6 +138,8 @@ local function make_neoclip_picker()
         end,
     })
 end
+
+---
 
 local custom_pickers = {}
 

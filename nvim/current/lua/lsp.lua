@@ -39,20 +39,15 @@ lsp.enable({
 lsp.config.lua_ls = {
     settings = {
         Lua = {
-            version = "LuaJIT",
-            path = {
-                'lua/?.lua',
-                'lua/?/init.lua'
+            runtime = {
+                version = "LuaJIT",
             },
             diagnostics = {
-                globals = { "vim" },
+                globals = { "vim", "use" },
             },
             workspace = {
                 checkThirdParty = false,
-                library = {
-                    vim.env.VIMRUNTIME,
-                    '${3rd}/luv/library'
-                },
+                library = vim.api.nvim_get_runtime_file('', true),
             },
             telemetry = {
                 enable = false,
@@ -70,7 +65,6 @@ lsp.config.gopls = {
                 constantValues         = true,
                 parameterNames         = true,
                 assignedVariables      = true,
-
             },
             staticcheck    = true,
             gofumpt        = true,

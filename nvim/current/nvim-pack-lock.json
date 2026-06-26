@@ -13,7 +13,7 @@
       "src": "https://github.com/stevearc/aerial.nvim"
     },
     "artio.nvim": {
-      "rev": "ff2b4351004f3b512525276d554dc6f0cd412a14",
+      "rev": "52a074e6a15780df350c03b5c7ab47f706fe6da8",
       "src": "https://codeberg.org/comfysage/artio.nvim"
     },
     "blink-cmp-git": {
@@ -25,15 +25,15 @@
       "src": "https://github.com/fang2hou/blink-copilot"
     },
     "blink.cmp": {
-      "rev": "2c36633f51d23a33cf9336ba1a91dc877bad5b23",
-      "src": "https://github.com/saghen/blink.cmp"
+      "rev": "bda905a4bf1b3edfa708b0be193b8c63d8620c96",
+      "src": "blink.cmp"
     },
     "blink.lib": {
       "rev": "5876dd95deeb70aadbe9f1c0b7117a135061cdac",
-      "src": "https://github.com/saghen/blink.lib"
+      "src": "blink.lib"
     },
     "catppuccin": {
-      "rev": "49a926655a2f5579e9c276470fc300baaa49e524",
+      "rev": "e068ab5f8261f23f6f71ffd8791ae40315b77b9c",
       "src": "https://github.com/catppuccin/nvim"
     },
     "codediff.nvim": {
@@ -49,7 +49,7 @@
       "src": "https://github.com/hat0uma/csvview.nvim"
     },
     "fidget.nvim": {
-      "rev": "82404b196e73a00b1727a91903beef5ddc319d22",
+      "rev": "6f793b2bcd2d35e201c09520f698bb763220908a",
       "src": "https://github.com/j-hui/fidget.nvim"
     },
     "gitsigns.nvim": {
@@ -80,12 +80,16 @@
       "rev": "d29dec4c36be2b41aa10e70938b7b09a03f0bdba",
       "src": "https://github.com/milanglacier/minuet-ai.nvim"
     },
+    "mjolnr.nvim": {
+      "rev": "461790c079ec8c5862608d2fc64a5dffc776fcb0",
+      "src": "file:///Users/sergei/Projects/mjolnr.nvim"
+    },
     "neo-tree.nvim": {
       "rev": "1b4c40051f2623d0a7dcf19d5b74b997b97b0a9a",
       "src": "https://github.com/nvim-neo-tree/neo-tree.nvim"
     },
     "neogit": {
-      "rev": "828dd073e6ad180fdb5c1603c7ad7f68a384c40b",
+      "rev": "43ea1a0854052e583f647e0b35879f0158a70a78",
       "src": "https://github.com/neogitOrg/neogit"
     },
     "neotest": {
@@ -93,7 +97,7 @@
       "src": "https://github.com/nvim-neotest/neotest"
     },
     "neotest-golang": {
-      "rev": "f0ba097d4af098c036aac24cd647480d0d301ad2",
+      "rev": "542cbaf37f1233a2723ccd64ce8ed7e3acbd192b",
       "src": "https://github.com/fredrikaverpil/neotest-golang"
     },
     "neovim": {
@@ -105,7 +109,7 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-lspconfig": {
-      "rev": "bfcc0171a43f22afa61d927ffe9fcb6cb85dc99e",
+      "rev": "3371bf298c1f56efc26771ee961f461176958fb5",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-neoclip.lua": {

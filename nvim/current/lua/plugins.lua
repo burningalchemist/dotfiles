@@ -22,7 +22,6 @@ local misc = require('mini.misc')
 local later = function(f) misc.safely('later', f) end
 local on_event = function(ev, f) misc.safely('event:' .. ev, f) end
 
-
 -- Catppuccin theme
 require("catppuccin").setup({
     compile_path = vim.fn.stdpath "cache" .. "/catppuccin",
@@ -223,17 +222,20 @@ later(function()
             height = 12,
             hidestatusline = false, -- works best with laststatus=3
         },
-        -- NOTE: if you override the mappings, make sure to provide keys for all actions
         mappings = {
             ["<down>"] = "down",
             ["<up>"] = "up",
             ["<cr>"] = "accept",
             ["<esc>"] = "cancel",
             ["<tab>"] = "mark",
-            ["<c-g>"] = "togglelive",
+            ["<m-e>"] = "togglelive",
             ["<c-l>"] = "togglepreview",
             ["<c-q>"] = "setqflist",
             ["<m-q>"] = "setqflistmark",
+            ["<c-s>"] = "split",
+            ["<c-v>"] = "vsplit",
+            ["<c-t>"] = "tabnew",
+            ["<c-k>"] = "openurl",
         },
     })
     -- Use Artio for UI select and input
