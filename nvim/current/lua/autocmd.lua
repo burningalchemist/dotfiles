@@ -65,7 +65,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
         -- callback.
         if not package.loaded['blink.cmp'] then
             local success, _ = pcall(function()
-                vim.pack.add({ 'blink.lib', 'blink.cmp' })
+                vim.cmd.packadd('blink.lib')
+                vim.cmd.packadd('blink.cmp')
             end)
             if not success then
                 vim.notify("Failed to load blink.cmp for LSP capabilities", vim.log.levels.ERROR)
@@ -114,7 +115,7 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- ## Disable conceal in JSON files to prevent hiding of characters like quotes and brackets, which can make editing more difficult
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "json", "jsonc" },
+    pattern = { "json", "jsonc", "json5" },
     callback = function()
         vim.opt_local.conceallevel = 0
     end,
@@ -147,6 +148,15 @@ vim.api.nvim_create_autocmd("WinEnter", {
     desc = "Zoom in the split under the cursor when it's focused",
 })
 
+-- resize splits if window got resized
+vim.api.nvim_create_autocmd({ "VimResized" }, {
+    callback = function()
+        local current_tab = vim.fn.tabpagenr()
+        vim.cmd("tabdo wincmd =")
+        vim.cmd("tabnext " .. current_tab)
+    end,
+})
+
 
 -- Package Updates with rebuilds
 vim.api.nvim_create_autocmd('PackChanged', {
@@ -156,8 +166,8 @@ vim.api.nvim_create_autocmd('PackChanged', {
             if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
             vim.cmd('TSUpdate')
         end
-        if name == 'copilotchat' and kind == 'update' then
-            if not ev.data.active then vim.cmd.packadd('copilotchat') end
+        if name == 'CopilotChat' and kind == 'update' then
+            if not ev.data.active then vim.cmd.packadd('CopilotChat') end
             vim.cmd('make tiktoken')
         end
     end
@@ -174,7 +184,7 @@ vim.api.nvim_create_autocmd("FileType", {
         -- Check if nvim-treesitter is loaded, if not try to load it. If loading fails, notify the user and exit the
         -- callback.
         if not package.loaded['nvim-treesitter'] then
-            local success, _ = pcall(vim.pack.add, { 'nvim-treesitter' })
+            local success, _ = pcall(vim.cmd.packadd, 'nvim-treesitter')
             if not success then
                 vim.notify("Failed to load nvim-treesitter", vim.log.levels.ERROR)
                 return

@@ -26,11 +26,11 @@
     },
     "blink.cmp": {
       "rev": "bda905a4bf1b3edfa708b0be193b8c63d8620c96",
-      "src": "blink.cmp"
+      "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
       "rev": "5876dd95deeb70aadbe9f1c0b7117a135061cdac",
-      "src": "blink.lib"
+      "src": "https://github.com/saghen/blink.lib"
     },
     "catppuccin": {
       "rev": "e068ab5f8261f23f6f71ffd8791ae40315b77b9c",
@@ -81,11 +81,11 @@
       "src": "https://github.com/milanglacier/minuet-ai.nvim"
     },
     "mjolnr.nvim": {
-      "rev": "461790c079ec8c5862608d2fc64a5dffc776fcb0",
+      "rev": "7804b8eb98eb2befa6ec7781ad4d3c3386349133",
       "src": "file:///Users/sergei/Projects/mjolnr.nvim"
     },
     "neo-tree.nvim": {
-      "rev": "1b4c40051f2623d0a7dcf19d5b74b997b97b0a9a",
+      "rev": "b01ee1769144c4491ea44bc329cb84040e9793be",
       "src": "https://github.com/nvim-neo-tree/neo-tree.nvim"
     },
     "neogit": {

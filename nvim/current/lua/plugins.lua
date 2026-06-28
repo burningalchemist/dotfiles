@@ -44,15 +44,13 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme("catppuccin-nvim")
 
-
-
 require("fidget").setup({
     notification = {
         -- Automatically override vim.notify() with Fidget
         override_vim_notify = true,
     },
     progress = {
-        ignore = { "basedpyright" }, -- Explicitly silence basedpyright status logs
+        ignore = { "basedpyright", "lua_ls" }, -- Explicitly silence basedpyright status logs
     },
 })
 

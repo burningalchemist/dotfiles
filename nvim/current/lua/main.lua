@@ -21,7 +21,7 @@ vim.opt.list = false
 vim.opt.signcolumn = "yes"
 vim.opt.fixeol = false
 vim.opt.fillchars = "foldopen:,foldclose:,fold: ,foldsep: ,eob:~,diff:╱"
-vim.opt.completeopt:append("popup")
+vim.opt.completeopt = "menu,menuone,noselect,popup"
 vim.go.showcmd = true
 vim.go.hlsearch = true
 vim.go.incsearch = true
@@ -54,7 +54,7 @@ vim.g.loaded_tutor_mode_plugin = 1
 -- ## Cmd Options
 vim.cmd.syntax("off")
 -- Enable Undotree
-vim.cmd("packadd nvim.undotree")
+vim.cmd.packadd("nvim.undotree")
 
 
 -- # Extra Settings
