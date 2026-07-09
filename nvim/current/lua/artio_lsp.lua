@@ -23,18 +23,40 @@ local function resolve_locs(results)
     return locs
 end
 
+local function await_lsp_request(buf, method, params)
+    local thread = coroutine.running()
+    assert(thread, "Must be called inside an active coroutine thread")
+
+    vim.lsp.buf_request(buf, method, params, function(err, results, ctx)
+        coroutine.resume(thread, err, results, ctx)
+    end)
+
+    return coroutine.yield()
+end
+
 local function make_lsp_picker(method, prompt, extra_params)
     local win = vim.api.nvim_get_current_win()
     local buf = vim.api.nvim_win_get_buf(win)
     local params = vim.lsp.util.make_position_params(win, 'utf-8')
-    vim.tbl_extend("force", params, extra_params or {})
+    params = vim.tbl_extend("force", params, extra_params or {})
 
-    local results = vim.lsp.buf_request_sync(buf, method, params, 2000)
-    local locs = resolve_locs(results)
+    local err, results, ctx = await_lsp_request(buf, method, params)
 
+    if err then
+        vim.notify("[artio] LSP Error: " .. tostring(err.message), vim.log.levels.ERROR)
+        return
+    end
+
+    local locs = resolve_locs({ [ctx.client_id] = { result = results } })
     if #locs == 0 then
         vim.notify("[artio] No " .. prompt .. " found.", vim.log.levels.INFO)
         return
+    end
+
+    for _, loc in ipairs(locs) do
+        if loc.bufnr and not vim.api.nvim_buf_is_loaded(loc.bufnr) then
+            vim.fn.bufload(loc.bufnr)
+        end
     end
 
     return artio.pick({
@@ -139,18 +161,34 @@ local function make_neoclip_picker()
     })
 end
 
----
-
 local custom_pickers = {}
 
 function custom_pickers.definitions()
-    return make_lsp_picker("textDocument/definition", "lsp definitions")
+    return coroutine.wrap(function()
+        make_lsp_picker("textDocument/definition", "lsp definitions")
+    end)()
+end
+
+function custom_pickers.declarations()
+    return coroutine.wrap(function()
+        make_lsp_picker("textDocument/declaration", "lsp declarations")
+    end)()
+end
+
+function custom_pickers.implementations()
+    return coroutine.wrap(function()
+        make_lsp_picker("textDocument/implementation", "lsp implementations")
+    end)()
 end
 
 function custom_pickers.references()
-    return make_lsp_picker("textDocument/references", "lsp references", {
-        context = { includeDeclaration = false },
-    })
+    return coroutine.wrap(function()
+        make_lsp_picker("textDocument/references", "lsp references", {
+            context = {
+                includeDeclaration = true
+            }
+        })
+    end)()
 end
 
 function custom_pickers.neoclip()

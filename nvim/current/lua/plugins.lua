@@ -1,7 +1,8 @@
 -- This file can be loaded by calling `lua require("plugins")` from your init.vim
 vim.pack.add({
-    { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
-
+    { src = "https://github.com/catppuccin/nvim",        name = "catppuccin" },
+    --    "https://github.com/burningalchemist/mjolnr.nvim",
+    { src = "file:///Users/sergei/Projects/mjolnr.nvim", name = "mjolnr.nvim" },
     "https://github.com/nvim-mini/mini.misc",
     "https://github.com/nvim-lua/plenary.nvim",
     "https://github.com/MunifTanjim/nui.nvim",
@@ -9,9 +10,12 @@ vim.pack.add({
     "https://github.com/nvim-mini/mini.icons",
     "https://github.com/j-hui/fidget.nvim",
     "https://github.com/neovim/nvim-lspconfig",
-    "https://github.com/nvim-treesitter/nvim-treesitter",
+    "https://github.com/neovim-treesitter/treesitter-parser-registry",
+    "https://github.com/neovim-treesitter/nvim-treesitter",
+    "https://github.com/stevearc/quicker.nvim",
     "https://github.com/nvim-lualine/lualine.nvim",
-    "https://codeberg.org/comfysage/artio.nvim",
+    --    "https://codeberg.org/comfysage/artio.nvim",
+    { src = "file:///Users/sergei/Projects/artio.nvim", name = 'artio.nvim', version = 'fix/current_on_quit' },
     "https://github.com/nvim-neo-tree/neo-tree.nvim",
     "https://github.com/lewis6991/gitsigns.nvim"
 })
@@ -53,6 +57,8 @@ require("fidget").setup({
         ignore = { "basedpyright", "lua_ls" }, -- Explicitly silence basedpyright status logs
     },
 })
+
+require("quicker").setup()
 
 require("lualine").setup({
     options = {
@@ -122,7 +128,7 @@ require("gitsigns").setup({
         map('n', '<leader>hd', gitsigns.diffthis, { desc = "Diff this" })
         map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this (reverse)" })
         map('n', '<leader>hw', gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
-        map('n', '<leader>gb', gitsigns.blame, { desc = "Open git blame" })
+        map('n', '<leader>hb', gitsigns.blame, { desc = "Open git blame" })
 
         -- Text object
         map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
@@ -165,6 +171,7 @@ require("neo-tree").setup({
 later(function()
     vim.pack.add({
         "https://github.com/rose-pine/neovim",
+        "https://github.com/rockorager/radix.nvim",
         "https://github.com/neogitOrg/neogit",
         "https://github.com/kylechui/nvim-surround",
         "https://github.com/AckslD/nvim-neoclip.lua",
@@ -238,6 +245,8 @@ later(function()
     })
     -- Use Artio for UI select and input
     vim.ui.select = require("artio").select
+
+
 
     -- Make it load for markdown docs only
     require("render-markdown").setup({
@@ -591,6 +600,14 @@ end
 
 misc.safely('filetype:rust', setup_rustaceanvim)
 misc.safely('filetype:csv', function()
+    if not package.loaded['csvview.nvim'] then
+        local success, _ = pcall(vim.cmd.packadd, 'csvview.nvim')
+        if not success then
+            vim.notify("Failed to load csvview.nvim", vim.log.levels.ERROR)
+            return
+        end
+    end
+
     require("csvview").setup({
         parser = {
             delimiter = {

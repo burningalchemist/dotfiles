@@ -15,7 +15,7 @@ vim.keymap.set("n", "<space>e", vim.diagnostic.open_float,
     { desc = "Show diagnostics in a floating window" })
 vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = 1 }) end,
     { desc = "Move to the previous diagnostic in the buffer" })
-vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = -1 }) end,
+vim.keymap.set("n", "{d", function() vim.diagnostic.jump({ count = -1 }) end,
     { desc = "Move to the next diagnostic in the buffer" })
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist,
     { desc = "Add diagnostics to the location list" })
@@ -49,18 +49,23 @@ vim.keymap.set("n", "<leader>tn", function()
 end, { desc = "Toggle line numbers" })
 
 -- ## Artio
-vim.keymap.set("n", "<leader>fg", "<Plug>(artio-grep)", { desc = "Live grep" })
+-- TODO: artio-grep needs to become async so that it can be used without pain.
+--vim.keymap.set("n", "<leader>fg", "<Plug>(artio-grep)", { desc = "Live grep" })
 vim.keymap.set("n", "<leader>fh", "<Plug>(artio-helptags)", { desc = "Tags" })
 vim.keymap.set("n", "<leader>fb", "<Plug>(artio-buffers)", { desc = "Buffers" })
-vim.keymap.set("n", "<leader>f/", "<Plug>(artio-buffergrep)", { desc = "Grep in open buffers" })
+vim.keymap.set("n", "<leader>fg", "<Plug>(artio-buffergrep)", { desc = "Grep in open buffers" })
 vim.keymap.set("n", "<leader>fr", "<Plug>(artio-oldfiles)", { desc = "Recent files" })
-vim.keymap.set("n", "<leader>fd", "<Plug>(artio-diagnostics-buffer)",
-    { desc = "Diagnostics for buffer" })
+vim.keymap.set("n", "<leader>gg", "<Plug>(artio-diagnostics-buffer)",
+    { desc = "LSP Diagnostics (buffer)" })
 -- ## Artio Custom Pickers
 vim.keymap.set("n", "<leader>gd", function() require('artio_lsp').definitions() end, {
     desc = "LSP Definitions" })
 vim.keymap.set("n", "<leader>gr", function() require('artio_lsp').references() end, {
     desc = "LSP References" })
+vim.keymap.set("n", "<leader>gi", function() require('artio_lsp').implementations() end, {
+    desc = "LSP Implementations" })
+vim.keymap.set("n", "<leader>gD", function() require('artio_lsp').declarations() end, {
+    desc = "LSP Implementations" })
 vim.keymap.set("n", "<leader>yl", function() require('artio_lsp').neoclip() end, {
     desc = "Yank history",
 })
@@ -74,6 +79,8 @@ vim.keymap.set("n", "<leader>ff", function()
             depth_limit .. ' -- '
     })
 end, { desc = "Smart picker" })
+-- ## Custom Ripgrep search using libuv pipes dumping output to quickfix list
+vim.keymap.set("n", "<leader>fe", RgSearch, { desc = "Grep everywhere" })
 
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
@@ -91,6 +98,7 @@ vim.keymap.set({ 'n', 'x', 'o' }, 's', '<Plug>(leap)')
 vim.keymap.set('n', 'S', '<Plug>(leap-from-window)')
 
 -- ## Aerial
+vim.keymap.del("n", "gO") -- Remove default mapping for document symbols as we use Aerial instead
 vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle symbols" })
 
 -- ## Vimpack

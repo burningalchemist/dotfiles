@@ -86,24 +86,23 @@ vim.api.nvim_create_autocmd('LspAttach', {
         local opts = function(desc)
             return { buffer = ev.buf, desc = desc }
         end
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts("Jump to the symbol declaration"))
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
         vim.keymap.set('n', 'K', function() vim.lsp.buf.hover({ max_width = 100 }) end,
-            opts("Display info about the symbol"))
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts("List symbol implementations"))
-        vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts("Jump to the type definition of the symbol"))
-        vim.keymap.set('n', '<space>d', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
-        vim.keymap.set('n', '<space>rn', LspRename, opts("Rename all references of the symbol"))
-        vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts("Select an available code action"))
-        --        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts("Show all references to the symbol in quickfix list"))
-        vim.keymap.set('n', '<space>f', function()
-            vim.lsp.buf.format { async = true }
-        end, opts("Format code with the attached language"))
+            opts("Display symbol information"))
+        vim.keymap.set('n', '<space>ld', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
+        vim.keymap.set('n', '<space>lt', vim.lsp.buf.type_definition, opts("Jump to the symbol type definition"))
+        vim.keymap.set('n', '<space>li', vim.lsp.buf.implementation, opts("Jump to the symbol implementation"))
+        vim.keymap.set('n', '<space>lr', vim.lsp.buf.references, opts("Jump to the symbol references"))
+        vim.keymap.set('n', '<space>ln', vim.lsp.buf.rename, opts("Rename all symbol references"))
+        vim.keymap.set({ 'n', 'v' }, '<space>lc', vim.lsp.buf.code_action, opts("Select an available code action"))
+        vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end,
+            opts("Format code with the attached language"))
         vim.keymap.set('i', '<C-s>',
             function() vim.lsp.buf.signature_help({ title = 'Signature', max_width = 100 }) end,
             opts("Show the signature help for the symbol"))
     end,
 })
+
+
 
 -- ## Disable line wrapping in markdown files
 vim.api.nvim_create_autocmd("FileType", {

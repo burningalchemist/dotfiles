@@ -1,5 +1,7 @@
 -- # Custom functions
+
 -- ## Float input prompt
+---@ diagnostic disable: unused-function,unused-local
 local function float_input(opts, on_confirm)
     local buf = vim.api.nvim_create_buf(false, true)
     vim.bo[buf].buftype = "prompt"
@@ -57,32 +59,85 @@ local function count(edit)
     return instances, files
 end
 
--- ## Float Window Rename
-function LspRename()
-    local curr = vim.fn.expand("<cword>")
-    float_input({ prompt = " Rename symbol › ", default = curr }, function(new_name)
-        if not new_name or new_name == "" or new_name == curr then return end
+-- ## Ripgrep search using libuv pipes dumping output to quickfix list
+local function rgqf(search_term)
+    if not search_term or search_term == "" then
+        return
+    end
 
-        local client = vim.lsp.get_clients({ bufnr = 0 })[1]
-        if not client then return end
-        local enc = client.offset_encoding or "utf-16"
-        local params = {
-            textDocument = vim.lsp.util.make_text_document_params(0),
-            position = vim.lsp.util.make_position_params(0, enc).position,
-            newName = new_name,
-        }
-        vim.lsp.buf_request(0, "textDocument/rename", params, function(err, res)
-            if err or not res then return end
-            vim.lsp.util.apply_workspace_edit(res, client.offset_encoding)
-            local n, f = count(res)
-            vim.notify(string.format(
-                "%d occurrence%s renamed in %d file%s%s",
-                n,
-                n == 1 and "" or "s",
-                f,
-                f == 1 and "" or "s",
-                f > 0 and ".  :wa to save" or ""
-            ))
+    local qf_title = "Ripgrep to qflist: " .. search_term
+    -- Clear quickfix list immediately
+    vim.fn.setqflist({}, ' ', { title = qf_title, items = {} })
+
+    -- Initialize libuv pipes for stdout and stderr
+    local stdout = vim.uv.new_pipe(false)
+    local stderr = vim.uv.new_pipe(false)
+
+    local chunks = {}
+    local err_chunks = {}
+
+    local cmd = "rg"
+    local args = { "--vimgrep", "--no-heading", "--no-messages", "--", search_term, "." }
+
+    -- Spawn the process asynchronously
+    local handle, pid
+    handle, pid = vim.uv.spawn(cmd, {
+        args = args,
+        stdio = { nil, stdout, stderr }, -- stdin (nil), stdout pipe, stderr pipe
+        cwd = vim.fn.getcwd()
+    }, function(code, signal)            -- On exit callback
+        -- Close process handle and pipe streams
+        stdout:read_stop()
+        stderr:read_stop()
+        stdout:close()
+        stderr:close()
+        handle:close()
+
+        -- Schedule UI updates back to the Neovim main event loop
+        vim.schedule(function()
+            if code == 0 or code == 1 then
+                local full_output = table.concat(chunks)
+                local lines = vim.split(full_output, "\n", { trimempty = true })
+
+                vim.fn.setqflist({}, 'r', { title = qf_title, lines = lines })
+                vim.cmd("copen")
+
+                vim.notify(string.format("Found %d matches.", #lines), vim.log.levels.INFO)
+            else
+                local err_output = table.concat(err_chunks)
+                vim.notify(string.format("Ripgrep failed (Code %d): %s", code, err_output), vim.log.levels.ERROR)
+            end
         end)
+    end)
+
+    -- If the process failed to even start
+    if not handle then
+        vim.notify("Failed to spawn ripgrep: " .. tostring(pid), vim.log.levels.ERROR)
+        return
+    end
+
+    -- Start reading streaming data from stdout pipe asynchronously
+    vim.uv.read_start(stdout, function(err, data)
+        assert(not err, err)
+        if data then
+            table.insert(chunks, data)
+        end
+    end)
+
+    -- Start reading streaming data from stderr pipe asynchronously
+    vim.uv.read_start(stderr, function(err, data)
+        assert(not err, err)
+        if data then
+            table.insert(err_chunks, data)
+        end
+    end)
+end
+
+-- Exported function to prompt user for a search term and call rgqf
+function RgSearch()
+    vim.ui.input({ prompt = "Ripgrep term: " }, function(input)
+        if input then
+            rgqf(input)
+        end
     end)
 end

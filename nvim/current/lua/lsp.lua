@@ -80,8 +80,8 @@ lsp.config.vue_ls = {
             tsdk = "/Users/sergei/Library/pnpm/global/5/node_modules/typescript/lib",
         },
         vue = {
-            --hybridMode currently doesn ' t work well when it comes to using DocumentSymbols with tsserver, or should
-            --be configured better
+            -- hybridMode currently doesn't work well when it comes to using DocumentSymbols with tsserver, or should be
+            -- configured better
             hybridMode = false,
         }
     }

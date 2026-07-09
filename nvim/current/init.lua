@@ -1,5 +1,6 @@
 ---@diagnostic disable: missing-fields, undefined-global
 
+
 -- (!) Magic Optimizer
 vim.loader.enable()
 require('vim._core.ui2').enable({ {
@@ -11,8 +12,8 @@ require('vim._core.ui2').enable({ {
 
 -- Import lua modules
 require("main")
-require("keymaps")
 require("custom_func")
+require("keymaps")
 require("plugins")
 require("autocmd")
 require("lsp")
