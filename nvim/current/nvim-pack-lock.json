@@ -13,9 +13,8 @@
       "src": "https://github.com/stevearc/aerial.nvim"
     },
     "artio.nvim": {
-      "rev": "f564d6be59f0f59fde7dd9169a91fbf0d290996e",
-      "src": "file:///Users/sergei/Projects/artio.nvim",
-      "version": "'fix/current_on_quit'"
+      "rev": "52a074e6a15780df350c03b5c7ab47f706fe6da8",
+      "src": "https://codeberg.org/comfysage/artio.nvim"
     },
     "blink-cmp-git": {
       "rev": "d3f2a9067ab028e779d08e61bf0b054939011316",

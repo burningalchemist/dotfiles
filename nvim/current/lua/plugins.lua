@@ -13,8 +13,7 @@ vim.pack.add({
     "https://github.com/neovim-treesitter/nvim-treesitter",
     "https://github.com/stevearc/quicker.nvim",
     "https://github.com/nvim-lualine/lualine.nvim",
-    --    "https://codeberg.org/comfysage/artio.nvim",
-    { src = "file:///Users/sergei/Projects/artio.nvim", name = 'artio.nvim', version = 'fix/current_on_quit' },
+    "https://codeberg.org/comfysage/artio.nvim",
     "https://github.com/nvim-neo-tree/neo-tree.nvim",
     "https://github.com/lewis6991/gitsigns.nvim"
 })

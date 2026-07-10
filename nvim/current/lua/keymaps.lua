@@ -54,25 +54,26 @@ end, { desc = "Toggle line numbers" })
 
 -- ## Artio
 -- TODO: artio-grep needs to become async so that it can be used without pain.
-vim.keymap.set("n", "<leader>fe", "<Plug>(artio-grep)", { desc = "Live grep" })
 vim.keymap.set("n", "<leader>fb", "<Plug>(artio-buffers)", { desc = "Buffers" })
 vim.keymap.set("n", "<leader>fg", "<Plug>(artio-buffergrep)", { desc = "Grep in open buffers" })
 vim.keymap.set("n", "<leader>fr", "<Plug>(artio-oldfiles)", { desc = "Recent files" })
 vim.keymap.set("n", "<leader>gg", "<Plug>(artio-diagnostics-buffer)",
     { desc = "LSP Diagnostics (buffer)" })
 -- ## Artio Custom Pickers
-vim.keymap.set("n", "<leader>gd", function() require('artio_lsp').definitions() end, {
+vim.keymap.set("n", "<leader>fe", function() require('artio_ext').livegrep() end, {
+    desc = "Live grep" })
+vim.keymap.set("n", "<leader>gd", function() require('artio_ext').definitions() end, {
     desc = "LSP Definitions" })
-vim.keymap.set("n", "<leader>gr", function() require('artio_lsp').references() end, {
+vim.keymap.set("n", "<leader>gr", function() require('artio_ext').references() end, {
     desc = "LSP References" })
-vim.keymap.set("n", "<leader>gi", function() require('artio_lsp').implementations() end, {
+vim.keymap.set("n", "<leader>gi", function() require('artio_ext').implementations() end, {
     desc = "LSP Implementations" })
-vim.keymap.set("n", "<leader>gD", function() require('artio_lsp').declarations() end, {
+vim.keymap.set("n", "<leader>gD", function() require('artio_ext').declarations() end, {
     desc = "LSP Implementations" })
-vim.keymap.set("n", "<leader>gq", function() require('artio_lsp').qflist() end, {
+vim.keymap.set("n", "<leader>gq", function() require('artio_ext').qflist() end, {
     desc = "Switch quickfix list",
 })
-vim.keymap.set("n", "<leader>yl", function() require('artio_lsp').neoclip() end, {
+vim.keymap.set("n", "<leader>yl", function() require('artio_ext').neoclip() end, {
     desc = "Yank history",
 })
 vim.keymap.set("n", "<leader>ff", function()
