@@ -20,6 +20,10 @@ vim.keymap.set("n", "{d", function() vim.diagnostic.jump({ count = -1 }) end,
 vim.keymap.set("n", "<space>q", vim.diagnostic.setloclist,
     { desc = "Add diagnostics to the location list" })
 
+-- ## Quickfix
+vim.keymap.del("n", "]q") -- Remove default for next quickfix list navigation
+vim.keymap.set("n", "{q", function() vim.cmd.cnext() end, { desc = "cnext" })
+
 -- ## Detach Neovim from the remote server
 vim.keymap.set("n", "<leader>rd", function()
     for _, ui in pairs(vim.api.nvim_list_uis()) do
@@ -50,8 +54,7 @@ end, { desc = "Toggle line numbers" })
 
 -- ## Artio
 -- TODO: artio-grep needs to become async so that it can be used without pain.
---vim.keymap.set("n", "<leader>fg", "<Plug>(artio-grep)", { desc = "Live grep" })
-vim.keymap.set("n", "<leader>fh", "<Plug>(artio-helptags)", { desc = "Tags" })
+vim.keymap.set("n", "<leader>fe", "<Plug>(artio-grep)", { desc = "Live grep" })
 vim.keymap.set("n", "<leader>fb", "<Plug>(artio-buffers)", { desc = "Buffers" })
 vim.keymap.set("n", "<leader>fg", "<Plug>(artio-buffergrep)", { desc = "Grep in open buffers" })
 vim.keymap.set("n", "<leader>fr", "<Plug>(artio-oldfiles)", { desc = "Recent files" })
@@ -66,6 +69,9 @@ vim.keymap.set("n", "<leader>gi", function() require('artio_lsp').implementation
     desc = "LSP Implementations" })
 vim.keymap.set("n", "<leader>gD", function() require('artio_lsp').declarations() end, {
     desc = "LSP Implementations" })
+vim.keymap.set("n", "<leader>gq", function() require('artio_lsp').qflist() end, {
+    desc = "Switch quickfix list",
+})
 vim.keymap.set("n", "<leader>yl", function() require('artio_lsp').neoclip() end, {
     desc = "Yank history",
 })
@@ -80,7 +86,7 @@ vim.keymap.set("n", "<leader>ff", function()
     })
 end, { desc = "Smart picker" })
 -- ## Custom Ripgrep search using libuv pipes dumping output to quickfix list
-vim.keymap.set("n", "<leader>fe", RgSearch, { desc = "Grep everywhere" })
+vim.keymap.set("n", "<leader>fq", RgSearch, { desc = "Grep to quickfix" })
 
 -- ## NeoTree
 vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")

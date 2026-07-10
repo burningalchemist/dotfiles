@@ -6,7 +6,6 @@ vim.pack.add({
     "https://github.com/nvim-mini/mini.misc",
     "https://github.com/nvim-lua/plenary.nvim",
     "https://github.com/MunifTanjim/nui.nvim",
-    "https://github.com/nvim-tree/nvim-web-devicons",
     "https://github.com/nvim-mini/mini.icons",
     "https://github.com/j-hui/fidget.nvim",
     "https://github.com/neovim/nvim-lspconfig",
@@ -70,18 +69,15 @@ require("lualine").setup({
     },
     sections = {
         lualine_c = {
-            { "filename", path = 4 },
-            { function()
-                local active_clients = vim.lsp.get_clients()
-                local client_names = {}
-                for _, client in ipairs(active_clients) do
-                    if client and client.name ~= "" then
-                        table.insert(client_names, "[" .. client.name .. "]")
-                    end
-                end
-                return #active_clients > 0 and "LSP: " .. table.concat(client_names) or ""
-            end
+            {
+                -- filename is not enough, because cwd tends to jump around and might cause unexpected result running
+                -- commands in the wrong directory. So we show the cwd explicitly.
+                function()
+                    return vim.fn.pathshorten(vim.fn.fnamemodify(vim.fn.getcwd(), ":~"))
+                end,
             },
+            { "filename" },
+            { "lsp_status" },
         }
     }
 })
@@ -99,7 +95,7 @@ require("gitsigns").setup({
         -- Navigation
         map('n', ']c', function()
             if vim.wo.diff then
-                vim.cmd.normal({ ']c', bang = true })
+                vim.cmd.normal({ '{c', bang = true })
             else
                 gitsigns.nav_hunk('next')
             end
@@ -211,6 +207,7 @@ later(function()
         },
     })
     require("mini.icons").setup()
+    require('mini.icons').mock_nvim_web_devicons()
     require("artio").setup({
         opts = {
             preselect = true, -- whether to preselect the first match

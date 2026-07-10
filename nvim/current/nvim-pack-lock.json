@@ -13,7 +13,7 @@
       "src": "https://github.com/stevearc/aerial.nvim"
     },
     "artio.nvim": {
-      "rev": "ef4a3af0d85414075b302488b870c2f3ccc2364f",
+      "rev": "f564d6be59f0f59fde7dd9169a91fbf0d290996e",
       "src": "file:///Users/sergei/Projects/artio.nvim",
       "version": "'fix/current_on_quit'"
     },
@@ -26,7 +26,7 @@
       "src": "https://github.com/fang2hou/blink-copilot"
     },
     "blink.cmp": {
-      "rev": "72d81f789f1ae5f8765a87a5a5fc3562ad687df7",
+      "rev": "71dc7545c1f399c7f76eeef80efa1d8bda0ff471",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
@@ -114,7 +114,7 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-lspconfig": {
-      "rev": "d224a1920728ba129880efc700d4a0180ac4ecbb",
+      "rev": "d6ac7a0d46555d44bf21f4f9c65f5201f818b475",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-neoclip.lua": {
@@ -138,7 +138,7 @@
       "src": "https://github.com/nvim-tree/nvim-web-devicons"
     },
     "octo.nvim": {
-      "rev": "b9a73e167f851a98d8f29d62658d3640bb8a7314",
+      "rev": "8476766529b7c0ee9b7da12b6dbce1b716bb62cd",
       "src": "https://github.com/pwntester/octo.nvim"
     },
     "oil.nvim": {

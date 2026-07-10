@@ -77,16 +77,15 @@ local function rgqf(search_term)
     local err_chunks = {}
 
     local cmd = "rg"
-    local args = { "--vimgrep", "--no-heading", "--no-messages", "--", search_term, "." }
+    local args = { "--vimgrep", "--smart-case", "--no-heading", "--no-messages", "--", search_term, "." }
 
     -- Spawn the process asynchronously
     local handle, pid
     handle, pid = vim.uv.spawn(cmd, {
         args = args,
-        stdio = { nil, stdout, stderr }, -- stdin (nil), stdout pipe, stderr pipe
+        stdio = { nil, stdout, stderr },
         cwd = vim.fn.getcwd()
-    }, function(code, signal)            -- On exit callback
-        -- Close process handle and pipe streams
+    }, function(code, signal)
         stdout:read_stop()
         stderr:read_stop()
         stdout:close()

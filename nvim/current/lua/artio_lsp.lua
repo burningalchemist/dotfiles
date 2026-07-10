@@ -92,6 +92,49 @@ local function make_lsp_picker(method, prompt, extra_params)
     })
 end
 
+local function make_qflist_picker()
+    -- 1. Get the current active list index and the total number of lists
+    local current_nr = vim.fn.getqflist({ nr = 0 }).nr
+    local last_nr = vim.fn.getqflist({ nr = "$" }).nr
+
+    local lists = {}
+    local items = {}
+
+    -- 2. Scrape the titles/commands of all stored lists
+    for i = 1, last_nr do
+        local qf = vim.fn.getqflist({ nr = i, title = 1 })
+        local title = (qf.title ~= "") and qf.title or ("Search List #" .. i)
+
+        table.insert(lists, { nr = i, title = title })
+
+        -- Add a visual marker showing which list is currently active
+        local marker = (i == current_nr) and "➔ " or "  "
+        table.insert(items, string.format("%s%d: %s", marker, i, title))
+    end
+
+    return artio.pick({
+        items = items,
+        prompt = "quickfix lists",
+        fn = artio.sorter,
+        format_item = function(item)
+            return item -- Already formatted in the items table
+        end,
+        on_close = function(_, idx)
+            if not idx then return end
+
+            local target_nr = lists[idx].nr
+            local delta = target_nr - current_nr
+
+            -- 4. Calculate the relative step delta and execute the correct history shift
+            if delta < 0 then
+                vim.cmd(math.abs(delta) .. "colder")
+            elseif delta > 0 then
+                vim.cmd(delta .. "cnewer")
+            end
+        end,
+    })
+end
+
 local function make_neoclip_picker()
     local ok, storage = pcall(require, "neoclip.storage")
     if not ok then
@@ -161,6 +204,7 @@ local function make_neoclip_picker()
     })
 end
 
+
 local custom_pickers = {}
 
 function custom_pickers.definitions()
@@ -193,6 +237,10 @@ end
 
 function custom_pickers.neoclip()
     return make_neoclip_picker()
+end
+
+function custom_pickers.qflist()
+    return make_qflist_picker()
 end
 
 return custom_pickers
