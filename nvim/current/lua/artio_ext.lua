@@ -3,6 +3,8 @@ local config = require("artio.config")
 local utils = require("artio.utils")
 
 local base_dir = vim.fn.getcwd(0)
+local active_job = nil
+local active_stdout = nil
 
 local function resolve_locs(results)
     local locs = {}
@@ -26,7 +28,7 @@ end
 
 local function kill_zombie_search()
     if active_job and not active_job:is_closing() then
-        active_job:kill(15) -- Send SIGTERM to terminate the process
+        active_job:kill(15)
         active_job:close()
         active_job = nil
     end
@@ -47,7 +49,7 @@ local function rg_async(input, opts)
     end
 
     local prg = vim.split(opts.cmd, " ")
-    local max_items = 1000 -- Frugal ceiling: Never load more than 300 items into memory
+    local max_items = 1000 -- Never load more than 1000 items into memory
     local args = { "--no-heading", "--no-mmap", "--max-columns=" .. max_items, "-j", "2", "--",
         input, opts.cwd }
     args = vim.list_extend(vim.list_slice(prg, 2), args)
@@ -70,6 +72,8 @@ local function rg_async(input, opts)
     vim.uv.read_start(active_stdout, function(err, data)
         assert(not err, err)
         if data then
+            if #items >= max_items then return end
+
             local chunk = partial_line .. data
             local from = 1
             while true do
@@ -98,14 +102,23 @@ local function rg_async(input, opts)
             end
             partial_line = string.sub(chunk, from)
         else
+            if active_stdout and not active_stdout:is_closing() then
+                active_stdout:read_stop()
+                active_stdout:close()
+            end
             is_done = true
         end
     end)
 
-    -- Return the growing table.
-    vim.wait(50, function()
+    local wait_success = vim.wait(200, function()
         return is_done == true
-    end, 10) -- Poll every 10ms
+    end, 10)
+
+    if not wait_success then
+        kill_zombie_search()
+        vim.notify("Search timed out. Results may be incomplete.", vim.log.levels.WARN)
+    end
+
     return items
 end
 
@@ -217,14 +230,14 @@ local function make_lsp_picker(method, prompt, extra_params)
 end
 
 local function make_qflist_picker()
-    -- 1. Get the current active list index and the total number of lists
+    -- Get the current active list index and the total number of lists
     local current_nr = vim.fn.getqflist({ nr = 0 }).nr
     local last_nr = vim.fn.getqflist({ nr = "$" }).nr
 
     local lists = {}
     local items = {}
 
-    -- 2. Scrape the titles/commands of all stored lists
+    -- Scrape the titles/commands of all stored lists
     for i = 1, last_nr do
         local qf = vim.fn.getqflist({ nr = i, title = 1 })
         local title = (qf.title ~= "") and qf.title or ("Search List #" .. i)
@@ -249,7 +262,7 @@ local function make_qflist_picker()
             local target_nr = lists[idx].nr
             local delta = target_nr - current_nr
 
-            -- 4. Calculate the relative step delta and execute the correct history shift
+            -- Calculate the relative step delta and execute the correct history shift
             if delta < 0 then
                 vim.cmd(math.abs(delta) .. "colder")
             elseif delta > 0 then

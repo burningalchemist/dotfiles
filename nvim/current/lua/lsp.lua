@@ -122,3 +122,13 @@ lsp.config.zls = {
 lsp.config.dprint = {
     filetypes = { 'json', 'jsonc', 'markdown', 'toml', 'yaml', 'dockerfile' },
 }
+
+-- Prohibit gitlab_duo and flow that might automatically install and run the lsp server on your machine via npx
+lsp.config.flow = {
+    cmd = { "false" },
+    filetypes = {},
+}
+lsp.config.gitlab_duo = {
+    cmd = { "false" },
+    filetypes = {},
+}
