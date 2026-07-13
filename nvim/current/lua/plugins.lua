@@ -4,10 +4,10 @@ vim.pack.add({
     "https://github.com/nvim-mini/mini.misc",
     "https://github.com/nvim-lua/plenary.nvim",
     "https://github.com/MunifTanjim/nui.nvim",
-    "https://github.com/nvim-mini/mini.icons",
-    "https://codeberg.org/comfysage/artio.nvim",
-    "https://github.com/nvim-lualine/lualine.nvim",
     "https://github.com/nvim-neo-tree/neo-tree.nvim",
+    "https://github.com/nvim-mini/mini.icons",
+    "https://github.com/nvim-lualine/lualine.nvim",
+    "https://codeberg.org/comfysage/artio.nvim",
 })
 
 
@@ -38,11 +38,8 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme("catppuccin-nvim")
 
-
-
 require("lualine").setup({
     options = {
-        theme = "catppuccin-nvim",
         icons_enabled = false,
         disabled_filetypes = { "neo-tree" },
         ignore_focus = { "neo-tree" },
@@ -68,7 +65,6 @@ require("neo-tree").setup({
     sources = {
         "filesystem",
         "buffers",
-        "git_status",
     },
     close_if_last_window = true,
     filesystem = {
@@ -95,16 +91,13 @@ require("neo-tree").setup({
 })
 
 
-
 -- ## Load the rest of the plugins after startup to improve startup time
 later(function()
     vim.pack.add({
-        "https://github.com/lewis6991/gitsigns.nvim",
         "https://github.com/neovim/nvim-lspconfig",
         "https://github.com/neovim-treesitter/treesitter-parser-registry",
         "https://github.com/neovim-treesitter/nvim-treesitter",
-        { src = "https://github.com/rose-pine/neovim",       name = "rose-pine" },
-        "https://github.com/rockorager/radix.nvim",
+        "https://github.com/lewis6991/gitsigns.nvim",
         "https://github.com/stevearc/quicker.nvim",
         "https://github.com/j-hui/fidget.nvim",
         "https://github.com/neogitOrg/neogit",
@@ -119,7 +112,7 @@ later(function()
         "https://github.com/pwntester/octo.nvim",
         "https://github.com/esmuellert/codediff.nvim",
         "https://github.com/milanglacier/minuet-ai.nvim",
-        --    "https://github.com/burningalchemist/mjolnr.nvim",
+        "https://github.com/rockorager/radix.nvim",
         { src = "file:///Users/sergei/Projects/mjolnr.nvim", name = "mjolnr.nvim" },
     })
 
@@ -258,7 +251,6 @@ later(function()
         end,
     })
 
-
     require("oil").setup({
         default_file_explorer = false,
         delete_to_trash = true,
@@ -299,6 +291,7 @@ on_event("InsertEnter", function()
         suggestion = { enabled = false },
         panel = { enabled = false },
     })
+
     local cmp = require('blink.cmp')
     cmp.build():pwait()
     cmp.setup({

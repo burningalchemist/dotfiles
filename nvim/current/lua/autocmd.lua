@@ -73,20 +73,17 @@ vim.api.nvim_create_autocmd('LspAttach', {
                 return
             end
         end
-        local my_caps = require('blink.cmp').get_lsp_capabilities()
 
-        -- 2. Safely merge capabilities
+        local my_caps = require('blink.cmp').get_lsp_capabilities()
         client.capabilities = vim.tbl_deep_extend('force', client.capabilities or {}, my_caps)
 
-
-        -- Enable completion triggered by <c-x><c-o>
-        vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
         local opts = function(desc)
             return { buffer = ev.buf, desc = desc }
         end
-        vim.keymap.set('n', 'K', function() vim.lsp.buf.hover({ max_width = 100 }) end,
+
+        vim.keymap.set('n', 'K', function() vim.lsp.buf.hover({ max_width = 80 }) end,
             opts("Display symbol information"))
         vim.keymap.set('n', '<space>ld', vim.lsp.buf.definition, opts("Jump to the symbol definition"))
         vim.keymap.set('n', '<space>lt', vim.lsp.buf.type_definition, opts("Jump to the symbol type definition"))
@@ -102,17 +99,19 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end,
 })
 
-
-
--- ## Disable line wrapping in markdown files
+-- ## Disable line wrapping in markdown files (excluding floating windows)
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "markdown", "markdown_inline" },
     callback = function()
-        vim.opt_local.wrap = false
+        -- Ensure it's a regular window and NOT a floating/popup window
+        if vim.fn.win_gettype() ~= "popup" then
+            vim.opt_local.wrap = false
+        end
     end,
 })
 
--- ## Disable conceal in JSON files to prevent hiding of characters like quotes and brackets, which can make editing more difficult
+-- ## Disable conceal in JSON files to prevent hiding of characters like quotes and brackets, which can make editing
+-- more difficult
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "json", "jsonc", "json5" },
     callback = function()
@@ -137,7 +136,8 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
     desc = "Graceful Copilot teardown",
 })
 
--- ## Zoom in the split under the cursor when it's focused using Ctrl-W z, then zoom out when the same key combination is used again
+-- Zoom in the split under the cursor when it's focused using Ctrl-W z, then zoom out when the same key combination
+-- is used again
 vim.api.nvim_create_autocmd("WinEnter", {
     callback = function()
         if vim.fn.winnr('$') == 1 then
@@ -147,7 +147,7 @@ vim.api.nvim_create_autocmd("WinEnter", {
     desc = "Zoom in the split under the cursor when it's focused",
 })
 
--- resize splits if window got resized
+-- Resize splits if window got resized
 vim.api.nvim_create_autocmd({ "VimResized" }, {
     callback = function()
         local current_tab = vim.fn.tabpagenr()
@@ -155,7 +155,6 @@ vim.api.nvim_create_autocmd({ "VimResized" }, {
         vim.cmd("tabnext " .. current_tab)
     end,
 })
-
 
 -- Package Updates with rebuilds
 vim.api.nvim_create_autocmd('PackChanged', {
