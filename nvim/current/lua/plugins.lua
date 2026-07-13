@@ -1,21 +1,13 @@
 -- This file can be loaded by calling `lua require("plugins")` from your init.vim
 vim.pack.add({
-    { src = "https://github.com/catppuccin/nvim",        name = "catppuccin" },
-    --    "https://github.com/burningalchemist/mjolnr.nvim",
-    { src = "file:///Users/sergei/Projects/mjolnr.nvim", name = "mjolnr.nvim" },
+    { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
     "https://github.com/nvim-mini/mini.misc",
     "https://github.com/nvim-lua/plenary.nvim",
     "https://github.com/MunifTanjim/nui.nvim",
     "https://github.com/nvim-mini/mini.icons",
-    "https://github.com/j-hui/fidget.nvim",
-    "https://github.com/neovim/nvim-lspconfig",
-    "https://github.com/neovim-treesitter/treesitter-parser-registry",
-    "https://github.com/neovim-treesitter/nvim-treesitter",
-    "https://github.com/stevearc/quicker.nvim",
-    "https://github.com/nvim-lualine/lualine.nvim",
     "https://codeberg.org/comfysage/artio.nvim",
+    "https://github.com/nvim-lualine/lualine.nvim",
     "https://github.com/nvim-neo-tree/neo-tree.nvim",
-    "https://github.com/lewis6991/gitsigns.nvim"
 })
 
 
@@ -46,17 +38,7 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme("catppuccin-nvim")
 
-require("fidget").setup({
-    notification = {
-        -- Automatically override vim.notify() with Fidget
-        override_vim_notify = true,
-    },
-    progress = {
-        ignore = { "basedpyright", "lua_ls" }, -- Explicitly silence basedpyright status logs
-    },
-})
 
-require("quicker").setup()
 
 require("lualine").setup({
     options = {
@@ -81,54 +63,6 @@ require("lualine").setup({
     }
 })
 
-require("gitsigns").setup({
-    on_attach = function(bufnr)
-        local gitsigns = require('gitsigns')
-
-        local function map(mode, l, r, opts)
-            opts = opts or {}
-            opts.buffer = bufnr
-            vim.keymap.set(mode, l, r, opts)
-        end
-
-        -- Navigation
-        map('n', ']c', function()
-            if vim.wo.diff then
-                vim.cmd.normal({ '{c', bang = true })
-            else
-                gitsigns.nav_hunk('next')
-            end
-        end)
-
-        map('n', '[c', function()
-            if vim.wo.diff then
-                vim.cmd.normal({ '[c', bang = true })
-            else
-                gitsigns.nav_hunk('prev')
-            end
-        end)
-
-        -- Actions
-        map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Stage hunk" })
-        map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Reset hunk" })
-        map('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
-            { desc = "Stage hunk" })
-        map('v', '<leader>hr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
-            { desc = "Reset hunk" })
-        map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
-        map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
-        map('n', '<leader>hp', gitsigns.preview_hunk, { desc = "Preview hunk" })
-        map('n', '<leader>hb', function() gitsigns.blame_line { full = true } end, { desc = "Blame line" })
-        map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = "Toggle blame line" })
-        map('n', '<leader>hd', gitsigns.diffthis, { desc = "Diff this" })
-        map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this (reverse)" })
-        map('n', '<leader>hw', gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
-        map('n', '<leader>hb', gitsigns.blame, { desc = "Open git blame" })
-
-        -- Text object
-        map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
-    end
-})
 
 require("neo-tree").setup({
     sources = {
@@ -165,8 +99,14 @@ require("neo-tree").setup({
 -- ## Load the rest of the plugins after startup to improve startup time
 later(function()
     vim.pack.add({
-        "https://github.com/rose-pine/neovim",
+        "https://github.com/lewis6991/gitsigns.nvim",
+        "https://github.com/neovim/nvim-lspconfig",
+        "https://github.com/neovim-treesitter/treesitter-parser-registry",
+        "https://github.com/neovim-treesitter/nvim-treesitter",
+        { src = "https://github.com/rose-pine/neovim",       name = "rose-pine" },
         "https://github.com/rockorager/radix.nvim",
+        "https://github.com/stevearc/quicker.nvim",
+        "https://github.com/j-hui/fidget.nvim",
         "https://github.com/neogitOrg/neogit",
         "https://github.com/kylechui/nvim-surround",
         "https://github.com/AckslD/nvim-neoclip.lua",
@@ -178,26 +118,89 @@ later(function()
         "https://github.com/stevearc/oil.nvim",
         "https://github.com/pwntester/octo.nvim",
         "https://github.com/esmuellert/codediff.nvim",
-        "https://github.com/milanglacier/minuet-ai.nvim"
+        "https://github.com/milanglacier/minuet-ai.nvim",
+        --    "https://github.com/burningalchemist/mjolnr.nvim",
+        { src = "file:///Users/sergei/Projects/mjolnr.nvim", name = "mjolnr.nvim" },
     })
 
-    require("minuet").setup({
-        provider = 'openai_fim_compatible',
-        n_completions = 1,    -- recommended for local model for resource saving
-        context_window = 512, -- increment responsibly
-        provider_options = {
-            openai_fim_compatible = {
-                api_key = 'TERM',
-                name = 'Ollama',
-                end_point = 'http://localhost:11434/v1/completions',
-                model = 'qwen2.5-coder:3b-base',
-                optional = {
-                    max_tokens = 56,
-                    top_p = 0.9,
-                },
-            },
+    require("gitsigns").setup({
+        on_attach = function(bufnr)
+            local gitsigns = require('gitsigns')
+
+            local function map(mode, l, r, opts)
+                opts = opts or {}
+                opts.buffer = bufnr
+                vim.keymap.set(mode, l, r, opts)
+            end
+
+            -- Navigation
+            map('n', ']c', function()
+                if vim.wo.diff then
+                    vim.cmd.normal({ '{c', bang = true })
+                else
+                    gitsigns.nav_hunk('next')
+                end
+            end)
+
+            map('n', '[c', function()
+                if vim.wo.diff then
+                    vim.cmd.normal({ '[c', bang = true })
+                else
+                    gitsigns.nav_hunk('prev')
+                end
+            end)
+
+            -- Actions
+            map('n', '<leader>hs', gitsigns.stage_hunk, { desc = "Stage hunk" })
+            map('n', '<leader>hr', gitsigns.reset_hunk, { desc = "Reset hunk" })
+            map('v', '<leader>hs', function() gitsigns.stage_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
+                { desc = "Stage hunk" })
+            map('v', '<leader>hr', function() gitsigns.reset_hunk { vim.fn.line('.'), vim.fn.line('v') } end,
+                { desc = "Reset hunk" })
+            map('n', '<leader>hS', gitsigns.stage_buffer, { desc = "Stage buffer" })
+            map('n', '<leader>hR', gitsigns.reset_buffer, { desc = "Reset buffer" })
+            map('n', '<leader>hp', gitsigns.preview_hunk, { desc = "Preview hunk" })
+            map('n', '<leader>hb', function() gitsigns.blame_line { full = true } end, { desc = "Blame line" })
+            map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = "Toggle blame line" })
+            map('n', '<leader>hd', gitsigns.diffthis, { desc = "Diff this" })
+            map('n', '<leader>hD', function() gitsigns.diffthis('~') end, { desc = "Diff this (reverse)" })
+            map('n', '<leader>hw', gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
+            map('n', '<leader>hb', gitsigns.blame, { desc = "Open git blame" })
+
+            -- Text object
+            map({ 'o', 'x' }, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+        end
+    })
+
+    require("fidget").setup({
+        notification = {
+            -- Automatically override vim.notify() with Fidget
+            override_vim_notify = true,
+        },
+        progress = {
+            ignore = { "basedpyright", "lua_ls" }, -- Explicitly silence basedpyright status logs
         },
     })
+    require("quicker").setup()
+
+    -- require("minuet").setup({
+    --     provider = 'openai_fim_compatible',
+    --     n_completions = 1,    -- recommended for local model for resource saving
+    --     context_window = 512, -- increment responsibly
+    --     provider_options = {
+    --         openai_fim_compatible = {
+    --             api_key = 'TERM',
+    --             name = 'Ollama',
+    --             end_point = 'http://localhost:11434/v1/completions',
+    --             model = 'qwen2.5-coder:3b-base',
+    --             optional = {
+    --                 max_tokens = 56,
+    --                 top_p = 0.9,
+    --             },
+    --         },
+    --     },
+    -- })
+
     require("mini.icons").setup()
     require('mini.icons').mock_nvim_web_devicons()
     require("artio").setup({
@@ -234,14 +237,6 @@ later(function()
     })
     -- Use Artio for UI select and input
     vim.ui.select = require("artio").select
-
-
-
-    -- Make it load for markdown docs only
-    require("render-markdown").setup({
-        yaml = { enabled = false },
-        latex = { enabled = false },
-    })
 
     require('neoclip').setup()
 
@@ -585,6 +580,20 @@ local function setup_rustaceanvim()
 end
 
 misc.safely('filetype:rust', setup_rustaceanvim)
+misc.safely('filetype:markdown,markdown_inline', function()
+    if not package.loaded['render-markdown'] then
+        local success, _ = pcall(vim.cmd.packadd, 'render-markdown.nvim')
+        if not success then
+            vim.notify("Failed to load render-markdown.nvim", vim.log.levels.ERROR)
+            return
+        end
+    end
+
+    require("render-markdown").setup({
+        yaml = { enabled = false },
+        latex = { enabled = false },
+    })
+end)
 misc.safely('filetype:csv', function()
     if not package.loaded['csvview.nvim'] then
         local success, _ = pcall(vim.cmd.packadd, 'csvview.nvim')

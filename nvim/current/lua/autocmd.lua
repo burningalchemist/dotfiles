@@ -162,7 +162,10 @@ vim.api.nvim_create_autocmd('PackChanged', {
     callback = function(ev)
         local name, kind = ev.data.spec.name, ev.data.kind
         if name == 'nvim-treesitter' and kind == 'update' then
-            if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
+            if not ev.data.active then
+                vim.cmd.packadd('treesitter-parser-registry')
+                vim.cmd.packadd('nvim-treesitter')
+            end
             vim.cmd('TSUpdate')
         end
         if name == 'CopilotChat' and kind == 'update' then
@@ -183,7 +186,10 @@ vim.api.nvim_create_autocmd("FileType", {
         -- Check if nvim-treesitter is loaded, if not try to load it. If loading fails, notify the user and exit the
         -- callback.
         if not package.loaded['nvim-treesitter'] then
-            local success, _ = pcall(vim.cmd.packadd, 'nvim-treesitter')
+            local success, _ = pcall(function()
+                vim.cmd.packadd('treesitter-parser-registry')
+                vim.cmd.packadd('nvim-treesitter')
+            end)
             if not success then
                 vim.notify("Failed to load nvim-treesitter", vim.log.levels.ERROR)
                 return

@@ -52,10 +52,6 @@
       "rev": "6f793b2bcd2d35e201c09520f698bb763220908a",
       "src": "https://github.com/j-hui/fidget.nvim"
     },
-    "fzf-lua": {
-      "rev": "532d463f5c83595192fe740572d8fd6902b2217a",
-      "src": "https://github.com/ibhagwan/fzf-lua"
-    },
     "gitsigns.nvim": {
       "rev": "eb60cc7b94c46005237fd34170d76f3a089a90aa",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
@@ -104,10 +100,6 @@
       "rev": "542cbaf37f1233a2723ccd64ce8ed7e3acbd192b",
       "src": "https://github.com/fredrikaverpil/neotest-golang"
     },
-    "neovim": {
-      "rev": "ff483051a47e27d84bdef47703538df1ed9f4a47",
-      "src": "https://github.com/rose-pine/neovim"
-    },
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
       "src": "https://github.com/MunifTanjim/nui.nvim"
@@ -132,10 +124,6 @@
       "rev": "df7489eeea351bece7fd0f9c825be5cb6a1438f0",
       "src": "https://github.com/neovim-treesitter/nvim-treesitter"
     },
-    "nvim-web-devicons": {
-      "rev": "09d1324e264c6950262dbe02a9bce2933a6800db",
-      "src": "https://github.com/nvim-tree/nvim-web-devicons"
-    },
     "octo.nvim": {
       "rev": "8476766529b7c0ee9b7da12b6dbce1b716bb62cd",
       "src": "https://github.com/pwntester/octo.nvim"
@@ -159,6 +147,10 @@
     "render-markdown.nvim": {
       "rev": "f422cb5c6855f150e2ddcfaf44e7157b98b34f6a",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
+    },
+    "rose-pine": {
+      "rev": "ff483051a47e27d84bdef47703538df1ed9f4a47",
+      "src": "https://github.com/rose-pine/neovim"
     },
     "rustaceanvim": {
       "rev": "5a3a4158857ee1f7ec839b6ddd87cc0083a19c5f",
