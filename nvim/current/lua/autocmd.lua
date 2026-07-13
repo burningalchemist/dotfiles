@@ -209,3 +209,20 @@ vim.api.nvim_create_autocmd("FileType", {
         end
     end,
 })
+
+vim.api.nvim_create_user_command('Octo', function(opts)
+    local misc = require('mini.misc')
+    misc.safely('now', function()
+        require("octo").setup({
+            picker = "default" -- which is 'artio'
+        })
+    end)
+
+    vim.cmd('Octo ' .. opts.args)
+end, {
+    nargs = '*', -- Accepts any number of arguments
+    complete = function()
+        -- Optional: Provides basic completion before the plugin loads
+        return { 'pr', 'issue', 'repo', 'gist' }
+    end
+})

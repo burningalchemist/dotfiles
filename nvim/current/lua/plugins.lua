@@ -183,17 +183,10 @@ later(function()
 
     require("minuet").setup({
         provider = 'openai_fim_compatible',
-        n_completions = 1, -- recommend for local model for resource saving
-        -- I recommend beginning with a small context window size and incrementally
-        -- expanding it, depending on your local computing power. A context window
-        -- of 512, serves as an good starting point to estimate your computing
-        -- power. Once you have a reliable estimate of your local computing power,
-        -- you should adjust the context window to a larger value.
-        context_window = 512,
+        n_completions = 1,    -- recommended for local model for resource saving
+        context_window = 512, -- increment responsibly
         provider_options = {
             openai_fim_compatible = {
-                -- For Windows users, TERM may not be present in environment variables.
-                -- Consider using APPDATA instead.
                 api_key = 'TERM',
                 name = 'Ollama',
                 end_point = 'http://localhost:11434/v1/completions',
@@ -250,8 +243,8 @@ later(function()
         latex = { enabled = false },
     })
 
-
     require('neoclip').setup()
+
     require('leap').opts.preview = function(ch0, ch1, ch2)
         return not (
             ch1:match('%s')
@@ -270,9 +263,6 @@ later(function()
         end,
     })
 
-    require("octo").setup({
-        picker = "default" -- which is 'artio'
-    })
 
     require("oil").setup({
         default_file_explorer = false,
