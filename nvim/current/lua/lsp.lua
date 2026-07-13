@@ -1,22 +1,6 @@
----@ diagnostic disable : missing-fields, undefined-global
 local lsp = vim.lsp
 
-
 -- # LSP Configuration
-
--- ## Custom LSP Servers not supported by nvim-lspconfig (yet?)
--- ### Terragrunt
-lsp.config.terragrunt_ls = {
-    cmd       = { "terragrunt-ls" },
-    filetypes = { "hcl" },
-    root_dir  = vim.fs.dirname(vim.fs.find({ '.terragrunt-version ', 'terragrunt.hcl', 'root.hcl' },
-            { upward = true })
-        [1]),
-    on_attach = function(client)
-        -- Disable semantic tokens to prevent conflicts with treesitter
-        client.server_capabilities.semanticTokensProvider = nil
-    end
-}
 
 -- ## Inlay Hints
 lsp.inlay_hint.enable()
