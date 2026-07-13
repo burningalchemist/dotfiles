@@ -60,8 +60,8 @@ export PNPM_HOME="/Users/sergei/Library/pnpm"
 export PATH="$PNPM_HOME:$PATH"
 
 # Zig
-export PATH="/Users/sergei/zls:$PATH"
-export PATH="$PATH:/Users/sergei/Downloads/zig-0.14.1"
+export PATH="/Users/sergei/Downloads/zig-0.16.0/zls:$PATH"
+export PATH="$PATH:/Users/sergei/Downloads/zig-0.16.0"
 
 # Haskell
 export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
@@ -72,8 +72,11 @@ export PATH="$HOME/.jabba/jdk/zulu@1.17.0-13/Contents/Home/bin:$PATH"
 # .local/bin PATH
 export PATH="$HOME/.local/bin:$PATH"
 
-# Typo fix for clear
-alias claer="clear"
+# Rust
+export PATH="/opt/homebrew/opt/rustup/bin:$PATH"
+
+# GPG Terminal Pinentry
+export GPG_TTY=$(tty)
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/sergei/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/sergei/google-cloud-sdk/path.zsh.inc'; fi
@@ -81,18 +84,19 @@ if [ -f '/Users/sergei/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/sergei/g
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/sergei/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/sergei/google-cloud-sdk/completion.zsh.inc'; fi
 
-
-# BEGIN opam configuration
-# This is useful if you're using opam as it adds:
-#   - the correct directories to the PATH
-#   - auto-completion for the opam binary
-# This section can be safely removed at any time if needed.
-[[ ! -r '/Users/sergei/.opam/opam-init/init.zsh' ]] || source '/Users/sergei/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
-# END opam configuration
+# Postgres CLIs
+# export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # --- Last mile config
-
 alias docker="podman"
+alias :q="exit"
 #alias ls="lsr"
 
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+# No unexpected npx installs, only run npx commands that are already installed globally or locally in the project. This prevents accidental downloads of packages from the internet when running npx commands.
+alias npx="npx --no"
+# Typo fix for clear
+alias claer="clear"
+
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
