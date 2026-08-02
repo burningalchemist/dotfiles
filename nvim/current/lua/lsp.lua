@@ -16,7 +16,8 @@ lsp.enable({
     "zls",
     "terraformls",
     "terragrunt_ls",
-    "dprint"
+    "dprint",
+    "sourcekit"
 })
 
 -- ## Lua
@@ -115,4 +116,10 @@ lsp.config.flow = {
 lsp.config.gitlab_duo = {
     cmd = { "false" },
     filetypes = {},
+}
+
+-- SourceKit (Swift, C, C++, Objective-C, Objective-C++)
+lsp.config.sourcekit = {
+    cmd = { "sourcekit-lsp" },
+    filetypes = { "swift", "objc", "objcpp" },
 }

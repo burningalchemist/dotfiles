@@ -89,11 +89,9 @@ end, { desc = "Smart picker" })
 -- ## Custom Ripgrep search using libuv pipes dumping output to quickfix list
 vim.keymap.set("n", "<leader>fq", RgSearch, { desc = "Grep to quickfix" })
 
--- ## NeoTree
-vim.keymap.set("n", "<leader>nf", "<cmd>Neotree reveal_force_cwd toggle focus filesystem left<cr>")
-vim.keymap.set("n", "<leader>nb", "<cmd>Neotree reveal_force_cwd toggle focus buffers right<cr>")
-vim.keymap.set("n", "<leader>ng", "<cmd>Neotree reveal float git_status<cr>")
-vim.keymap.set("n", "<leader>nd", "<cmd>Neotree reveal toggle diagnostics bottom<cr>")
+-- ## Nvimtree
+vim.keymap.set("n", "<leader>nf", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
+vim.keymap.set("n", "<leader>nr", "<cmd>NvimTreeRefresh<cr>", { desc = "Refresh file explorer" })
 
 -- ## Remap Macro Recording
 vim.keymap.set('n', 'q', '<nop>', { noremap = true })
@@ -110,6 +108,14 @@ vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle symb
 
 -- ## Vimpack
 vim.keymap.set("n", "<leader>vu", function() vim.pack.update() end, { desc = "Update packages" })
+
+-- ## Mjolnr
+vim.keymap.set("n", "<leader>mt", "<cmd>MjolnrTaskOwnedView status=Todo<cr>", { desc = "Mjolnr: List Todo tasks" })
+vim.keymap.set("n", "<leader>mp", "<cmd>MjolnrTaskOwnedView status=InProgress<cr>",
+    { desc = "Mjolnr: List InProgress tasks" })
+vim.keymap.set("n", "<leader>mr", "<cmd>MjolnrTaskOwnedView status=InReview<cr>",
+    { desc = "Mjolnr: List InReview tasks" })
+vim.keymap.set("n", "<leader>md", "<cmd>MjolnrTaskOwnedView status=Done<cr>", { desc = "Mjolnr: List Done tasks" })
 
 -- Create user command to load copilotchat plugin when we type CopilotChat command
 vim.api.nvim_create_user_command("CChat", function()

@@ -2,12 +2,10 @@
 vim.pack.add({
     { src = "https://github.com/catppuccin/nvim", name = "catppuccin" },
     "https://github.com/nvim-mini/mini.misc",
-    "https://github.com/nvim-lua/plenary.nvim",
-    "https://github.com/MunifTanjim/nui.nvim",
-    "https://github.com/nvim-neo-tree/neo-tree.nvim",
     "https://github.com/nvim-mini/mini.icons",
+    "https://github.com/nvim-tree/nvim-tree.lua",
     "https://github.com/nvim-lualine/lualine.nvim",
-    "https://codeberg.org/comfysage/artio.nvim",
+    "https://github.com/comfysage/artio.nvim",
 })
 
 
@@ -21,28 +19,14 @@ require("catppuccin").setup({
     compile_path = vim.fn.stdpath "cache" .. "/catppuccin",
     flavour = "mocha",
     transparent_background = false,
-    integrations = {
-        aerial = true,
-        treesitter = true,
-        treesitter_context = true,
-        octo = true,
-        which_key = true,
-        leap = true,
-        neotest = true,
-        codediff = true,
-        nvim_surround = true,
-        snacks = true,
-        fidget = true,
-
-    },
+    auto_integrations = true,
 })
 vim.cmd.colorscheme("catppuccin-nvim")
 
 require("lualine").setup({
+    extensions = { 'quickfix', 'nvim-tree' },
     options = {
         icons_enabled = false,
-        disabled_filetypes = { "neo-tree" },
-        ignore_focus = { "neo-tree" },
         section_separators = "",
     },
     sections = {
@@ -60,36 +44,18 @@ require("lualine").setup({
     }
 })
 
-
-require("neo-tree").setup({
-    sources = {
-        "filesystem",
-        "buffers",
+require("nvim-tree").setup({
+    filters = {
+        dotfiles = false,
     },
-    close_if_last_window = true,
-    filesystem = {
-        bind_to_cwd = false,
-        follow_current_file = {
-            enabled = true,
-        },
-        window = {
-            mappings = {
-                -- disable fuzzy finder
-                ["/"] = "noop",
-                -- cd to current root
-                ["="] = {
-                    function(state)
-                        local path = state.path
-                        vim.cmd("cd " .. path)
-                        vim.notify("cd to current root: " .. path)
-                    end,
-                    desc = "cd to current root",
-                },
-            },
-        },
+    git = {
+        ignore = false,
+    },
+    update_focused_file = {
+        enable = true,
+        update_root = { enable = true },
     },
 })
-
 
 -- ## Load the rest of the plugins after startup to improve startup time
 later(function()
@@ -105,7 +71,7 @@ later(function()
         "https://github.com/AckslD/nvim-neoclip.lua",
         "https://github.com/stevearc/aerial.nvim",
         "https://github.com/MeanderingProgrammer/render-markdown.nvim",
-        "https://codeberg.org/andyg/leap.nvim",
+        "https://git.disroot.org/andyg/leap.nvim",
         "https://github.com/folke/which-key.nvim",
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/stevearc/oil.nvim",
@@ -113,6 +79,7 @@ later(function()
         "https://github.com/esmuellert/codediff.nvim",
         "https://github.com/milanglacier/minuet-ai.nvim",
         "https://github.com/rockorager/radix.nvim",
+        "https://github.com/rockorager/fluent.nvim",
         { src = "file:///Users/sergei/Projects/mjolnr.nvim", name = "mjolnr.nvim" },
     })
 
@@ -175,6 +142,7 @@ later(function()
         },
     })
     require("quicker").setup()
+    require("neogit").setup({ commit_editor = { staged_diff_split_kind = "auto" } })
 
     -- require("minuet").setup({
     --     provider = 'openai_fim_compatible',

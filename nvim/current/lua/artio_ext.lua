@@ -110,7 +110,7 @@ local function rg_async(input, opts)
         end
     end)
 
-    local wait_success = vim.wait(200, function()
+    local wait_success = vim.wait(100, function()
         return is_done == true
     end, 10)
 
