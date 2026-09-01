@@ -23,6 +23,7 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme("catppuccin-nvim")
 
+---@diagnostic disable-next-line - Ignore the undefined field 'setup' warning for lualine
 require("lualine").setup({
     extensions = { 'quickfix', 'nvim-tree' },
     options = {
@@ -68,6 +69,7 @@ later(function()
         "https://github.com/j-hui/fidget.nvim",
         "https://github.com/neogitOrg/neogit",
         "https://github.com/kylechui/nvim-surround",
+        "https://github.com/MagicDuck/grug-far.nvim",
         "https://github.com/AckslD/nvim-neoclip.lua",
         "https://github.com/stevearc/aerial.nvim",
         "https://github.com/MeanderingProgrammer/render-markdown.nvim",
@@ -76,7 +78,8 @@ later(function()
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/stevearc/oil.nvim",
         "https://github.com/pwntester/octo.nvim",
-        "https://github.com/esmuellert/codediff.nvim",
+        --        "https://github.com/esmuellert/codediff.nvim", -- Feels AI-sloppy, dozens of commits per day, not sure if I want to trust it yet.
+        "https://github.com/dlyongemallo/diffview.nvim",
         "https://github.com/milanglacier/minuet-ai.nvim",
         "https://github.com/rockorager/radix.nvim",
         "https://github.com/rockorager/fluent.nvim",
@@ -341,6 +344,7 @@ local function setup_neotest()
         { src = 'https://github.com/nvim-neotest/neotest' },
         { src = 'https://github.com/nvim-neotest/nvim-nio' },
         { src = 'https://github.com/antoinemadec/FixCursorHold.nvim' },
+        { src = 'https://github.com/nvim-lua/plenary.nvim' },
         -- Add your specific adapters here
         { src = 'https://github.com/fredrikaverpil/neotest-golang' },
     })

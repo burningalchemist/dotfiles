@@ -1,8 +1,9 @@
 ---@diagnostic disable: missing-fields, undefined-global
 
 
--- (!) Magic Optimizer
+-- Enabled loader allows to load Lua modules more efficiently by caching their bytecode.
 vim.loader.enable()
+
 require('vim._core.ui2').enable({ {
     enable = true,
     msg = {

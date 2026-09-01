@@ -53,7 +53,10 @@ lsp.config.gopls = {
             },
             staticcheck    = true,
             gofumpt        = true,
-            semanticTokens = true
+            semanticTokens = true,
+            analyses       = {
+                ST1003 = false, -- disable naming convention check
+            },
         },
     }
 }
@@ -105,7 +108,9 @@ lsp.config.zls = {
 
 -- ## Dprint (JSON, YAML, Markdown, TOML, Dockerfiles formatter)
 lsp.config.dprint = {
+    cmd = { "dprint", "lsp" },
     filetypes = { 'json', 'jsonc', 'markdown', 'toml', 'yaml', 'dockerfile' },
+    root_markers = { "dprint.json", ".dprint.json", "dprint.jsonc", ".dprint.jsonc" },
 }
 
 -- Prohibit gitlab_duo and flow that might automatically install and run the lsp server on your machine via npx

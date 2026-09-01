@@ -110,12 +110,14 @@ vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>", { desc = "Toggle symb
 vim.keymap.set("n", "<leader>vu", function() vim.pack.update() end, { desc = "Update packages" })
 
 -- ## Mjolnr
-vim.keymap.set("n", "<leader>mt", "<cmd>MjolnrTaskOwnedView status=Todo<cr>", { desc = "Mjolnr: List Todo tasks" })
-vim.keymap.set("n", "<leader>mp", "<cmd>MjolnrTaskOwnedView status=InProgress<cr>",
-    { desc = "Mjolnr: List InProgress tasks" })
-vim.keymap.set("n", "<leader>mr", "<cmd>MjolnrTaskOwnedView status=InReview<cr>",
-    { desc = "Mjolnr: List InReview tasks" })
-vim.keymap.set("n", "<leader>md", "<cmd>MjolnrTaskOwnedView status=Done<cr>", { desc = "Mjolnr: List Done tasks" })
+vim.keymap.set("n", "<leader>mo", "<cmd>MjolnrTaskOwnedView type=unclosed<cr>",
+    { desc = "Mjolnr: List Unclosed owned tasks" })
+vim.keymap.set("n", "<leader>md", "<cmd>MjolnrTaskOwnedView status=Done<cr>",
+    { desc = "Mjolnr: List Done owned tasks" })
+vim.keymap.set("n", "<leader>ma", "<cmd>MjolnrTaskAssignedView type=unclosed<cr>",
+    { desc = "Mjolnr: List Unclosed assigned tasks" })
+vim.keymap.set("n", "<leader>mc", "<cmd>MjolnrTaskCreatedView type=unclosed<cr>",
+    { desc = "Mjolnr: List Unclosed created tasks" })
 
 -- Create user command to load copilotchat plugin when we type CopilotChat command
 vim.api.nvim_create_user_command("CChat", function()
