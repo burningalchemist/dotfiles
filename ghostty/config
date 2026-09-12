@@ -1,15 +1,9 @@
 theme = "Catppuccin Mocha"
-
-font-size = 24
+minimum-contrast = 1.1
 
 # Iosevka
-font-family = "Iosevka Term"
-font-family-italic = "Iosevka Term"
-
-# Berkeley Mono
-#font-family = "Berkeley Mono"
-#font-family-italic = "JetBrains Mono"
-#font-feature = "+ss01"
+font-size = 20
+font-family = "IosevkaTerm Nerd Font Propo"
 
 shell-integration-features = no-cursor
 
