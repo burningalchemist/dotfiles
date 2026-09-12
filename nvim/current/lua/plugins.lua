@@ -56,6 +56,13 @@ require("nvim-tree").setup({
         enable = true,
         update_root = { enable = true },
     },
+    on_attach = function(bufnr)
+        local api = require("nvim-tree.api")
+        api.map.on_attach.default(bufnr)
+        vim.keymap.set('n', '.', api.tree.change_root_to_node, { buffer = bufnr })
+        vim.keymap.set('n', 'C', api.node.run.cmd, { buffer = bufnr })
+    end,
+
 })
 
 -- ## Load the rest of the plugins after startup to improve startup time
@@ -78,14 +85,14 @@ later(function()
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/stevearc/oil.nvim",
         "https://github.com/pwntester/octo.nvim",
+        "https://github.com/brenoprata10/nvim-highlight-colors",
         --        "https://github.com/esmuellert/codediff.nvim", -- Feels AI-sloppy, dozens of commits per day, not sure if I want to trust it yet.
         "https://github.com/dlyongemallo/diffview.nvim",
         "https://github.com/milanglacier/minuet-ai.nvim",
-        "https://github.com/rockorager/radix.nvim",
-        "https://github.com/rockorager/fluent.nvim",
         { src = "file:///Users/sergei/Projects/mjolnr.nvim", name = "mjolnr.nvim" },
     })
 
+    require('nvim-highlight-colors').setup({})
     require("gitsigns").setup({
         on_attach = function(bufnr)
             local gitsigns = require('gitsigns')
@@ -147,23 +154,6 @@ later(function()
     require("quicker").setup()
     require("neogit").setup({ commit_editor = { staged_diff_split_kind = "auto" } })
 
-    -- require("minuet").setup({
-    --     provider = 'openai_fim_compatible',
-    --     n_completions = 1,    -- recommended for local model for resource saving
-    --     context_window = 512, -- increment responsibly
-    --     provider_options = {
-    --         openai_fim_compatible = {
-    --             api_key = 'TERM',
-    --             name = 'Ollama',
-    --             end_point = 'http://localhost:11434/v1/completions',
-    --             model = 'qwen2.5-coder:3b-base',
-    --             optional = {
-    --                 max_tokens = 56,
-    --                 top_p = 0.9,
-    --             },
-    --         },
-    --     },
-    -- })
 
     require("mini.icons").setup()
     require('mini.icons').mock_nvim_web_devicons()
@@ -242,6 +232,24 @@ later(function()
         watch_for_changes = true,
         use_default_keymaps = true,
     })
+
+    -- require("minuet").setup({
+    --     provider = 'openai_fim_compatible',
+    --     n_completions = 1,    -- recommended for local model for resource saving
+    --     context_window = 512, -- increment responsibly
+    --     provider_options = {
+    --         openai_fim_compatible = {
+    --             api_key = 'TERM',
+    --             name = 'Ollama',
+    --             end_point = 'http://localhost:11434/v1/completions',
+    --             model = 'qwen2.5-coder:3b-base',
+    --             optional = {
+    --                 max_tokens = 56,
+    --                 top_p = 0.9,
+    --             },
+    --         },
+    --     },
+    -- })
 end)
 
 on_event("InsertEnter", function()
@@ -264,7 +272,7 @@ on_event("InsertEnter", function()
     })
 
     local cmp = require('blink.cmp')
-    cmp.build():pwait()
+    cmp.build()
     cmp.setup({
         keymap = {
             preset = "default",
