@@ -1,7 +1,7 @@
 # --- My Aliases
 alias kubectx="kubectl ctx"
 alias kubens="kubectl ns"
-alias pip="pip3.11"
+alias pip="pip3"
 alias vim="nvim"
 alias k="kubectl"
 alias watch='watch '
