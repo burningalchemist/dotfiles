@@ -6,6 +6,7 @@ vim.pack.add({
     "https://github.com/nvim-tree/nvim-tree.lua",
     "https://github.com/nvim-lualine/lualine.nvim",
     "https://github.com/comfysage/artio.nvim",
+    "https://github.com/neovim/nvim-lspconfig",
 })
 
 
@@ -68,7 +69,6 @@ require("nvim-tree").setup({
 -- ## Load the rest of the plugins after startup to improve startup time
 later(function()
     vim.pack.add({
-        "https://github.com/neovim/nvim-lspconfig",
         "https://github.com/neovim-treesitter/treesitter-parser-registry",
         "https://github.com/neovim-treesitter/nvim-treesitter",
         "https://github.com/lewis6991/gitsigns.nvim",
