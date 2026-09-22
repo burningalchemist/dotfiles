@@ -13,7 +13,7 @@
       "src": "https://github.com/stevearc/aerial.nvim"
     },
     "artio.nvim": {
-      "rev": "8fb9b8a96c37822ea57d399deb4c27053b13ff20",
+      "rev": "ebf5ed35bf17babeee20b04129ce60a382214687",
       "src": "https://github.com/comfysage/artio.nvim"
     },
     "blink-cmp-git": {
@@ -25,7 +25,7 @@
       "src": "https://github.com/fang2hou/blink-copilot"
     },
     "blink.cmp": {
-      "rev": "473c928d8b9b5b3f638cd085a01899972cf205c6",
+      "rev": "8219b58f1c11a2fb1644d3c7116c509fa8348ec0",
       "src": "https://github.com/saghen/blink.cmp"
     },
     "blink.lib": {
@@ -36,12 +36,8 @@
       "rev": "edefef779ab08ce1a4a404713e3012b0d202bd35",
       "src": "https://github.com/catppuccin/nvim"
     },
-    "codediff.nvim": {
-      "rev": "4b3ad7eb99dd0f02e64bbaf562ca1e87e8c07cc9",
-      "src": "https://github.com/esmuellert/codediff.nvim"
-    },
     "copilot.lua": {
-      "rev": "b2b899f93544047ac94d452ecd5af1e63a94377a",
+      "rev": "c0774241783717b2a26ef4becf08c00bfd05415d",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
     "csvview.nvim": {
@@ -49,19 +45,15 @@
       "src": "https://github.com/hat0uma/csvview.nvim"
     },
     "diffview.nvim": {
-      "rev": "be86a001f13b4d307814bd6e06eac429a2777ae8",
+      "rev": "5152bada7d81cd602373e77534aabc631419e8e0",
       "src": "https://github.com/dlyongemallo/diffview.nvim"
     },
     "fidget.nvim": {
       "rev": "9e0201673e08e997e7cf52afca5565c70bd117f3",
       "src": "https://github.com/j-hui/fidget.nvim"
     },
-    "fluent.nvim": {
-      "rev": "4de4a608adc4e4153f062f8b942823a5912d54e4",
-      "src": "https://github.com/rockorager/fluent.nvim"
-    },
     "gitsigns.nvim": {
-      "rev": "f2421c550618d257048afa650413d9e542ddbe67",
+      "rev": "8d79f2410c76e62b92e51c28c82e28c1c5a3daeb",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "grug-far.nvim": {
@@ -69,7 +61,7 @@
       "src": "https://github.com/MagicDuck/grug-far.nvim"
     },
     "leap.nvim": {
-      "rev": "38af0ab56c6eb8757ee6006dd13ab79c2bc11a49",
+      "rev": "32bde2e932417e8a065f039f00f0cebdd0da4710",
       "src": "https://git.disroot.org/andyg/leap.nvim"
     },
     "lspkind.nvim": {
@@ -113,7 +105,7 @@
       "src": "https://github.com/brenoprata10/nvim-highlight-colors"
     },
     "nvim-lspconfig": {
-      "rev": "ac9d2f7c4757db6320cab6697fe73e5e8adb2457",
+      "rev": "ffd261c09c3dabd0bf1a438f47a8ae3b22f3c3ff",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-neoclip.lua": {
@@ -129,12 +121,12 @@
       "src": "https://github.com/kylechui/nvim-surround"
     },
     "nvim-tree.lua": {
-      "rev": "882c54f2815bf6d02663d482c2cf9dbadf4e9b07",
+      "rev": "478c69c0fe253caea88de9c5e138bfa77395a59a",
       "src": "https://github.com/nvim-tree/nvim-tree.lua"
     },
     "nvim-treesitter": {
-      "rev": "df7489eeea351bece7fd0f9c825be5cb6a1438f0",
-      "src": "https://github.com/neovim-treesitter/nvim-treesitter"
+      "rev": "f603a2f4da48728f80257fb5fbb90145fd1dc173",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "octo.nvim": {
       "rev": "af2411604b51cb4a0f3e2de50b1b7cacc2581c48",
@@ -152,26 +144,14 @@
       "rev": "4a6883cb13fe097a20a046eb55f6dffd239276e3",
       "src": "https://github.com/stevearc/quicker.nvim"
     },
-    "radix.nvim": {
-      "rev": "5cef5728356d03bd82247e15896404e01a6985ef",
-      "src": "https://github.com/rockorager/radix.nvim"
-    },
     "render-markdown.nvim": {
-      "rev": "f94914e0486466aac53570de084a475e288ec46d",
+      "rev": "640a3ec6d538bad17c328be373c7cad0293d9589",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "rustaceanvim": {
       "rev": "9cb125de42c0256ed1bc1f9ded8d8f0381317a17",
       "src": "https://github.com/mrcjkb/rustaceanvim",
       "version": "9.0.0 - 10.0.0"
-    },
-    "tokyonight.nvim": {
-      "rev": "cdc07ac78467a233fd62c493de29a17e0cf2b2b6",
-      "src": "https://github.com/folke/tokyonight.nvim"
-    },
-    "treesitter-parser-registry": {
-      "rev": "6eb15358bb9fc88f0d3401d8538d56652e9bdf3c",
-      "src": "https://github.com/neovim-treesitter/treesitter-parser-registry"
     },
     "which-key.nvim": {
       "rev": "3aab2147e74890957785941f0c1ad87d0a44c15a",

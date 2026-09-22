@@ -69,8 +69,7 @@ require("nvim-tree").setup({
 -- ## Load the rest of the plugins after startup to improve startup time
 later(function()
     vim.pack.add({
-        "https://github.com/neovim-treesitter/treesitter-parser-registry",
-        "https://github.com/neovim-treesitter/nvim-treesitter",
+        "https://github.com/nvim-treesitter/nvim-treesitter",
         "https://github.com/lewis6991/gitsigns.nvim",
         "https://github.com/stevearc/quicker.nvim",
         "https://github.com/j-hui/fidget.nvim",
