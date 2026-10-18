@@ -3,6 +3,99 @@
 vim.keymap.set("n", "<S-t>", "<cmd>tabnew<cr>")
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
+-- Helper function that finds the first delimiter and swaps text around it
+local function swap_around_delimiter(text)
+    local delimiters = {
+        " %- ",    -- ' - '
+        ":%s+",    -- ': ' (colon followed by spaces)
+        ",%s+",    -- ', ' (comma followed by spaces)
+        "%s*=%s*", -- '=' (with optional spaces around it)
+        " | ",     -- ' | '
+    }
+
+    local first_pos = math.huge
+    local chosen_delim = nil
+
+    for _, delim in ipairs(delimiters) do
+        local pos = text:find(delim)
+        if pos and pos < first_pos then
+            first_pos = pos
+            chosen_delim = delim
+        end
+    end
+
+    if chosen_delim then
+        -- Swap logic: (leading spaces)(left side)(delimiter)(right side)
+        local swapped = text:gsub("^(%s*)(.-)(" .. chosen_delim .. ")(.*)$", "%1%4%3%2", 1)
+        return swapped, true
+    end
+
+    return text, false
+end
+
+-- 1. Normal Mode: Swaps based on the entire current line
+vim.keymap.set('n', '<M-t>', function()
+    local line = vim.api.nvim_get_current_line()
+    local swapped, success = swap_around_delimiter(line)
+
+    if success then
+        vim.api.nvim_set_current_line(swapped)
+    else
+        vim.notify("No recognized delimiter found on line", vim.log.levels.WARN)
+    end
+end, { desc = "Transpose values around delimiter (Line)" })
+
+-- 2. Visual Mode: Handles both single-line chunks and multi-line blocks
+vim.keymap.set('x', '<M-t>', function()
+    -- Exit visual mode synchronously to lock in the '< and '> marks
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'x', false)
+
+    -- Fetch the start and end coordinates of the selection
+    local r1, c1 = unpack(vim.api.nvim_buf_get_mark(0, '<'))
+    local r2, c2 = unpack(vim.api.nvim_buf_get_mark(0, '>'))
+
+    local start_row = r1 - 1
+    local end_row = r2 - 1
+
+    if start_row == end_row then
+        -- SINGLE LINE SELECTION: Swap only the specifically highlighted text
+        local line_text = vim.api.nvim_buf_get_lines(0, start_row, start_row + 1, false)[1]
+
+        -- Cap the column if the user used visual-line mode (V)
+        local end_col = math.min(c2, #line_text - 1)
+
+        -- Extract the selected text chunk
+        local text = string.sub(line_text, c1 + 1, end_col + 1)
+        local swapped, success = swap_around_delimiter(text)
+
+        if success then
+            -- Stitch the line back together
+            local new_line = string.sub(line_text, 1, c1) .. swapped .. string.sub(line_text, end_col + 2)
+            vim.api.nvim_buf_set_lines(0, start_row, start_row + 1, false, { new_line })
+        else
+            vim.notify("No recognized delimiter found in selection", vim.log.levels.WARN)
+        end
+    else
+        -- MULTI-LINE SELECTION: Swap each line in the block independently
+        local lines = vim.api.nvim_buf_get_lines(0, start_row, end_row + 1, false)
+        local new_lines = {}
+        local swapped_any = false
+
+        for _, line in ipairs(lines) do
+            local swapped, success = swap_around_delimiter(line)
+            table.insert(new_lines, swapped)
+            if success then swapped_any = true end
+        end
+
+        if swapped_any then
+            vim.api.nvim_buf_set_lines(0, start_row, end_row + 1, false, new_lines)
+        else
+            vim.notify("No recognized delimiters found in selection block", vim.log.levels.WARN)
+        end
+    end
+end, { desc = "Transpose values around delimiter (Selection/Block)" })
+
+
 -- ## Delete without yanking
 vim.keymap.set("n", "x", [["_x]])
 vim.keymap.set("n", "X", [["_X]])
@@ -88,6 +181,9 @@ vim.keymap.set("n", "<leader>ff", function()
 end, { desc = "Smart picker" })
 -- ## Custom Ripgrep search using libuv pipes dumping output to quickfix list
 vim.keymap.set("n", "<leader>fq", RgSearch, { desc = "Grep to quickfix" })
+vim.keymap.set({ 'n', 'x' }, '<leader>fs', function()
+    require('grug-far').open({ visualSelectionUsage = 'operate-within-range' })
+end, { desc = 'Search and replace' })
 
 -- ## Nvimtree
 vim.keymap.set("n", "<leader>nf", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file explorer" })
@@ -122,14 +218,15 @@ vim.keymap.set("n", "<leader>mc", "<cmd>MjolnrTaskCreatedView type=unclosed<cr>"
 -- Create user command to load copilotchat plugin when we type CopilotChat command
 vim.api.nvim_create_user_command("CChat", function()
     if not package.loaded["CopilotChat"] then
-        local success, _ = pcall(vim.pack.add, { "https://github.com/CopilotC-Nvim/CopilotChat.nvim" })
+        local success, _ = pcall(vim.pack.add,
+            { "https://github.com/CopilotC-Nvim/CopilotChat.nvim", "https://github.com/nvim-lua/plenary.nvim" })
         if not success then
             vim.notify("Failed to load CopilotChat plugin", vim.log.levels.ERROR)
             return
         end
     end
     local chat = require("CopilotChat")
-    chat.toggle({ model = "claude-sonnet-4.6" })
+    chat.toggle({ model = "claude-sonnet-5.5" })
 end, {
     desc = "Open Copilot Chat",
 })

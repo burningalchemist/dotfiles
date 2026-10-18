@@ -79,7 +79,7 @@ later(function()
         "https://github.com/AckslD/nvim-neoclip.lua",
         "https://github.com/stevearc/aerial.nvim",
         "https://github.com/MeanderingProgrammer/render-markdown.nvim",
-        "https://git.disroot.org/andyg/leap.nvim",
+        "https://codeberg.org/andyg/leap.nvim",
         "https://github.com/folke/which-key.nvim",
         "https://github.com/hat0uma/csvview.nvim",
         "https://github.com/stevearc/oil.nvim",
@@ -257,12 +257,8 @@ on_event("InsertEnter", function()
         "https://github.com/fang2hou/blink-copilot",
         "https://github.com/Kaiser-Yang/blink-cmp-git",
         "https://github.com/onsails/lspkind.nvim",
-        {
-            src = "https://github.com/saghen/blink.lib",
-        },
-        {
-            src = "https://github.com/saghen/blink.cmp",
-        },
+        "https://github.com/saghen/blink.lib",
+        "https://github.com/saghen/blink.cmp",
     })
 
     require("copilot").setup({

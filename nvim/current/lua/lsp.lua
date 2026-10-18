@@ -9,7 +9,7 @@ lsp.inlay_hint.enable()
 lsp.enable({
     "lua_ls",
     "gopls",
-    "ts_ls",
+    "tsc",
     "vue_ls",
     "basedpyright",
     "ruff",
@@ -17,7 +17,8 @@ lsp.enable({
     "terraformls",
     "terragrunt_ls",
     "dprint",
-    "sourcekit"
+    "sourcekit",
+    "tinymist"
 })
 
 -- ## Lua
@@ -61,18 +62,29 @@ lsp.config.gopls = {
     }
 }
 
--- ## VueJS
+-- -- ## VueJS
+local vue_ls_path =
+"/Users/sergei/.local/share/fnm/node-versions/v26.8.2/installation/lib/node_modules/@vue/language-server/bin/vue-language-server.js"
 lsp.config.vue_ls = {
+    cmd = { "node", vue_ls_path, "--stdio" },
     init_options = {
         typescript = {
-            tsdk = "/Users/sergei/Library/pnpm/global/5/node_modules/typescript/lib",
+            tsdk = "/Users/sergei/.local/share/fnm/node-versions/v26.8.2/installation/lib/node_modules/typescript/lib",
         },
         vue = {
             -- hybridMode currently doesn't work well when it comes to using DocumentSymbols with tsserver, or should be
             -- configured better
             hybridMode = false,
+
         }
+
     }
+}
+
+lsp.config.tsc = {
+    tsserver = {
+        path = "/Users/sergei/.local/share/fnm/node-versions/v26.8.2/installation/lib/node_modules/typescript/lib",
+    },
 }
 
 -- ## Python
@@ -111,6 +123,11 @@ lsp.config.dprint = {
     cmd = { "dprint", "lsp" },
     filetypes = { 'json', 'jsonc', 'markdown', 'toml', 'yaml', 'dockerfile' },
     root_markers = { "dprint.json", ".dprint.json", "dprint.jsonc", ".dprint.jsonc" },
+    settings = {
+        dprint = {
+            useGlobalConfig = true,
+        },
+    }
 }
 
 -- Prohibit gitlab_duo and flow that might automatically install and run the lsp server on your machine via npx

@@ -153,7 +153,7 @@ local function make_livegrep(props)
             return require("mini.icons").get("file", item.v[1])
         end or nil,
         hl_item = utils.hl_qfitem,
-        actions = utils.make_setqflistactions(function(item)
+        actions = utils.make_setqflistaction(function(item)
             return { filename = item.v[1], lnum = item.v[2], col = item.v[3], text = item.text }
         end)
     })

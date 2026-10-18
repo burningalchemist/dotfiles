@@ -33,7 +33,7 @@ vim.go.wildmenu = true
 vim.go.title = true
 vim.go.listchars = "tab:▏ ,trail:▓"
 --vim.go.listchars = "tab:▒░,trail:▓,nbsp:░"
-vim.g.mapleader = "\\"
+vim.g.mapleader = "|"
 
 -- ## Window Options
 vim.wo.number = true
@@ -100,3 +100,6 @@ end
 
 -- ## Treesitter parser to filetype custom mapping
 vim.treesitter.language.register("markdown", "octo")
+vim.treesitter.language.register('git_config', 'gitconfig')
+vim.treesitter.language.register('ssh_config', 'sshconfig')
+vim.treesitter.language.register('bash', 'sh')
