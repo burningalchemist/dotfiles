@@ -42,16 +42,29 @@ vim.api.nvim_create_autocmd("FileType", {
     command = "silent! set filetype=gitcommit",
 })
 
--- ### Open Neotree when Nvim started with a directory argument
-vim.api.nvim_create_augroup("neotree", {})
-vim.api.nvim_create_autocmd("UIEnter", {
-    desc = "Open Neotree automatically",
-    group = "neotree",
+-- ### Close NvimTree if it's the last window open when quitting Neovim
+vim.api.nvim_create_autocmd("QuitPre", {
     callback = function()
-        local stats = vim.uv.fs_stat(vim.api.nvim_buf_get_name(0))
-        if stats and stats.type == "directory" then require("neo-tree.setup.netrw").hijack() end
-    end,
+        local tree_wins = {}
+        local floating_wins = {}
+        local wins = vim.api.nvim_list_wins()
+        for _, w in ipairs(wins) do
+            local bufname = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(w))
+            if bufname:match("NvimTree_") ~= nil then
+                table.insert(tree_wins, w)
+            end
+            if vim.api.nvim_win_get_config(w).relative ~= "" then
+                table.insert(floating_wins, w)
+            end
+        end
+        if 1 == #wins - #floating_wins - #tree_wins then
+            for _, w in ipairs(tree_wins) do
+                vim.api.nvim_win_close(w, true)
+            end
+        end
+    end
 })
+
 
 -- ### Use LspAttach autocommand to only map the following keys after the language server attaches to the current
 --     buffer
