@@ -37,7 +37,7 @@
       "src": "https://github.com/catppuccin/nvim"
     },
     "copilot.lua": {
-      "rev": "3547efbff9adeecbd9d431c0a2a8707b7f6a4131",
+      "rev": "ba6c1c7e7b2b6b0a93838097bd09c7c83afa30d3",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
     "csvview.nvim": {
@@ -89,7 +89,7 @@
       "src": "file:///Users/sergei/Projects/mjolnr.nvim"
     },
     "neogit": {
-      "rev": "0288a0fe32bce35f4ea1195f9b546a71c5977a82",
+      "rev": "17929b7b0b9c05fe3dfc788fbba9881eb9c1cbec",
       "src": "https://github.com/neogitOrg/neogit"
     },
     "neotest": {
@@ -105,7 +105,7 @@
       "src": "https://github.com/brenoprata10/nvim-highlight-colors"
     },
     "nvim-lspconfig": {
-      "rev": "6a3ddecf60e19f164390308f502e67f3199f58e8",
+      "rev": "e1c6a5a45d95ad22cf55c874db2ff8ab969556f0",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-neoclip.lua": {
@@ -125,7 +125,7 @@
       "src": "https://github.com/nvim-tree/nvim-tree.lua"
     },
     "nvim-treesitter": {
-      "rev": "0bf28a34f1da3259809807d4b4b63c93aa9055aa",
+      "rev": "b706d642dd20d0922e7e92365dc73617f0fdb4ea",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "octo.nvim": {
@@ -145,7 +145,7 @@
       "src": "https://github.com/stevearc/quicker.nvim"
     },
     "render-markdown.nvim": {
-      "rev": "8801162e041e34c64d0d1397cd1f353a14b01950",
+      "rev": "a67f826164c38c836fc6060f32b275c4c43317a7",
       "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim"
     },
     "rustaceanvim": {

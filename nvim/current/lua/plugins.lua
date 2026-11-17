@@ -267,7 +267,7 @@ on_event("InsertEnter", function()
     })
 
     local cmp = require('blink.cmp')
-    cmp.build()
+    cmp.build():pwait()
     cmp.setup({
         keymap = {
             preset = "default",
@@ -288,6 +288,7 @@ on_event("InsertEnter", function()
             documentation = { auto_show = false },
             menu = {
                 draw = {
+                    padding = 1,
                     components = {
                         kind_icon = {
                             text = function(ctx)
